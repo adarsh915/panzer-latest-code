@@ -7,10 +7,13 @@ import '@/assets/scss/app.scss';
 
 export const metadata: Metadata = {
     title: {
-        template: '%s | Greeva NextJs - Responsive Bootstrap 5 Admin Dashboard',
+        template: '%s | Panzer IT admin',
         default: DEFAULT_PAGE_TITLE,
     },
     description: 'A fully featured admin theme which can be used to build CRM, CMS, etc.',
+    icons: {
+        icon: [],
+    },
 }
 
 export default function RootLayout({

@@ -39,6 +39,13 @@
   }
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
 .totalBadge {
   display: inline-flex;
   align-items: center;
@@ -53,7 +60,8 @@
   padding: 0 6px;
 }
 
-.addBtn {
+.addBtn,
+.categoriesBtn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -75,6 +83,19 @@
 
   svg {
     font-size: 16px;
+  }
+}
+
+.categoriesBtn {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #374151;
+
+  &:hover {
+    border-color: #0f766e;
+    background: #f0fdfa;
+    color: #0f766e;
+    transform: none;
   }
 }
 
@@ -644,7 +665,9 @@
     align-items: stretch;
   }
 
-  .addBtn {
+  .headerActions,
+  .addBtn,
+  .categoriesBtn {
     justify-content: center;
   }
 

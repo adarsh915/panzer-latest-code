@@ -2,7 +2,8 @@
 import ComponentContainerCard from '@/components/ComponentContainerCard'
 import React from 'react'
 import { bubble3DChartOpts, simpleBubbleChartOpts } from '../data'
-import ReactApexChart from 'react-apexcharts'
+import dynamic from 'next/dynamic';
+const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 import { Col, Row } from 'react-bootstrap'
 
 

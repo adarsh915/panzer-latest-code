@@ -29,9 +29,14 @@ const PostsPanel = () => {
   const [sortKey, setSortKey] = useState<keyof BlogPost>('createdAt')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
 
+  const load = async () => {
+    const [p, c] = await Promise.all([readPosts(), readCategories()])
+    setPosts(p)
+    setCategories(c)
+  }
+
   useEffect(() => {
-    setPosts(readPosts())
-    setCategories(readCategories())
+    load()
   }, [])
 
   const categoryById = useMemo(
@@ -73,12 +78,12 @@ const PostsPanel = () => {
     }
   }
 
-  const handleDelete = (post: BlogPost) => {
+  const handleDelete = async (post: BlogPost) => {
     const confirmed = window.confirm(`Delete "${post.title}"? This action cannot be undone.`)
     if (!confirmed) return
 
-    deletePost(post.id)
-    setPosts(readPosts())
+    await deletePost(post.id)
+    await load()
     toast.success('Blog post deleted')
   }
 

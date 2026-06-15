@@ -1,7 +1,8 @@
 'use client'
 import ComponentContainerCard from '@/components/ComponentContainerCard'
 import { useState } from 'react'
-import ReactApexChart from 'react-apexcharts'
+import dynamic from 'next/dynamic';
+const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 import { Button, Col, Row } from 'react-bootstrap'
 import { basicRadarChartOpts, multipleSeriesOpts, polygonRadarChartOpts } from '../data'
 

@@ -19,8 +19,12 @@ const SolutionsPanel = () => {
   const [sortKey, setSortKey] = useState<keyof SolutionService>('order')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
 
+  const loadSolutions = async () => {
+    setSolutions(await readSolutions())
+  }
+
   useEffect(() => {
-    setSolutions(readSolutions())
+    loadSolutions()
   }, [])
 
   const filtered = useMemo(() => {
@@ -55,12 +59,12 @@ const SolutionsPanel = () => {
     }
   }
 
-  const handleDelete = (solution: SolutionService) => {
+  const handleDelete = async (solution: SolutionService) => {
     const confirmed = window.confirm(`Delete "${solution.title}"? This action cannot be undone.`)
     if (!confirmed) return
 
-    deleteSolution(solution.id)
-    setSolutions(readSolutions())
+    await deleteSolution(solution.id)
+    await loadSolutions()
     toast.success('Solution deleted')
   }
 
@@ -85,10 +89,16 @@ const SolutionsPanel = () => {
             <h3>Solutions & Services List</h3>
             <span className={styles.totalBadge}>{solutions.length}</span>
           </div>
-          <Link href="/solutions/create" className={styles.addBtn}>
-            <IconifyIcon icon="tabler:plus" />
-            Add New Solution
-          </Link>
+          <div className={styles.headerActions}>
+            <Link href="/solutions/categories" className={styles.categoriesBtn}>
+              <IconifyIcon icon="tabler:category" />
+              Categories
+            </Link>
+            <Link href="/solutions/create" className={styles.addBtn}>
+              <IconifyIcon icon="tabler:plus" />
+              Add New Solution
+            </Link>
+          </div>
         </div>
 
         <div className={styles.tableControls}>

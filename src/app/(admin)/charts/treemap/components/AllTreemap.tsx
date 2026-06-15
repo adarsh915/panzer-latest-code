@@ -1,6 +1,7 @@
 'use client'
 import ComponentContainerCard from "@/components/ComponentContainerCard"
-import ReactApexChart from "react-apexcharts"
+import dynamic from 'next/dynamic';
+const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
 import { basicTreemapChartOpts, colorTreemapChartOpts, distributedTreemapChartOpts, multipleTreemapChartOpts } from "../data"
 import { Col, Row } from "react-bootstrap"
 
@@ -69,3 +70,4 @@ const AllTreemap = () => {
 }
 
 export default AllTreemap
+

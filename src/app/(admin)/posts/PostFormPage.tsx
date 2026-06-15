@@ -5,20 +5,19 @@ import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
-import ReactQuill from 'react-quill-new'
+import dynamic from 'next/dynamic';
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 import { toast } from 'react-toastify'
 import 'react-quill-new/dist/quill.snow.css'
 import {
   createPost,
-  emptyBlogPost,
   findPost,
   readCategories,
-  toFormData,
-  toSlug,
   updatePost,
   type BlogCategory,
   type BlogPostFormData,
 } from './blogStore'
+import { emptyBlogPost, toFormData, toSlug } from './blogHelpers'
 import styles from './PostFormPage.module.scss'
 
 type Props = {
@@ -62,19 +61,20 @@ const PostFormPage = ({ mode, postId }: Props) => {
   const [notFound, setNotFound] = useState(false)
 
   useEffect(() => {
-    setCategories(readCategories().filter((category) => category.status === 'active'))
+    readCategories().then((cats) => {
+      setCategories(cats.filter((category) => category.status === 'active'))
+    })
   }, [])
 
   useEffect(() => {
     if (mode !== 'edit' || !postId) return
-
-    const post = findPost(postId)
-    if (!post) {
-      setNotFound(true)
-      return
-    }
-
-    setForm(toFormData(post))
+    findPost(postId).then((post) => {
+      if (!post) {
+        setNotFound(true)
+        return
+      }
+      setForm(toFormData(post))
+    })
   }, [mode, postId])
 
   const set = <K extends keyof BlogPostFormData>(key: K, value: BlogPostFormData[K]) => {
@@ -118,7 +118,7 @@ const PostFormPage = ({ mode, postId }: Props) => {
     set('tags', value.split(',').map((tag) => tag.trim()).filter(Boolean))
   }
 
-  const submit = (event: FormEvent) => {
+  const submit = async (event: FormEvent) => {
     event.preventDefault()
 
     const title = form.title.trim()
@@ -152,15 +152,19 @@ const PostFormPage = ({ mode, postId }: Props) => {
       publishedAt: form.status === 'published' ? form.publishedAt || new Date().toISOString() : '',
     }
 
-    if (mode === 'edit' && postId) {
-      updatePost(postId, payload)
-      toast.success('Blog post updated successfully')
-    } else {
-      createPost(payload)
-      toast.success('Blog post created successfully')
+    try {
+      if (mode === 'edit' && postId) {
+        await updatePost(postId, payload)
+        toast.success('Blog post updated successfully')
+      } else {
+        await createPost(payload)
+        toast.success('Blog post created successfully')
+      }
+      router.push('/posts')
+    } catch (err: any) {
+      console.error(err)
+      toast.error(err.message || 'An error occurred while saving.')
     }
-
-    router.push('/posts')
   }
 
   const title = mode === 'create' ? 'Add Blog Post' : 'Edit Blog Post'
@@ -175,16 +179,19 @@ const PostFormPage = ({ mode, postId }: Props) => {
             <IconifyIcon icon={mode === 'create' ? 'tabler:circle-plus' : 'tabler:pencil'} />
             <h3>{title}</h3>
           </div>
-          <Link href="/posts" className={styles.backBtn}>
-            <IconifyIcon icon="tabler:arrow-left" />
-            Back to Posts
-          </Link>
+          <div className={styles.headerActions}>
+            <Link href="/posts" className={styles.backBtn}>Cancel</Link>
+            <button type="submit" form="postForm" className={styles.saveBtn}>
+              <IconifyIcon icon="tabler:device-floppy" />
+              {mode === 'create' ? 'Create Post' : 'Save Changes'}
+            </button>
+          </div>
         </div>
 
         {notFound ? (
           <div className={styles.notFound}>Blog post not found.</div>
         ) : (
-          <form className={styles.form} onSubmit={submit}>
+          <form id="postForm" className={styles.form} onSubmit={submit}>
             <label className={styles.field}>
               <span>Title <em>*</em></span>
               <input
@@ -361,13 +368,7 @@ const PostFormPage = ({ mode, postId }: Props) => {
               </div>
             </label>
 
-            <div className={styles.actions}>
-              <Link href="/posts" className={styles.backBtn}>Cancel</Link>
-              <button type="submit" className={styles.saveBtn}>
-                <IconifyIcon icon="tabler:device-floppy" />
-                {mode === 'create' ? 'Create Post' : 'Save Changes'}
-              </button>
-            </div>
+            {/* Buttons moved to sticky header */}
           </form>
         )}
       </div>

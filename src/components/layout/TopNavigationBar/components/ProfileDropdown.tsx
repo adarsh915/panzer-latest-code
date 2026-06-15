@@ -10,10 +10,6 @@ const ProfileDropdown = () => {
       <Dropdown>
         <DropdownToggle as={'a'} className="topbar-link drop-arrow-none px-2" data-bs-toggle="dropdown" data-bs-offset="0,19" type="button" aria-haspopup="false" aria-expanded="false">
           <Image src={avatar1} width={32} className="rounded-circle me-lg-2 d-flex" alt="user-image" />
-          <span className="d-lg-flex flex-column gap-1 d-none">
-            <h5 className="my-0">Dhanoo K.</h5>
-            <h6 className="my-0 fw-normal">Premium</h6>
-          </span>
           <IconifyIcon icon='tabler:chevron-down' className="d-none d-lg-block align-middle ms-2" />
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-end">

@@ -1,203 +1,342 @@
-import { MOCK_SOLUTIONS } from '@/data/panzer/mock'
+'use server'
 
-export type SolutionStatus = 'active' | 'inactive'
+import pool from '@/lib/db'
+import { toSlug } from './solutionHelpers'
+import type {
+  SolutionCategory,
+  SolutionCategoryFormData,
+  SolutionExtraCard,
+  SolutionFeatureCard,
+  SolutionFormData,
+  SolutionImplementationStep,
+  SolutionService,
+  SolutionStatus,
+} from './solutionTypes'
 
-export type SolutionFeatureCard = {
-  id: string
-  icon: string
-  image?: string
-  imageAlt?: string
-  title: string
-  description: string
+// Re-export types for convenience of other modules
+export type {
+  SolutionCategory,
+  SolutionCategoryFormData,
+  SolutionExtraCard,
+  SolutionFeatureCard,
+  SolutionFormData,
+  SolutionImplementationStep,
+  SolutionService,
+  SolutionStatus,
 }
 
-export type SolutionImplementationStep = {
-  id: string
-  step: string
-  title: string
-  description: string
-}
 
-export type SolutionService = {
-  id: string
-  title: string
-  subtitle: string
-  description: string
-  category: string
-  image: string
-  imageAlt?: string
-  slug: string
-  order: number
-  status: SolutionStatus
-  createdAt: string
-  featureCards: SolutionFeatureCard[]
-  implementationSteps: SolutionImplementationStep[]
-  metaTitle?: string
-  metaDescription?: string
-  metaKeywords?: string
-}
 
-export type SolutionFormData = Omit<SolutionService, 'id' | 'createdAt'>
+export const readSolutions = async (): Promise<SolutionService[]> => {
+  const [solutionsRow] = await pool.query('SELECT * FROM solutions ORDER BY sort_order ASC, created_at DESC')
+  const solutions = solutionsRow as any[]
 
-const SOLUTIONS_STORAGE_KEY = 'PANZER_SOLUTIONS_SERVICES'
+  if (solutions.length === 0) return []
 
-export const solutionCategories = ['Security', 'Data Protection', 'Backup', 'Monitoring', 'Identity']
+  const solutionIds = solutions.map(s => s.id)
+  
+  const [featureCardsRow] = await pool.query('SELECT * FROM solution_feature_cards WHERE solution_id IN (?)', [solutionIds])
+  const [stepsRow] = await pool.query('SELECT * FROM solution_implementation_steps WHERE solution_id IN (?)', [solutionIds])
+  const [extraCardsRow] = await pool.query('SELECT * FROM solution_extra_cards WHERE solution_id IN (?)', [solutionIds])
 
-export const toSlug = (value: string) =>
-  value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
+  const featureCards = featureCardsRow as any[]
+  const steps = stepsRow as any[]
+  const extraCards = extraCardsRow as any[]
 
-const createDefaultFeatureCards = (): SolutionFeatureCard[] => [
-  {
-    id: 'feature-data-protection',
-    icon: 'tabler:shield',
-    title: 'Data Protection',
-    description: 'Prevent leakage across endpoints, users, cloud channels and business workflows.',
-  },
-  {
-    id: 'feature-access-control',
-    icon: 'tabler:user-lock',
-    title: 'Access Control',
-    description: 'Strengthen IAM, PAM, PSM and database access management for critical systems.',
-  },
-  {
-    id: 'feature-recovery-readiness',
-    icon: 'tabler:refresh',
-    title: 'Recovery Readiness',
-    description: 'Keep virtual, physical, cloud and SaaS workloads available with reliable backup planning.',
-  },
-  {
-    id: 'feature-threat-prevention',
-    icon: 'tabler:bug-off',
-    title: 'Threat Prevention',
-    description: 'Reduce malware, ransomware, zero-day and vulnerability exposure with layered protection.',
-  },
-]
-
-const createDefaultImplementationSteps = (): SolutionImplementationStep[] => [
-  {
-    id: 'step-assess',
-    step: '01',
-    title: 'Assess',
-    description: 'Review current tools, risks, data movement, users and compliance expectations.',
-  },
-  {
-    id: 'step-recommend',
-    step: '02',
-    title: 'Recommend',
-    description: 'Select the right security, backup and data protection products for the environment.',
-  },
-  {
-    id: 'step-deploy',
-    step: '03',
-    title: 'Deploy',
-    description: 'Coordinate implementation with practical controls, policy alignment and vendor support.',
-  },
-  {
-    id: 'step-optimize',
-    step: '04',
-    title: 'Optimize',
-    description: 'Improve visibility, recoverability and protection posture as business needs change.',
-  },
-]
-
-export const emptySolution: SolutionFormData = {
-  title: '',
-  subtitle: '',
-  description: '',
-  category: 'Security',
-  image: '',
-  imageAlt: '',
-  slug: '',
-  order: 1,
-  status: 'active',
-  featureCards: createDefaultFeatureCards(),
-  implementationSteps: createDefaultImplementationSteps(),
-  metaTitle: '',
-  metaDescription: '',
-  metaKeywords: '',
-}
-
-export const getInitialSolutions = (): SolutionService[] =>
-  MOCK_SOLUTIONS.map((solution) => ({
-    ...solution,
-    createdAt: '2026-05-01T10:00:00Z',
-    imageAlt: solution.title,
-    featureCards: createDefaultFeatureCards(),
-    implementationSteps: createDefaultImplementationSteps(),
-    metaTitle: solution.title,
-    metaDescription: solution.description,
-    metaKeywords: `${solution.category}, ${solution.subtitle}, ${solution.title}`,
+  return solutions.map(sol => ({
+    id: sol.id,
+    title: sol.title,
+    subtitle: sol.subtitle || '',
+    description: sol.description || '',
+    category: sol.category || '',
+    image: sol.image || '',
+    imageAlt: sol.image_alt || '',
+    logo: sol.logo || '',
+    logoAlt: sol.logo_alt || '',
+    slug: sol.slug,
+    order: sol.sort_order,
+    status: sol.status,
+    createdAt: sol.created_at instanceof Date ? sol.created_at.toISOString() : sol.created_at,
+    metaTitle: sol.meta_title || '',
+    metaDescription: sol.meta_description || '',
+    metaKeywords: sol.meta_keywords || '',
+    featureCards: featureCards.filter(fc => fc.solution_id === sol.id).map(fc => ({
+      id: fc.id,
+      icon: fc.icon || '',
+      image: fc.image || '',
+      imageAlt: fc.image_alt || '',
+      title: fc.title,
+      description: fc.description || ''
+    })),
+    implementationSteps: steps.filter(st => st.solution_id === sol.id).map(st => ({
+      id: st.id,
+      step: st.step_number || '',
+      title: st.title,
+      description: st.description || ''
+    })),
+    extraCards: extraCards.filter(ec => ec.solution_id === sol.id).map(ec => ({
+      id: ec.id,
+      heading: ec.heading || '',
+      description: ec.description || '',
+      image: ec.image || '',
+      imageAlt: ec.image_alt || ''
+    }))
   }))
+}
 
-export const readSolutions = (): SolutionService[] => {
-  if (typeof window === 'undefined') return getInitialSolutions()
-
+export const createSolution = async (data: SolutionFormData): Promise<SolutionService> => {
+  const connection = await pool.getConnection()
   try {
-    const raw = window.localStorage.getItem(SOLUTIONS_STORAGE_KEY)
-    if (!raw) return getInitialSolutions()
-    const parsed = JSON.parse(raw) as SolutionService[]
-    return Array.isArray(parsed) ? parsed : getInitialSolutions()
-  } catch {
-    return getInitialSolutions()
+    await connection.beginTransaction()
+
+    const id = `s${Date.now()}`
+    const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ')
+    const slug = toSlug(data.slug || data.title)
+
+    await connection.query(
+      `INSERT INTO solutions (id, title, subtitle, description, category, image, image_alt, logo, logo_alt, slug, sort_order, status, meta_title, meta_description, meta_keywords, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        id,
+        data.title || '',
+        data.subtitle || '',
+        data.description || '',
+        data.category || '',
+        data.image || '',
+        data.imageAlt || '',
+        data.logo || '',
+        data.logoAlt || '',
+        slug,
+        data.order || 0,
+        data.status || 'active',
+        data.metaTitle || '',
+        data.metaDescription || '',
+        data.metaKeywords || '',
+        createdAt
+      ]
+    )
+
+    if (data.featureCards?.length) {
+      for (const fc of data.featureCards) {
+        const fcId = `fc${Date.now()}${Math.floor(Math.random() * 1000)}`
+        await connection.query(
+          `INSERT INTO solution_feature_cards (id, solution_id, icon, image, image_alt, title, description) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+          [fcId, id, fc.icon || '', fc.image || '', fc.imageAlt || '', fc.title || '', fc.description || '']
+        )
+      }
+    }
+
+    if (data.implementationSteps?.length) {
+      for (const st of data.implementationSteps) {
+        const stId = `st${Date.now()}${Math.floor(Math.random() * 1000)}`
+        await connection.query(
+          `INSERT INTO solution_implementation_steps (id, solution_id, step_number, title, description) VALUES (?, ?, ?, ?, ?)`,
+          [stId, id, st.step || '', st.title || '', st.description || '']
+        )
+      }
+    }
+
+    if (data.extraCards?.length) {
+      for (const ec of data.extraCards) {
+        const ecId = `ec${Date.now()}${Math.floor(Math.random() * 1000)}`
+        await connection.query(
+          `INSERT INTO solution_extra_cards (id, solution_id, heading, description, image, image_alt) VALUES (?, ?, ?, ?, ?, ?)`,
+          [ecId, id, ec.heading || '', ec.description || '', ec.image || '', ec.imageAlt || '']
+        )
+      }
+    }
+
+    await connection.commit()
+    
+    // Fetch and return the fully constructed solution
+    const [solutions] = await connection.query('SELECT * FROM solutions WHERE id = ?', [id])
+    const result = (solutions as any[])[0]
+    
+    return {
+      ...data,
+      id: result.id,
+      slug: result.slug,
+      createdAt: result.created_at instanceof Date ? result.created_at.toISOString() : result.created_at
+    }
+  } catch (error) {
+    await connection.rollback()
+    throw error
+  } finally {
+    connection.release()
   }
 }
 
-export const writeSolutions = (solutions: SolutionService[]) => {
-  window.localStorage.setItem(SOLUTIONS_STORAGE_KEY, JSON.stringify(solutions))
-}
+export const updateSolution = async (id: string, data: SolutionFormData): Promise<SolutionService | undefined> => {
+  const connection = await pool.getConnection()
+  try {
+    await connection.beginTransaction()
 
-export const createSolution = (data: SolutionFormData) => {
-  const solutions = readSolutions()
-  const nextSolution: SolutionService = {
-    ...data,
-    id: `s${Date.now()}`,
-    slug: toSlug(data.slug || data.title),
-    createdAt: new Date().toISOString(),
+    const slug = toSlug(data.slug || data.title)
+
+    await connection.query(
+      `UPDATE solutions SET title = ?, subtitle = ?, description = ?, category = ?, image = ?, image_alt = ?, logo = ?, logo_alt = ?, slug = ?, sort_order = ?, status = ?, meta_title = ?, meta_description = ?, meta_keywords = ? WHERE id = ?`,
+      [
+        data.title || '',
+        data.subtitle || '',
+        data.description || '',
+        data.category || '',
+        data.image || '',
+        data.imageAlt || '',
+        data.logo || '',
+        data.logoAlt || '',
+        slug,
+        data.order || 0,
+        data.status || 'active',
+        data.metaTitle || '',
+        data.metaDescription || '',
+        data.metaKeywords || '',
+        id
+      ]
+    )
+
+    // Delete existing related data and re-insert
+    await connection.query('DELETE FROM solution_feature_cards WHERE solution_id = ?', [id])
+    await connection.query('DELETE FROM solution_implementation_steps WHERE solution_id = ?', [id])
+    await connection.query('DELETE FROM solution_extra_cards WHERE solution_id = ?', [id])
+
+    if (data.featureCards?.length) {
+      for (const fc of data.featureCards) {
+        const fcId = `fc${Date.now()}${Math.floor(Math.random() * 1000)}`
+        await connection.query(
+          `INSERT INTO solution_feature_cards (id, solution_id, icon, image, image_alt, title, description) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+          [fcId, id, fc.icon || '', fc.image || '', fc.imageAlt || '', fc.title || '', fc.description || '']
+        )
+      }
+    }
+
+    if (data.implementationSteps?.length) {
+      for (const st of data.implementationSteps) {
+        const stId = `st${Date.now()}${Math.floor(Math.random() * 1000)}`
+        await connection.query(
+          `INSERT INTO solution_implementation_steps (id, solution_id, step_number, title, description) VALUES (?, ?, ?, ?, ?)`,
+          [stId, id, st.step || '', st.title || '', st.description || '']
+        )
+      }
+    }
+
+    if (data.extraCards?.length) {
+      for (const ec of data.extraCards) {
+        const ecId = `ec${Date.now()}${Math.floor(Math.random() * 1000)}`
+        await connection.query(
+          `INSERT INTO solution_extra_cards (id, solution_id, heading, description, image, image_alt) VALUES (?, ?, ?, ?, ?, ?)`,
+          [ecId, id, ec.heading || '', ec.description || '', ec.image || '', ec.imageAlt || '']
+        )
+      }
+    }
+
+    await connection.commit()
+    
+    // We don't fetch full structure, just returning mocked structure for simplicity 
+    // Normally we'd do readSolutions().find(x=>x.id === id)
+    return { ...data, id, slug, createdAt: new Date().toISOString() }
+  } catch (error) {
+    await connection.rollback()
+    throw error
+  } finally {
+    connection.release()
   }
-
-  writeSolutions([nextSolution, ...solutions])
-  return nextSolution
 }
 
-export const updateSolution = (id: string, data: SolutionFormData) => {
-  const solutions = readSolutions()
-  const nextSolutions = solutions.map((solution) =>
-    solution.id === id
-      ? {
-          ...solution,
-          ...data,
-          slug: toSlug(data.slug || data.title),
-        }
-      : solution,
+export const deleteSolution = async (id: string): Promise<void> => {
+  await pool.query('DELETE FROM solutions WHERE id = ?', [id])
+}
+
+export const findSolution = async (id: string): Promise<SolutionService | undefined> => {
+  const solutions = await readSolutions()
+  return solutions.find((solution) => solution.id === id)
+}
+
+export const readCategories = async (): Promise<SolutionCategory[]> => {
+  const [rows] = await pool.query('SELECT * FROM solution_categories ORDER BY created_at DESC')
+  return (rows as any[]).map(row => ({
+    id: row.id,
+    name: row.name,
+    slug: row.slug,
+    status: row.status,
+    createdAt: row.created_at instanceof Date ? row.created_at.toISOString() : row.created_at,
+  }))
+}
+
+export const createCategory = async (data: SolutionCategoryFormData): Promise<SolutionCategory> => {
+  const id = `sc${Date.now()}`
+  const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ')
+  const slug = toSlug(data.slug || data.name)
+  
+  await pool.query(
+    'INSERT INTO solution_categories (id, name, slug, status, created_at) VALUES (?, ?, ?, ?, ?)',
+    [id, data.name, slug, data.status, createdAt]
   )
 
-  writeSolutions(nextSolutions)
-  return nextSolutions.find((solution) => solution.id === id)
+  return { ...data, id, slug, createdAt }
 }
 
-export const deleteSolution = (id: string) => {
-  writeSolutions(readSolutions().filter((solution) => solution.id !== id))
+export const updateCategory = async (id: string, data: SolutionCategoryFormData): Promise<SolutionCategory | undefined> => {
+  const slug = toSlug(data.slug || data.name)
+  const connection = await pool.getConnection()
+  try {
+    await connection.beginTransaction()
+    
+    // get previous name
+    const [rows] = await connection.query('SELECT name FROM solution_categories WHERE id = ?', [id])
+    const oldName = (rows as any[])[0]?.name
+
+    await connection.query(
+      'UPDATE solution_categories SET name = ?, slug = ?, status = ? WHERE id = ?',
+      [data.name.trim(), slug, data.status, id]
+    )
+
+    if (oldName && oldName !== data.name.trim()) {
+      await connection.query(
+        'UPDATE solutions SET category = ? WHERE category = ?',
+        [data.name.trim(), oldName]
+      )
+    }
+
+    await connection.commit()
+    return { ...data, id, slug, createdAt: new Date().toISOString() }
+  } catch (error) {
+    await connection.rollback()
+    throw error
+  } finally {
+    connection.release()
+  }
 }
 
-export const findSolution = (id: string) => readSolutions().find((solution) => solution.id === id)
+export const deleteCategory = async (id: string): Promise<void> => {
+  const connection = await pool.getConnection()
+  try {
+    await connection.beginTransaction()
+    
+    // get previous name
+    const [rows] = await connection.query('SELECT name FROM solution_categories WHERE id = ?', [id])
+    const oldName = (rows as any[])[0]?.name
 
-export const toFormData = (solution: SolutionService): SolutionFormData => ({
-  title: solution.title,
-  subtitle: solution.subtitle,
-  description: solution.description,
-  category: solution.category,
-  image: solution.image,
-  imageAlt: solution.imageAlt ?? solution.title,
-  slug: solution.slug,
-  order: solution.order,
-  status: solution.status,
-  featureCards: solution.featureCards ?? createDefaultFeatureCards(),
-  implementationSteps: solution.implementationSteps ?? createDefaultImplementationSteps(),
-  metaTitle: solution.metaTitle ?? '',
-  metaDescription: solution.metaDescription ?? '',
-  metaKeywords: solution.metaKeywords ?? '',
-})
+    await connection.query('DELETE FROM solution_categories WHERE id = ?', [id])
+
+    if (oldName) {
+      await connection.query(
+        'UPDATE solutions SET category = ? WHERE category = ?',
+        ['', oldName]
+      )
+    }
+
+    await connection.commit()
+  } catch (error) {
+    await connection.rollback()
+    throw error
+  } finally {
+    connection.release()
+  }
+}
+
+export const findCategory = async (id: string): Promise<SolutionCategory | undefined> => {
+  const categories = await readCategories()
+  return categories.find((category) => category.id === id)
+}
+
+

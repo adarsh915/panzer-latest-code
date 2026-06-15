@@ -1,5 +1,6 @@
 'use client'
 import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { ChildrenType } from '../../types/component-props'
 import { EmailProvider } from '@/context/useEmailContext'
 import { AuthProvider } from '@/context/useAuthContext'

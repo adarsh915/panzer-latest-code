@@ -9,14 +9,12 @@ import { toast } from 'react-toastify'
 import {
   createCategory,
   deleteCategory,
-  emptyBlogCategory,
   readCategories,
-  toCategoryFormData,
-  toSlug,
   updateCategory,
   type BlogCategory,
   type BlogCategoryFormData,
 } from '../blogStore'
+import { emptyBlogCategory, toCategoryFormData, toSlug } from '../blogHelpers'
 import styles from './BlogCategoriesPanel.module.scss'
 
 const formatDate = (value?: string) => {
@@ -34,8 +32,12 @@ const BlogCategoriesPanel = () => {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
 
+  const load = async () => {
+    setCategories(await readCategories())
+  }
+
   useEffect(() => {
-    setCategories(readCategories())
+    load()
   }, [])
 
   const filtered = useMemo(() => {
@@ -48,7 +50,7 @@ const BlogCategoriesPanel = () => {
     )
   }, [categories, search])
 
-  const refresh = () => setCategories(readCategories())
+  const refresh = async () => setCategories(await readCategories())
 
   const set = <K extends keyof BlogCategoryFormData>(key: K, value: BlogCategoryFormData[K]) => {
     setForm((previous) => ({ ...previous, [key]: value }))
@@ -59,7 +61,7 @@ const BlogCategoriesPanel = () => {
     setEditingId(null)
   }
 
-  const submit = (event: FormEvent) => {
+  const submit = async (event: FormEvent) => {
     event.preventDefault()
 
     const name = form.name.trim()
@@ -77,16 +79,19 @@ const BlogCategoriesPanel = () => {
 
     const payload = { ...form, name, slug }
 
-    if (editingId) {
-      updateCategory(editingId, payload)
-      toast.success('Blog category updated')
-    } else {
-      createCategory(payload)
-      toast.success('Blog category created')
+    try {
+      if (editingId) {
+        await updateCategory(editingId, payload)
+        toast.success('Blog category updated')
+      } else {
+        await createCategory(payload)
+        toast.success('Blog category created')
+      }
+      resetForm()
+      await refresh()
+    } catch (err: any) {
+      toast.error(err.message || 'Error saving category')
     }
-
-    resetForm()
-    refresh()
   }
 
   const editCategory = (category: BlogCategory) => {
@@ -94,13 +99,13 @@ const BlogCategoriesPanel = () => {
     setForm(toCategoryFormData(category))
   }
 
-  const removeCategory = (category: BlogCategory) => {
+  const removeCategory = async (category: BlogCategory) => {
     const confirmed = window.confirm(`Delete "${category.name}"? Posts using this category will become uncategorized.`)
     if (!confirmed) return
 
-    deleteCategory(category.id)
+    await deleteCategory(category.id)
     toast.success('Blog category deleted')
-    refresh()
+    await refresh()
   }
 
   return (

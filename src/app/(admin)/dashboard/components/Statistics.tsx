@@ -2,7 +2,8 @@
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import { ApexOptions } from 'apexcharts'
 import React from 'react'
-import ReactApexChart from 'react-apexcharts'
+import dynamic from 'next/dynamic';
+const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 import { Card, CardBody, Col, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Row } from 'react-bootstrap'
 
 const Statistics = () => {

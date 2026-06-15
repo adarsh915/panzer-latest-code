@@ -39,10 +39,6 @@ const MENU_ITEMS_DATA: MenuItemType[] = [
     key: 'dashboard',
     label: 'Dashboard',
     icon: 'tabler:dashboard',
-    badge: {
-      text: "5",
-      variant: "success",
-    },
     url: '/dashboard'
   },
   {
@@ -91,13 +87,39 @@ const MENU_ITEMS_DATA: MenuItemType[] = [
     key: 'solutions',
     label: 'Solutions & Services',
     icon: 'tabler:shield-check',
-    url: '/solutions',
+    children: [
+      {
+        key: 'solution-list',
+        label: 'Solutions',
+        url: '/solutions',
+        parentKey: 'solutions',
+      },
+      {
+        key: 'solution-categories',
+        label: 'Solution Categories',
+        url: '/solutions/categories',
+        parentKey: 'solutions',
+      },
+    ],
   },
   {
     key: 'brands',
     label: 'Brands & Partners',
     icon: 'tabler:building-store',
-    url: '/brands',
+    children: [
+      {
+        key: 'brand-list',
+        label: 'Brands',
+        url: '/brands',
+        parentKey: 'brands',
+      },
+      {
+        key: 'brand-categories',
+        label: 'Brand Categories',
+        url: '/brands/categories',
+        parentKey: 'brands',
+      },
+    ],
   },
   {
     key: 'leads',
@@ -118,33 +140,34 @@ const MENU_ITEMS_DATA: MenuItemType[] = [
     url: '/media',
   },
   {
-    key: 'users',
-    label: 'Admin Users',
-    icon: 'tabler:users',
-    url: '/users',
-  },
-  {
     key: 'settings',
     label: 'Setting',
     icon: 'tabler:settings',
     children: [
       {
         key: 'settings-header',
-        label: 'Header & Footer',
+        label: 'Header',
         url: '/settings/header',
         parentKey: 'settings',
       },
       {
-        key: 'settings-color-theme',
-        label: 'Color Theme',
-        url: '/settings/color-theme',
+        key: 'settings-footer',
+        label: 'Footer',
+        url: '/settings/footer',
         parentKey: 'settings',
       },
       {
-        key: 'settings-font',
-        label: 'Font',
-        url: '/settings/font',
+        key: 'settings-pages',
+        label: 'Pages',
         parentKey: 'settings',
+        children: [
+          {
+            key: 'settings-homepage',
+            label: 'Homepage',
+            url: '/settings/pages/homepage',
+            parentKey: 'settings-pages',
+          },
+        ],
       },
     ],
   },
@@ -944,14 +967,40 @@ const HORIZONTAL_MENU_ITEM_DATA: MenuItemType[] = [
       {
         key: 'solutions',
         label: 'Solutions & Services',
-        url: '/solutions',
         parentKey: 'apps',
+        children: [
+          {
+            key: 'solution-list',
+            label: 'Solutions',
+            url: '/solutions',
+            parentKey: 'solutions',
+          },
+          {
+            key: 'solution-categories',
+            label: 'Solution Categories',
+            url: '/solutions/categories',
+            parentKey: 'solutions',
+          },
+        ],
       },
       {
         key: 'brands',
         label: 'Brands & Partners',
-        url: '/brands',
         parentKey: 'apps',
+        children: [
+          {
+            key: 'brand-list',
+            label: 'Brands',
+            url: '/brands',
+            parentKey: 'brands',
+          },
+          {
+            key: 'brand-categories',
+            label: 'Brand Categories',
+            url: '/brands/categories',
+            parentKey: 'brands',
+          },
+        ],
       },
       {
         key: 'leads',
@@ -969,12 +1018,6 @@ const HORIZONTAL_MENU_ITEM_DATA: MenuItemType[] = [
         key: 'media',
         label: 'Media Library',
         url: '/media',
-        parentKey: 'apps',
-      },
-      {
-        key: 'users',
-        label: 'Admin Users',
-        url: '/users',
         parentKey: 'apps',
       },
       {

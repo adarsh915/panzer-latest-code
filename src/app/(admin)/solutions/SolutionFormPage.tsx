@@ -5,21 +5,22 @@ import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
-import ReactQuill from 'react-quill-new'
+import dynamic from 'next/dynamic';
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 import { toast } from 'react-toastify'
 import 'react-quill-new/dist/quill.snow.css'
 import {
   createSolution,
-  emptySolution,
   findSolution,
-  solutionCategories,
-  toFormData,
-  toSlug,
+  readCategories,
   updateSolution,
+  type SolutionCategory,
+  type SolutionExtraCard,
   type SolutionFeatureCard,
   type SolutionFormData,
   type SolutionImplementationStep,
 } from './solutionStore'
+import { emptySolution, toFormData, toSlug } from './solutionHelpers'
 import styles from '../posts/PostFormPage.module.scss'
 
 type Props = {
@@ -51,6 +52,14 @@ const createFeatureCard = (): SolutionFeatureCard => ({
   description: '',
 })
 
+const createExtraCard = (): SolutionExtraCard => ({
+  id: `extra-${Date.now()}`,
+  heading: '',
+  description: '',
+  image: '',
+  imageAlt: '',
+})
+
 const createImplementationStep = (index: number): SolutionImplementationStep => ({
   id: `step-${Date.now()}`,
   step: String(index + 1).padStart(2, '0'),
@@ -61,20 +70,28 @@ const createImplementationStep = (index: number): SolutionImplementationStep => 
 const SolutionFormPage = ({ mode, solutionId }: Props) => {
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const logoInputRef = useRef<HTMLInputElement | null>(null)
   const [form, setForm] = useState<SolutionFormData>(emptySolution)
-  const [activeContentTab, setActiveContentTab] = useState<'features' | 'flow'>('features')
+  const [categories, setCategories] = useState<SolutionCategory[]>([])
+  const [activeContentTab, setActiveContentTab] = useState<'features' | 'flow' | 'cards'>('features')
   const [notFound, setNotFound] = useState(false)
+
+  useEffect(() => {
+    readCategories().then((res) => {
+      setCategories(res.filter((category) => category.status === 'active'))
+    })
+  }, [])
 
   useEffect(() => {
     if (mode !== 'edit' || !solutionId) return
 
-    const solution = findSolution(solutionId)
-    if (!solution) {
-      setNotFound(true)
-      return
-    }
-
-    setForm(toFormData(solution))
+    findSolution(solutionId).then((solution) => {
+      if (!solution) {
+        setNotFound(true)
+        return
+      }
+      setForm(toFormData(solution))
+    })
   }, [mode, solutionId])
 
   const set = <K extends keyof SolutionFormData>(key: K, value: SolutionFormData[K]) => {
@@ -115,6 +132,31 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
+  const handleLogoChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload a valid image file')
+      event.target.value = ''
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      set('logo', typeof reader.result === 'string' ? reader.result : '')
+      event.target.value = ''
+    }
+    reader.onerror = () => toast.error('Logo upload failed')
+    reader.readAsDataURL(file)
+  }
+
+  const removeLogo = () => {
+    set('logo', '')
+    set('logoAlt', '')
+    if (logoInputRef.current) logoInputRef.current.value = ''
+  }
+
   const updateFeatureCard = <K extends keyof SolutionFeatureCard>(index: number, key: K, value: SolutionFeatureCard[K]) => {
     set('featureCards', form.featureCards.map((card, cardIndex) => cardIndex === index ? { ...card, [key]: value } : card))
   }
@@ -146,6 +188,33 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
     set('implementationSteps', form.implementationSteps.filter((_, stepIndex) => stepIndex !== index))
   }
 
+  const updateExtraCard = <K extends keyof SolutionExtraCard>(index: number, key: K, value: SolutionExtraCard[K]) => {
+    set('extraCards', (form.extraCards || []).map((card, cardIndex) => cardIndex === index ? { ...card, [key]: value } : card))
+  }
+
+  const handleExtraCardImageChange = (index: number, event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload a valid image file')
+      event.target.value = ''
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      updateExtraCard(index, 'image', typeof reader.result === 'string' ? reader.result : '')
+      event.target.value = ''
+    }
+    reader.onerror = () => toast.error('Card image upload failed')
+    reader.readAsDataURL(file)
+  }
+
+  const removeExtraCard = (index: number) => {
+    set('extraCards', (form.extraCards || []).filter((_, cardIndex) => cardIndex !== index))
+  }
+
   const updateImplementationStep = <K extends keyof SolutionImplementationStep>(
     index: number,
     key: K,
@@ -154,7 +223,7 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
     set('implementationSteps', form.implementationSteps.map((step, stepIndex) => stepIndex === index ? { ...step, [key]: value } : step))
   }
 
-  const submit = (event: FormEvent) => {
+  const submit = async (event: FormEvent) => {
     event.preventDefault()
 
     const title = form.title.trim()
@@ -184,6 +253,7 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
       category: form.category.trim(),
       description,
       imageAlt: form.image ? (form.imageAlt?.trim() || title) : '',
+      logoAlt: form.logo ? (form.logoAlt?.trim() || `${title} logo`) : '',
       order: Number(form.order) || 1,
       featureCards: form.featureCards
         .map((card) => ({
@@ -203,20 +273,33 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
           description: step.description.trim(),
         }))
         .filter((step) => step.title || step.description),
+      extraCards: (form.extraCards || [])
+        .map((card) => ({
+          ...card,
+          heading: card.heading.trim(),
+          description: card.description.trim(),
+          image: card.image ?? '',
+          imageAlt: card.image ? (card.imageAlt?.trim() || card.heading.trim()) : '',
+        }))
+        .filter((card) => card.heading || card.description || card.image),
       metaTitle: form.metaTitle?.trim() || title,
       metaDescription: form.metaDescription?.trim() || stripHtml(description).slice(0, 160),
       metaKeywords: form.metaKeywords?.trim() || '',
     }
 
-    if (mode === 'edit' && solutionId) {
-      updateSolution(solutionId, payload)
-      toast.success('Solution updated successfully')
-    } else {
-      createSolution(payload)
-      toast.success('Solution created successfully')
+    try {
+      if (mode === 'edit' && solutionId) {
+        await updateSolution(solutionId, payload)
+        toast.success('Solution updated successfully')
+      } else {
+        await createSolution(payload)
+        toast.success('Solution created successfully')
+      }
+      router.push('/solutions')
+    } catch (err: any) {
+      console.error(err)
+      toast.error(err.message || 'An error occurred while saving to the database.')
     }
-
-    router.push('/solutions')
   }
 
   const title = mode === 'create' ? 'Add Solution & Service' : 'Edit Solution & Service'
@@ -231,16 +314,19 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
             <IconifyIcon icon={mode === 'create' ? 'tabler:circle-plus' : 'tabler:pencil'} />
             <h3>{title}</h3>
           </div>
-          <Link href="/solutions" className={styles.backBtn}>
-            <IconifyIcon icon="tabler:arrow-left" />
-            Back to Solutions
-          </Link>
+          <div className={styles.headerActions}>
+            <Link href="/solutions" className={styles.backBtn}>Cancel</Link>
+            <button type="submit" form="solutionForm" className={styles.saveBtn}>
+              <IconifyIcon icon="tabler:device-floppy" />
+              {mode === 'create' ? 'Create Solution' : 'Save Changes'}
+            </button>
+          </div>
         </div>
 
         {notFound ? (
           <div className={styles.notFound}>Solution not found.</div>
         ) : (
-          <form className={styles.form} onSubmit={submit}>
+          <form id="solutionForm" className={styles.form} onSubmit={submit}>
             <label className={styles.field}>
               <span>Title <em>*</em></span>
               <input
@@ -293,7 +379,11 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
               <label className={styles.field}>
                 <span>Category</span>
                 <select value={form.category} onChange={(event) => set('category', event.target.value)}>
-                  {solutionCategories.map((category) => <option key={category} value={category}>{category}</option>)}
+                  <option value="">Select category</option>
+                  {categories.map((category) => <option key={category.id} value={category.name}>{category.name}</option>)}
+                  {form.category && !categories.some((category) => category.name === form.category) && (
+                    <option value={form.category}>{form.category}</option>
+                  )}
                 </select>
               </label>
             </div>
@@ -333,6 +423,45 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
                   value={form.imageAlt}
                   onChange={(event) => set('imageAlt', event.target.value)}
                   placeholder="Describe the solution image"
+                />
+              </label>
+            )}
+
+            <div className={styles.field}>
+              <span>Logo</span>
+              <div className={styles.imageUpload}>
+                {form.logo ? (
+                  <div className={styles.imagePreview}>
+                    <img src={form.logo} alt={form.logoAlt || form.title || 'Solution logo'} />
+                    <button type="button" className={styles.removeImageBtn} onClick={removeLogo} aria-label="Remove solution logo">
+                      <IconifyIcon icon="tabler:x" />
+                    </button>
+                  </div>
+                ) : (
+                  <button type="button" className={styles.uploadPlaceholder} onClick={() => logoInputRef.current?.click()}>
+                    <IconifyIcon icon="tabler:photo-plus" />
+                    <strong>Upload solution logo</strong>
+                    <small>PNG, JPG, WEBP, or GIF</small>
+                  </button>
+                )}
+                {form.logo && (
+                  <button type="button" className={styles.changeImageBtn} onClick={() => logoInputRef.current?.click()}>
+                    <IconifyIcon icon="tabler:upload" />
+                    Change Logo
+                  </button>
+                )}
+                <input ref={logoInputRef} type="file" accept="image/*" className={styles.fileInput} onChange={handleLogoChange} />
+              </div>
+            </div>
+
+            {form.logo && (
+              <label className={styles.field}>
+                <span>Logo Alt Text</span>
+                <input
+                  type="text"
+                  value={form.logoAlt}
+                  onChange={(event) => set('logoAlt', event.target.value)}
+                  placeholder="Describe the solution logo"
                 />
               </label>
             )}
@@ -380,10 +509,21 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
                   Implementation Flow
                   <span>{form.implementationSteps.length}</span>
                 </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeContentTab === 'cards'}
+                  className={activeContentTab === 'cards' ? styles.tabActive : undefined}
+                  onClick={() => setActiveContentTab('cards')}
+                >
+                  <IconifyIcon icon="tabler:cards" />
+                  Cards
+                  <span>{(form.extraCards || []).length}</span>
+                </button>
               </div>
 
               <div className={styles.tabPanel}>
-                {activeContentTab === 'features' ? (
+                {activeContentTab === 'features' && (
                   <>
                     <div className={styles.sectionTitle}>
                       <IconifyIcon icon="tabler:layout-grid-add" />
@@ -467,7 +607,8 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
                       Add Card
                     </button>
                   </>
-                ) : (
+                )}
+                {activeContentTab === 'flow' && (
                   <>
                     <div className={styles.sectionTitle}>
                       <IconifyIcon icon="tabler:git-branch" />
@@ -507,6 +648,93 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
                     </button>
                   </>
                 )}
+                {activeContentTab === 'cards' && (
+                  <>
+                    <div className={styles.sectionTitle}>
+                      <IconifyIcon icon="tabler:cards" />
+                      <h4>Cards</h4>
+                    </div>
+                    {(form.extraCards || []).map((card, index) => (
+                      <div key={card.id} className={styles.repeaterCard}>
+                        <div className={styles.repeaterCardHeader}>
+                          <div className={styles.repeaterTitle}>
+                            <span className={styles.repeaterIconPreview}>
+                              {card.image ? <img src={card.image} alt={card.heading || 'Card image'} /> : <IconifyIcon icon="tabler:photo" />}
+                            </span>
+                            <strong>{card.heading || `Card ${index + 1}`}</strong>
+                          </div>
+                          <button type="button" className={styles.iconDangerBtn} onClick={() => removeExtraCard(index)} aria-label="Delete card" title="Delete card">
+                            <IconifyIcon icon="tabler:trash" />
+                          </button>
+                        </div>
+
+                        <div className={styles.repeaterBody}>
+                          <div className={styles.miniUpload}>
+                            {card.image ? (
+                              <div className={styles.miniImagePreview}>
+                                <img src={card.image} alt={card.heading || 'Card image'} />
+                                <button
+                                  type="button"
+                                  className={styles.removeImageBtn}
+                                  onClick={() => {
+                                    updateExtraCard(index, 'image', '')
+                                    updateExtraCard(index, 'imageAlt', '')
+                                  }}
+                                  aria-label="Remove card image"
+                                  title="Remove image"
+                                >
+                                  <IconifyIcon icon="tabler:x" />
+                                </button>
+                              </div>
+                            ) : (
+                              <label className={styles.miniUploadPlaceholder}>
+                                <IconifyIcon icon="tabler:photo-plus" />
+                                <span>Upload image</span>
+                                <input type="file" accept="image/*" className={styles.fileInput} onChange={(event) => handleExtraCardImageChange(index, event)} />
+                              </label>
+                            )}
+                            {card.image && (
+                              <label className={styles.changeImageBtn}>
+                                <IconifyIcon icon="tabler:upload" />
+                                Change Image
+                                <input type="file" accept="image/*" className={styles.fileInput} onChange={(event) => handleExtraCardImageChange(index, event)} />
+                              </label>
+                            )}
+                          </div>
+
+                          <div className={styles.repeaterFields}>
+                            {card.image && (
+                              <label className={styles.field}>
+                                <span>Image Alt Text</span>
+                                <input value={card.imageAlt ?? ''} onChange={(event) => updateExtraCard(index, 'imageAlt', event.target.value)} placeholder="Describe the image" />
+                              </label>
+                            )}
+                            <label className={styles.field}>
+                              <span>Heading</span>
+                              <input value={card.heading} onChange={(event) => updateExtraCard(index, 'heading', event.target.value)} placeholder="Card heading" />
+                            </label>
+                            <label className={styles.field}>
+                              <span>Description</span>
+                              <div className={styles.editorWrap}>
+                                <ReactQuill
+                                  theme="snow"
+                                  modules={editorModules}
+                                  value={card.description}
+                                  onChange={(value) => updateExtraCard(index, 'description', value)}
+                                  placeholder="Card description"
+                                />
+                              </div>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    <button type="button" className={styles.changeImageBtn} onClick={() => set('extraCards', [...(form.extraCards || []), createExtraCard()])}>
+                      <IconifyIcon icon="tabler:plus" />
+                      Add Card
+                    </button>
+                  </>
+                )}
               </div>
             </div>
 
@@ -523,13 +751,7 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
               </div>
             </label>
 
-            <div className={styles.actions}>
-              <Link href="/solutions" className={styles.backBtn}>Cancel</Link>
-              <button type="submit" className={styles.saveBtn}>
-                <IconifyIcon icon="tabler:device-floppy" />
-                {mode === 'create' ? 'Create Solution' : 'Save Changes'}
-              </button>
-            </div>
+            {/* Buttons moved to sticky header */}
           </form>
         )}
       </div>

@@ -6,7 +6,8 @@ import discoverCard from "@/assets/images/cards/discover-card.svg"
 import mastercard from "@/assets/images/cards/mastercard.svg" 
 import { Card, CardBody, Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'react-bootstrap'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
-import ReactApexChart from 'react-apexcharts'
+import dynamic from 'next/dynamic';
+const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 import { ApexOptions } from 'apexcharts'
 
 const TotalRevenue = () => {

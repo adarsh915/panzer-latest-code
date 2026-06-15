@@ -1,6 +1,6 @@
 import PageTitle from '@/components/PageTitle'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
-import { MOCK_BRANDS, MOCK_DOWNLOADS, MOCK_LEADS, MOCK_MEDIA, MOCK_POSTS, MOCK_SOLUTIONS, MOCK_USERS } from '@/data/panzer/mock'
+import { MOCK_BRANDS, MOCK_DOWNLOADS, MOCK_LEADS, MOCK_MEDIA, MOCK_POSTS, MOCK_SOLUTIONS } from '@/data/panzer/mock'
 import Link from 'next/link'
 import { Badge, Card, CardBody, CardHeader, Col, ProgressBar, Row, Table } from 'react-bootstrap'
 
@@ -52,14 +52,6 @@ const modules = [
     total: MOCK_MEDIA.length,
     detail: `${MOCK_MEDIA.reduce((sum, item) => sum + item.sizeKb, 0)} KB stored`,
     color: 'secondary',
-  },
-  {
-    title: 'Admin Users',
-    href: '/users',
-    icon: 'tabler:users',
-    total: MOCK_USERS.length,
-    detail: `${MOCK_USERS.filter((user) => user.active).length} active users`,
-    color: 'dark',
   },
 ]
 

@@ -1,6 +1,7 @@
 'use client'
 import ComponentContainerCard from "@/components/ComponentContainerCard"
-import ReactApexChart from "react-apexcharts"
+import dynamic from "next/dynamic"
+const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false })
 import { Col, Row } from "react-bootstrap"
 import { basicRadialBarChartOpts, circleChartOpts, circleImageChartOpts, gradientCircularChartOpts, multipleRadialBarsChartOpts, semiCircleChartOpts, strokedCircularChartOpts } from "../data"
 

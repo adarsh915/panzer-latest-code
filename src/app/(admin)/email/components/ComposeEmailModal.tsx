@@ -3,7 +3,8 @@ import avatar2 from '@/assets/images/users/avatar-2.jpg';
 import Image from 'next/image';
 import { useState } from 'react';
 import { Card, Col, Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle, Row } from 'react-bootstrap';
-import ReactQuill from 'react-quill-new';
+import dynamic from 'next/dynamic';
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 import IconifyIcon from '@/components/wrappers/IconifyIcon';
 import Link from 'next/link';

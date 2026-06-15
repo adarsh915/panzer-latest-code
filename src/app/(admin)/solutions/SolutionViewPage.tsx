@@ -32,8 +32,10 @@ const SolutionViewPage = ({ solutionId }: Props) => {
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    setSolution(findSolution(solutionId) ?? null)
-    setLoaded(true)
+    findSolution(solutionId).then((sol) => {
+      setSolution(sol ?? null)
+      setLoaded(true)
+    })
   }, [solutionId])
 
   return (
@@ -107,6 +109,12 @@ const SolutionViewPage = ({ solutionId }: Props) => {
               </div>
             )}
 
+            {solution.logo && (
+              <div className={styles.featuredImage}>
+                <img src={solution.logo} alt={solution.logoAlt || solution.title} />
+              </div>
+            )}
+
             <div className={styles.seoBox}>
               <div className={styles.seoHeader}>
                 <IconifyIcon icon="tabler:seo" />
@@ -128,6 +136,10 @@ const SolutionViewPage = ({ solutionId }: Props) => {
                 <div>
                   <span>Image Alt Text</span>
                   <p>{solution.imageAlt || '-'}</p>
+                </div>
+                <div>
+                  <span>Logo Alt Text</span>
+                  <p>{solution.logoAlt || '-'}</p>
                 </div>
               </div>
             </div>
@@ -170,6 +182,34 @@ const SolutionViewPage = ({ solutionId }: Props) => {
                 )) : <p>No implementation steps added.</p>}
               </div>
             </div>
+
+            {solution.extraCards && solution.extraCards.length > 0 && (
+              <div className={styles.seoBox}>
+                <div className={styles.seoHeader}>
+                  <IconifyIcon icon="tabler:cards" />
+                  <h4>Cards</h4>
+                </div>
+                <div className={styles.seoGrid}>
+                  {solution.extraCards.map((card) => (
+                    <div key={card.id}>
+                      {card.image && (
+                        <p>
+                          <img
+                            src={card.image}
+                            alt={card.imageAlt || card.heading}
+                            style={{ width: '100%', maxHeight: 120, objectFit: 'cover', borderRadius: 8, marginBottom: 8 }}
+                          />
+                        </p>
+                      )}
+                      <div>
+                        <strong>{card.heading}</strong>
+                        <div dangerouslySetInnerHTML={{ __html: card.description }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <article
               className={styles.content}

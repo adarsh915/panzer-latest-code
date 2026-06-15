@@ -50,15 +50,10 @@ export type MediaItem = {
   type: string
   sizeKb: number
   createdAt: string
+  url?: string
+  altText?: string
 }
 
-export type AdminUserRow = {
-  id: string
-  name: string
-  email: string
-  role: 'admin' | 'editor'
-  active: boolean
-}
 
 export const MOCK_POSTS: Post[] = [
   {
@@ -196,11 +191,6 @@ export const MOCK_DOWNLOADS: Download[] = [
 ]
 
 export const MOCK_MEDIA: MediaItem[] = [
-  { id: 'm1', filename: 'hero-banner.webp', type: 'image/webp', sizeKb: 240, createdAt: '2026-05-01T10:00:00Z' },
-  { id: 'm2', filename: 'brochure.pdf', type: 'application/pdf', sizeKb: 1024, createdAt: '2026-05-03T10:00:00Z' },
-]
-
-export const MOCK_USERS: AdminUserRow[] = [
-  { id: 'u1', name: 'Panzer Admin', email: 'admin@panzer.local', role: 'admin', active: true },
-  { id: 'u2', name: 'Content Editor', email: 'editor@panzer.local', role: 'editor', active: true },
+  { id: 'm1', filename: 'hero-banner.webp', type: 'image/webp', sizeKb: 240, createdAt: '2026-05-01T10:00:00Z', url: '/assets/images/service/leak.webp', altText: 'Hero Banner' },
+  { id: 'm2', filename: 'brochure.pdf', type: 'application/pdf', sizeKb: 1024, createdAt: '2026-05-03T10:00:00Z', url: '', altText: 'Brochure PDF' },
 ]

@@ -1,7 +1,8 @@
 'use client'
 import ComponentContainerCard from '@/components/ComponentContainerCard'
 import React from 'react'
-import ReactApexChart from 'react-apexcharts'
+import dynamic from 'next/dynamic';
+const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 import { dateTimeScatterChartOpts, scatterChartOpts, scatterImagesChartOpts } from '../data'
 import { Col, Row } from 'react-bootstrap'
 

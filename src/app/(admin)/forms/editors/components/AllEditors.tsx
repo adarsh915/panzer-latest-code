@@ -1,7 +1,8 @@
 'use client'
 import { Col, Row } from 'react-bootstrap'
 import ComponentContainerCard from '@/components/ComponentContainerCard'
-import ReactQuill from 'react-quill-new'
+import dynamic from 'next/dynamic';
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 // styles
 import 'react-quill-new/dist/quill.snow.css'

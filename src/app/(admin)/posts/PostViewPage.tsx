@@ -33,9 +33,11 @@ const PostViewPage = ({ postId }: Props) => {
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    setPost(findPost(postId) ?? null)
-    setCategories(readCategories())
-    setLoaded(true)
+    Promise.all([findPost(postId), readCategories()]).then(([p, cats]) => {
+      setPost(p ?? null)
+      setCategories(cats)
+      setLoaded(true)
+    })
   }, [postId])
 
   const categoryName = useMemo(

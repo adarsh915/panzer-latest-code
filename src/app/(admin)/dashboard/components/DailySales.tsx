@@ -5,7 +5,8 @@ import React from 'react'
 import americanExpress from '@/assets/images/cards/american-express.svg'
 import discoverCard from '@/assets/images/cards/discover-card.svg'
 import mastercard from '@/assets/images/cards/mastercard.svg'
-import ReactApexChart from 'react-apexcharts'
+import dynamic from 'next/dynamic';
+const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 import { Card, CardBody, Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'react-bootstrap';
 import IconifyIcon from '@/components/wrappers/IconifyIcon';
 

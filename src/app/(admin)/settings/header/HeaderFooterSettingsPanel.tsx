@@ -2,8 +2,9 @@
 
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import clsx from 'clsx'
-import { type DragEvent, useRef, useState } from 'react'
+import { type DragEvent, useEffect, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
+import { readSetting, writeSetting } from '../settingsStore'
 import styles from './HeaderFooterSettingsPanel.module.scss'
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -263,13 +264,32 @@ const HeaderFooterSettingsPanel = () => {
   const [footer, setFooter] = useState<FooterSettings>(defaultFooter)
   const [activeTab, setActiveTab] = useState<'header' | 'footer'>('header')
 
+  useEffect(() => {
+    const init = async () => {
+      const dbHeader = await readSetting('PANZER_HEADER_SETTINGS', defaultHeaderLogo)
+      const dbFooter = await readSetting('PANZER_FOOTER_SETTINGS', defaultFooter)
+      
+      setHeaderLogo({ ...defaultHeaderLogo, ...dbHeader })
+      setFooter({
+        ...defaultFooter,
+        ...dbFooter,
+        socialLinks: Array.isArray(dbFooter?.socialLinks) ? dbFooter.socialLinks : defaultFooter.socialLinks
+      })
+    }
+    init()
+  }, [])
+
   const upd = <K extends keyof FooterSettings>(key: K, value: FooterSettings[K]) =>
     setFooter((prev) => ({ ...prev, [key]: value }))
 
   const updateSocial = (id: string, field: 'url' | 'label', value: string) =>
     upd('socialLinks', footer.socialLinks.map((s) => (s.id === id ? { ...s, [field]: value } : s)))
 
-  const handleSave = () => toast.success('Header & Footer settings saved successfully')
+  const handleSave = async () => {
+    await writeSetting('PANZER_HEADER_SETTINGS', headerLogo)
+    await writeSetting('PANZER_FOOTER_SETTINGS', footer)
+    toast.success('Header & Footer settings saved successfully')
+  }
   const handleReset = () => {
     setHeaderLogo(defaultHeaderLogo)
     setFooter(defaultFooter)

@@ -1,8 +1,8 @@
-import { redirect } from 'next/navigation'
+import type { Metadata } from 'next'
+import FooterSettingsPanel from './FooterSettingsPanel'
 
-// Header & Footer settings are combined on one page
-const FooterSettingsPage = () => {
-  redirect('/settings/header')
-}
+export const metadata: Metadata = { title: 'Footer Settings' }
+
+const FooterSettingsPage = () => <FooterSettingsPanel />
 
 export default FooterSettingsPage
