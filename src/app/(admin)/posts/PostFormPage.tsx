@@ -40,15 +40,15 @@ const editorModules = {
 
 const stripHtml = (value: string) => value.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, '').trim()
 
-const toDateTimeLocal = (value?: string) => {
+const toDateLocal = (value?: string) => {
   if (!value) return ''
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return ''
   const offset = date.getTimezoneOffset() * 60000
-  return new Date(date.getTime() - offset).toISOString().slice(0, 16)
+  return new Date(date.getTime() - offset).toISOString().slice(0, 10)
 }
 
-const fromDateTimeLocal = (value: string) => {
+const fromDateLocal = (value: string) => {
   if (!value) return ''
   return new Date(value).toISOString()
 }
@@ -57,6 +57,7 @@ const PostFormPage = ({ mode, postId }: Props) => {
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [form, setForm] = useState<BlogPostFormData>(emptyBlogPost)
+  const [tagsInput, setTagsInput] = useState('')
   const [categories, setCategories] = useState<BlogCategory[]>([])
   const [notFound, setNotFound] = useState(false)
 
@@ -74,6 +75,7 @@ const PostFormPage = ({ mode, postId }: Props) => {
         return
       }
       setForm(toFormData(post))
+      setTagsInput(post.tags?.join(', ') || '')
     })
   }, [mode, postId])
 
@@ -115,7 +117,7 @@ const PostFormPage = ({ mode, postId }: Props) => {
   }
 
   const handleTagsChange = (value: string) => {
-    set('tags', value.split(',').map((tag) => tag.trim()).filter(Boolean))
+    setTagsInput(value)
   }
 
   const submit = async (event: FormEvent) => {
@@ -145,6 +147,7 @@ const PostFormPage = ({ mode, postId }: Props) => {
       title,
       slug,
       description,
+      tags: tagsInput.split(',').map((tag) => tag.trim()).filter(Boolean),
       imageAlt: form.image ? (form.imageAlt.trim() || title) : '',
       metaTitle: form.metaTitle.trim() || title,
       metaDescription: form.metaDescription.trim(),
@@ -223,10 +226,16 @@ const PostFormPage = ({ mode, postId }: Props) => {
               <label className={styles.field}>
                 <span>Publish Date</span>
                 <input
-                  type="datetime-local"
-                  value={toDateTimeLocal(form.publishedAt)}
-                  onChange={(event) => set('publishedAt', fromDateTimeLocal(event.target.value))}
-                  disabled={form.status === 'draft'}
+                  type="date"
+                  value={toDateLocal(form.publishedAt)}
+                  onChange={(event) => set('publishedAt', fromDateLocal(event.target.value))}
+                  onClick={(e) => {
+                    try {
+                      if ('showPicker' in HTMLInputElement.prototype) {
+                        (e.target as HTMLInputElement).showPicker();
+                      }
+                    } catch (err) {}
+                  }}
                 />
               </label>
             </div>
@@ -245,7 +254,7 @@ const PostFormPage = ({ mode, postId }: Props) => {
                 <span>Tags</span>
                 <input
                   type="text"
-                  value={form.tags.join(', ')}
+                  value={tagsInput}
                   onChange={(event) => handleTagsChange(event.target.value)}
                   placeholder="security, backup, cloud"
                 />

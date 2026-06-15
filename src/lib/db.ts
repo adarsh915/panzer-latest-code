@@ -10,7 +10,7 @@ export const pool =
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'panzar',
+    database: 'panzarit',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
