@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react'
 
 export type AdminRole = 'admin' | 'editor'
 
@@ -16,20 +16,10 @@ type AuthContextValue = {
   isLoading: boolean
   isAuthenticated: boolean
   login: (params: { email: string; password: string }) => Promise<void>
-  logout: () => void
+  logout: () => Promise<void>
 }
 
 const AUTH_STORAGE_KEY = 'PANZER_ADMIN_SESSION'
-
-/**
- * Frontend-only demo auth:
- * - No backend calls
- * - Stores a simple "session" in localStorage
- */
-const DEMO_CREDENTIALS = {
-  email: 'admin@panzer.local',
-  password: 'Admin@12345',
-} as const
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
@@ -50,30 +40,38 @@ const readSession = (): AdminUser | null => {
 }
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<AdminUser | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    setUser(readSession())
-    setIsLoading(false)
-  }, [])
+  // Initialize synchronously from localStorage — no blank screen flash
+  const [user, setUser] = useState<AdminUser | null>(() => {
+    if (typeof window === 'undefined') return null
+    return readSession()
+  })
+  const [isLoading] = useState(false)
 
   const login = useCallback(async ({ email, password }: { email: string; password: string }) => {
-    // Strict demo creds (change here if you want "any password works")
-    const ok = email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password
-    if (!ok) throw new Error('Invalid demo credentials')
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    })
 
-    const nextUser: AdminUser = {
-      id: 'demo-admin-1',
-      name: 'Panzer Admin',
-      email,
-      role: 'admin',
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}))
+      throw new Error(errorData.message || 'Invalid credentials')
     }
+
+    const nextUser: AdminUser = await res.json()
+    // Cache user info in localStorage for client-side display only.
+    // Real auth is enforced by the httpOnly cookie + server-side middleware.
     window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(nextUser))
     setUser(nextUser)
   }, [])
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+    } catch {
+      // Ignore network errors on logout
+    }
     window.localStorage.removeItem(AUTH_STORAGE_KEY)
     setUser(null)
   }, [])
@@ -91,6 +89,3 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
-
-export { DEMO_CREDENTIALS }
-

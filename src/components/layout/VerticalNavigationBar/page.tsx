@@ -20,10 +20,17 @@ const VerticalNavigationBar = () => {
       <button onClick={toggleBackdrop} className="button-close-fullsidebar">
         <IconifyIcon icon='tabler:x' className="align-middle" />
       </button>
-      <SimplebarReactClient data-simplebar>
+      <div 
+        id="leftside-menu-container" 
+        style={{ 
+          height: 'calc(100vh - 70px)', 
+          overflowY: 'auto',
+          overflowX: 'hidden'
+        }}
+      >
         <AppMenu menuItems={menuItems} />
         <div className="clearfix" />
-      </SimplebarReactClient>
+      </div>
     </div>
   )
 }

@@ -1,5 +1,6 @@
 'use client'
 import Choices, { type Options as ChoiceOption } from 'choices.js'
+import "choices.js/public/assets/styles/choices.css";
 import { type HTMLAttributes, type ReactElement, useEffect, useRef } from 'react'
 
 export type ChoiceProps = HTMLAttributes<HTMLInputElement> &
@@ -10,9 +11,9 @@ export type ChoiceProps = HTMLAttributes<HTMLInputElement> &
     onChange?: (text: string) => void
   } & (
     | {
-        allowInput?: false
-        children: ReactElement[]
-      }
+      allowInput?: false
+      children: ReactElement[]
+    }
     | { allowInput?: true }
   )
 

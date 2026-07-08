@@ -1,0 +1,725 @@
+import Image from "next/image";
+import Link from "next/link";
+import { Metadata } from 'next';
+import { getSeoData } from '@/app/admin/settings/seo/seoStore';
+export const dynamic = 'force-dynamic';
+import { getHomepageData } from "./homepageStore";
+import ServiceContactForm from "@/components/frontend/ServiceContactForm";
+import { HeroSlider } from "@/components/frontend/HeroSlider";
+import { BrandSlider } from "@/components/frontend/BrandSlider";
+import { createPageMetadata } from "@/utils/metadata";
+
+const formatBlogDate = (value?: string) => {
+    if (!value) return "";
+    return new Intl.DateTimeFormat("en", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(value));
+};
+
+const blogFallbackImages = [
+    "/assets/images/blog/blog01.webp",
+    "/assets/images/blog/blog02.webp",
+    "/assets/images/blog/blog03.webp",
+];
+
+export async function generateMetadata(): Promise<Metadata> {
+    const seo = await getSeoData('seo_home');
+    return createPageMetadata(seo, '/');
+}
+
+export default async function Page() {
+    console.time('Homepage Data Load')
+    // Optimized: Single query with only needed data
+    const { solutions: activeSolutions, posts: publishedPosts, brands: allBrands, homepageSettings } = await getHomepageData();
+    console.timeEnd('Homepage Data Load')
+
+    // Create empty map for categories (posts now include categoryId but we don't need category names)
+    const homeCategoryById = new Map();
+
+    const chunkedSolutions = [];
+    for (let i = 0; i < activeSolutions.length; i += 3) {
+        chunkedSolutions.push(activeSolutions.slice(i, i + 3));
+    }
+    const lockAboutFeatures = [
+        { icon: "fa-shield-check", text: "360 Degree Comprehensive Security Solutions" },
+        { icon: "fa-user-group", text: "Experienced IT Security Consultants" },
+    ];
+
+    const lockAboutFlow = [
+        { icon: "fa-magnifying-glass", title: "Assess", text: "We identify risks before they impact you." },
+        { icon: "fa-shield-halved", title: "Protect", text: "We build strong defenses that scale." },
+        { icon: "fa-eye", title: "Detect", text: "We monitor threats in real-time." },
+        { icon: "fa-bolt", title: "Respond", text: "We act fast to minimize damage." },
+        { icon: "fa-rotate-right", title: "Recover", text: "We help you bounce back stronger." },
+    ];
+
+    const achievementProtections = [
+        { icon: "fa-desktop", title: "Endpoint", text: "Security" },
+        { icon: "fa-cloud", title: "Cloud", text: "Security" },
+        { icon: "fa-server", title: "Server", text: "Protection" },
+        { icon: "fa-envelope", title: "Email", text: "Security" },
+        { icon: "fa-globe", title: "Network", text: "Protection" },
+    ];
+
+    const achievementCards = [
+        {
+            badge: "Partner Network",
+            icon: "fa-buildings",
+            value: "11+",
+            title: "Associate Brands",
+            text: "Trusted partnerships with leading technology innovators.",
+            footer: [
+                { icon: "fa-handshake", label: "Trusted Partnerships" },
+                { icon: "fa-award", label: "Enterprise Grade Solutions" },
+                { icon: "fa-shield-check", label: "Proven Excellence" },
+            ],
+        },
+        {
+            badge: "Our Solutions",
+            icon: "fa-shield-check",
+            value: "360°",
+            title: "Security Solutions",
+            text: "Comprehensive solutions designed to protect what matters most.",
+            footer: [
+                { icon: "fa-crosshairs", label: "24/7 Monitoring" },
+                { icon: "fa-shield-check", label: "99.9% Threat Detection" },
+                { icon: "fa-clock", label: "Rapid Incident Response" },
+            ],
+        },
+    ];
+
+    const defaultSlides = [
+        {
+            id: 'home-banner-1',
+            eyebrow: 'AI Powered Protection',
+            title: 'Cyber Resilience For',
+            description: 'Anticipate threats, reduce cyber risk and keep your teams moving with clear security, backup and data protection support.',
+            buttonText: 'Enquire Today',
+            buttonUrl: '/contact',
+            backgroundImage: '/assets/images/hero/try-banner1-v2.png',
+            backgroundAlt: 'Digital lock cyber security banner',
+        },
+        {
+            id: 'home-banner-2',
+            eyebrow: 'Data Loss Prevention',
+            title: 'Protect Sensitive Data',
+            description: 'Discover risky activity, prevent accidental leaks and give leaders the visibility they need for confident decisions.',
+            buttonText: 'View Solutions',
+            buttonUrl: '/solution',
+            backgroundImage: '/assets/images/hero/try-banner2-v2.png',
+            backgroundAlt: 'Data protection cyber security banner',
+        },
+        {
+            id: 'home-banner-3',
+            eyebrow: 'Backup And Recovery',
+            title: 'Recover Fast When Every',
+            description: 'Build dependable recovery plans for endpoints, servers and cloud workloads so business stays available.',
+            buttonText: 'Talk To Expert',
+            buttonUrl: '/contact',
+            backgroundImage: '/assets/images/hero/try-banner3-v2.png',
+            backgroundAlt: 'Backup and recovery cyber security banner',
+        },
+    ];
+
+    const bannerSlides = homepageSettings?.slides?.length > 0 ? homepageSettings.slides : defaultSlides;
+    const homepageBrandTitle = homepageSettings?.brandPartnersTitle || 'BRAND PARTNERS';
+    const homepageBrandPartners = homepageSettings?.brandPartners?.length > 0 ? homepageSettings.brandPartners : [
+        { id: 'partner-scopd', name: 'Scopd', logo: '/assets/images/brands/01.png', logoAlt: 'Scopd logo' },
+        { id: 'partner-falcongaze', name: 'Falcongaze', logo: '/assets/images/brands/02.png', logoAlt: 'Falcongaze logo' },
+        { id: 'partner-somansa', name: 'Somansa', logo: '/assets/images/brands/03.webp', logoAlt: 'Somansa logo' },
+        { id: 'partner-vembu', name: 'Vembu', logo: '/assets/images/brands/01.png', logoAlt: 'Vembu logo' },
+    ];
+
+    const heroVideoUrl = homepageSettings?.heroVideoUrl || '/assets/images/hero/banner.mp4';
+
+    return (
+        <div className="panzer-page-home">
+            <style>{`
+                @media (max-width: 991px) {
+                    .panzer-page-home .panzer-cyber-shell {
+                        display: grid !important;
+                        grid-template-columns: 1fr !important;
+                        padding-top: 100px !important;
+                        padding-bottom: 60px !important;
+                    }
+                    .panzer-page-home .panzer-cyber-copy {
+                        max-width: 100% !important;
+                        text-align: center !important;
+                    }
+                    .panzer-page-home .panzer-cyber-actions {
+                        display: flex !important;
+                        justify-content: center !important;
+                        align-items: center;
+                    }
+                }
+                /* Fix dropdown overlap in contact form */
+                .tv-contact-section .contact-wrapper {
+                    isolation: isolate;
+                }
+                .tv-contact-section .col-lg-6:first-child {
+                    z-index: 10;
+                    position: relative;
+                }
+                .tv-contact-section .col-lg-6:last-child {
+                    z-index: 1;
+                    position: relative;
+                }
+                .tv-contact-section .contact-right-content {
+                    position: relative;
+                    z-index: 10;
+                    isolation: isolate;
+                }
+                .tv-contact-section .contact-left-thumb {
+                    position: relative;
+                    z-index: 1;
+                }
+            `}</style>
+            <section className="tv-hero-section style-4 panzer-cyber-hero">
+                <div className="panzer-cyber-slider-wrap">
+                    {/* Gradient Background - Fast loading, no video buffering */}
+                    <div className="panzer-cyber-video-bg" style={{
+                        background: 'linear-gradient(135deg, #0a1628 0%, #1a2847 25%, #0d1b3a 50%, #162640 75%, #0a1628 100%)',
+                        position: 'absolute',
+                        inset: 0,
+                        zIndex: 0
+                    }}>
+                        {/* Overlay pattern for depth */}
+                        <div style={{ 
+                            position: 'absolute', 
+                            inset: 0, 
+                            background: 'radial-gradient(circle at 20% 50%, rgba(16, 83, 243, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(16, 83, 243, 0.08) 0%, transparent 50%)',
+                            zIndex: 1 
+                        }}></div>
+                    </div>
+
+                    <div className="panzer-cyber-slider swiper" aria-label="Hero banner slider" style={{ zIndex: 2 }}>
+                        <div className="swiper-wrapper">
+                            {bannerSlides.map((slide: any, index: number) => (
+                                <div key={slide.id || index} className="swiper-slide">
+                                    <div className="panzer-cyber-slide">
+                                        <div className="container panzer-cyber-shell">
+                                            <div className="panzer-cyber-copy" data-swiper-parallax="-180">
+                                                <span className="panzer-cyber-kicker">{slide.eyebrow}</span>
+                                                <h1 className="panzer-cyber-title"><span>{slide.title} </span></h1>
+                                                <p className="panzer-cyber-text">{slide.description}</p>
+                                                <div className="panzer-cyber-actions">
+                                                    <Link href={slide.buttonUrl || "#"} className="panzer-cyber-btn primary">
+                                                        {slide.buttonText}
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                            <div className="panzer-cyber-visual" style={{ opacity: 0 }}>
+                                                <img
+                                                    className="panzer-floating-image"
+                                                    src={slide.backgroundImage || "/assets/images/hero/try-banner1-v2.png"}
+                                                    alt={slide.backgroundAlt || slide.title || "Hero Banner"}
+                                                    style={{ width: "100%", height: "auto", maxHeight: "450px", objectFit: "contain", position: "relative", zIndex: 10, display: "block", margin: "0 auto" }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="panzer-cyber-controls">
+                        <div className="panzer-cyber-nav">
+                            <button className="panzer-cyber-prev" type="button" aria-label="Previous slide">
+                                <i className="fa-light fa-arrow-left-long"></i>
+                            </button>
+                            <button className="panzer-cyber-next" type="button" aria-label="Next slide">
+                                <i className="fa-light fa-arrow-right-long"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div className="panzer-cyber-pagination" aria-label="Hero slider pagination" style={{
+                        position: 'absolute',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        bottom: 'clamp(24px, 3.2vw, 38px)',
+                        zIndex: 5,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '14px',
+                        width: 'auto'
+                    }}></div>
+                    <HeroSlider />
+                </div>
+            </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <section className="tv-service-section bg-light position-relative overflow-hidden style-4">
+                <div className="tv-service-inner space position-relative overflow-hidden bg-light2 mx-20 ml-mx-0">
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <div className="service-title-area d-flex justify-content-between sm-flex-column sm-mb-30">
+
+                                    <div className="title-wrap " data-wow-duration="1.5s" data-wow-delay=".4s">
+                                        <div className="sub-title-2 text-white two">Solutions</div>
+                                        <h2 className="panzer-static-sec-title text-white">Panzer IT Security, Backup <br />and Data Protection
+                                            Solutions
+                                        </h2>
+                                    </div>
+                                    <div className="service-btn-wrapper">
+                                        <Link href="/solution" className="theme-btn br-30 service-view-all-btn panzer-static-service-btn">
+                                            <span className="link-effect">
+                                                <span className="effect-1">View All</span>
+                                                <span className="effect-1">View All</span>
+                                            </span>
+                                            <span className="arrow-all">
+                                                <i>
+                                                    <svg width="16" height="19" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M2 6H10M10 6L6 2M10 6L6 10" stroke="#1053f3" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                    </svg>
+                                                    <svg width="16" height="19" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M2 6H10M10 6L6 2M10 6L6 10" stroke="#1053f3" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                    </svg>
+                                                </i>
+                                            </span>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row gy-30">
+                            <div className="col-lg-12">
+                                <div className="service-slider swiper panzer-scroll-service">
+                                    <div className="swiper-wrapper panzer-service-rows-ready">
+                                        {chunkedSolutions.map((chunk, chunkIndex) => (
+                                            <div key={chunkIndex} className={`panzer-service-row service-item-wrap ${chunkIndex === 0 ? 'service-item-pin' : ''}`}>
+                                                {chunk.map((solution, index) => (
+                                                    <div className="swiper-slide" key={solution.id}>
+                                                        <div className={`service-box-four ${index === 1 ? 'current' : ''}`}>
+                                                            <div className="inner">
+                                                                <div className="image-box">
+                                                                    <div className="thumb overlay-anim4">
+                                                                        <Image src={solution.image || "/assets/images/service/malware.webp"} alt={solution.imageAlt || solution.title} width={612} height={459} sizes="100vw" style={{ width: "100%", height: "auto" }} />
+                                                                    </div>
+                                                                    {solution.logo && (
+                                                                        <div className="service-icon">
+                                                                            <Image width={46} height={46} src={solution.logo} alt={solution.logoAlt || "Icon"} />
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                                <div className="content">
+                                                                    <h4 className="title">
+                                                                        <Link href={`/solution/${solution.slug}`}>{solution.title}</Link>
+                                                                    </h4>
+                                                                    <p className="text">
+                                                                        {(() => {
+                                                                            const text = solution.subtitle || (solution.description || '').replace(/<[^>]*>?/gm, '');
+                                                                            return text.length > 120 ? text.substring(0, 120).trim() + '...' : text;
+                                                                        })()}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="panzer-service-arrows">
+                                    <button type="button" className="panzer-service-arrow panzer-service-prev" aria-label="Previous service">
+                                        <i className="fa-solid fa-arrow-left"></i>
+                                    </button>
+                                    <button type="button" className="panzer-service-arrow panzer-service-next" aria-label="Next service">
+                                        <i className="fa-solid fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            {/* brand */}
+
+            <section className="panzer-brand-partners-section">
+                <div className="panzer-cyber-brand-strip">
+
+                    <div className="tv-brands-section style-3 position-relative z-3">
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-lg-12">
+                                    <div className="sponsors-outer brand-outher panzer-cyber-brand-panel">
+                                        <div className="trusted-partners d-flex align-items-center mb-60">
+                                            <div className="title text-white">{homepageBrandTitle}</div>
+                                        </div>
+                                        <div className="brands-slider-three swiper">
+                                            <div className="swiper-wrapper">
+                                                {homepageBrandPartners
+                                                    .filter((partner: any) => partner.logo)  // ← only render if logo exists
+                                                    .map((partner: any, index: number) => (
+                                                        <div className="swiper-slide" key={partner.id || index}>
+                                                            <div className="brand-item">
+                                                                <div className="image">
+                                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                                    <img
+                                                                        src={partner.logo}
+                                                                        alt={partner.logoAlt || partner.name}
+                                                                        style={{ width: "auto", height: "auto", maxWidth: "100%", maxHeight: "80px", objectFit: "contain" }}
+                                                                    />
+                                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                                    <img
+                                                                        src={partner.logo}
+                                                                        alt={partner.logoAlt || partner.name}
+                                                                        style={{ width: "auto", height: "auto", maxWidth: "100%", maxHeight: "80px", objectFit: "contain" }}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                }
+                                            </div>
+                                        </div>
+                                        <div className="panzer-brand-nav" aria-label="Brand partners slider controls">
+                                            <button className="panzer-brand-prev" type="button" aria-label="Previous brand">
+                                                <i className="fa-light fa-arrow-left-long"></i>
+                                            </button>
+                                            <button className="panzer-brand-next" type="button" aria-label="Next brand">
+                                                <i className="fa-light fa-arrow-right-long"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <BrandSlider />
+                    </div>
+                </div>
+            </section>
+
+
+
+
+            <section className="tv-about-section style-4 space bg-light panzer-home-about-section">
+                <div className="container">
+                    <div className="panzer-lock-about-grid">
+                        <div className="panzer-lock-about-copy">
+                            <div className="panzer-lock-about-pill">Who We Are</div>
+                            <h2 className="panzer-lock-about-title no-title-animation">Best IT Security <span>Solution Provider</span></h2>
+                            <p className="panzer-lock-about-text">Panzer IT helps organizations protect data across endpoints, servers, cloud, storage and networks with advanced security, backup and recovery solutions.</p>
+                            <div className="panzer-lock-about-features">
+                                {lockAboutFeatures.map((item) => (
+                                    <div className="panzer-lock-feature" key={item.text}>
+                                        <span className="panzer-lock-feature-icon">
+                                            <i className={`fa-light ${item.icon}`}></i>
+                                        </span>
+                                        <h3>{item.text}</h3>
+                                    </div>
+                                ))}
+                            </div>
+
+                        </div>
+
+                        <div className="panzer-lock-about-visual">
+                            <div className="panzer-lock-network" aria-hidden="true">
+                                <span></span><span></span><span></span><span></span><span></span>
+                                <span></span><span></span><span></span>
+                            </div>
+                            <Image className="panzer-lock-image" src="/assets/images/hero/create.png" alt="Blue cyber security lock with shield" width={1024} height={1536} sizes="(max-width: 991px) 80vw, 36vw" />
+                        </div>
+
+                        <div className="panzer-lock-about-flow">
+                            {lockAboutFlow.map((item) => (
+                                <div className="panzer-lock-flow-card" key={item.title}>
+                                    <span className="panzer-lock-flow-dot" aria-hidden="true"></span>
+                                    <div className="panzer-lock-flow-icon">
+                                        <i className={`fa-light ${item.icon}`}></i>
+                                    </div>
+                                    <div>
+                                        <h3>{item.title}</h3>
+                                        <p>{item.text}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <section className="tv-achivement-section bg-light overflow-hidden panzer-home-achievement-section">
+                <div className="tv-achivement-inner panzer-achievement-modern position-relative overflow-hidden bg-light2 mx-20 ml-mx-0">
+                    <div className="container">
+                        <div className="panzer-achievement-grid">
+                            <div className="panzer-achievement-copy">
+                                {/* <div className="panzer-achievement-pill">
+                                       
+                                        <span>Panzer IT</span>
+                                    </div> */}
+                                <h2 className="panzer-achievement-title no-title-animation">Make IT <span>Secure</span> Across Endpoint, Backup, Cloud And Data Protection</h2>
+                                <p className="panzer-achievement-text">PCs and servers are connected more than ever, and threats are increasingly more advanced. Panzer IT helps secure every entry point including endpoint, server, cloud, network perimeter, web, mail and storage.</p>
+                                <div className="panzer-protection-strip" aria-label="Panzer IT protection areas">
+                                    {achievementProtections.map((item) => (
+                                        <div className="panzer-protection-item" key={`${item.title}-${item.text}`}>
+                                            <span className="panzer-protection-icon">
+                                                <i className={`fa-light ${item.icon}`}></i>
+                                                {/* <b><i className="fa-solid fa-shield-check"></i></b> */}
+                                            </span>
+                                            <strong>{item.title}</strong>
+                                            <span>{item.text}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="panzer-achievement-cards">
+                                {achievementCards.map((card) => (
+                                    <div className="panzer-achievement-card" key={card.title}>
+                                        <div className="panzer-achievement-card-visual">
+                                            <span>
+                                                <i className={`fa-light ${card.icon}`}></i>
+                                            </span>
+                                        </div>
+                                        <div className="panzer-achievement-card-body">
+                                            <div className="panzer-achievement-card-badge">{card.badge}</div>
+                                            <div className="panzer-achievement-value">{card.value}</div>
+                                            <h3>{card.title}</h3>
+                                            <p>{card.text}</p>
+                                        </div>
+                                        <div className="panzer-achievement-card-footer">
+                                            {card.footer.map((item) => (
+                                                <div className="panzer-achievement-footer-item" key={item.label}>
+                                                    <i className={`fa-light ${item.icon}`}></i>
+                                                    <span>{item.label}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+
+
+
+
+
+            <section className="tv-choose-section style-6 space bg-dark position-relative resource-page-choose">
+                <div className="bg image"><Image src="/assets/images/choose/hm8-bg01.webp" alt="Background pattern" width={1920} height={886} sizes="100vw" style={{ width: "100%" }} /></div>
+                <div className="container">
+
+                    <div className="title-wrap text-center three">
+                        <div className="sub-title-2 text-white two">Product</div>
+                        <h2 className="sec-title text-white no-title-animation">Explore Panzer IT products <br /> across security and recovery</h2>
+                    </div>
+
+                    {(() => {
+                        const productSolutions = activeSolutions.slice(0, 6);
+                        const leftSolutions = productSolutions.slice(0, 3);
+                        const rightSolutions = productSolutions.slice(3, 6);
+
+                        return (
+                            <div className="row gy-30">
+                                <div className="col-lg-4 col-md-6 col-sm-6">
+                                    <div className="choose-left">
+                                        {leftSolutions.map((solution, i) => {
+                                            const iconSrc = solution.logo || solution.image;
+                                            return (
+                                                <Link key={solution.id} href={`/solution/${solution.slug}`} className={`choose-box panzer-choose-link${i < leftSolutions.length - 1 ? ' mb-40' : ''}`}>
+                                                    <div className="icon">
+                                                        {iconSrc && (
+                                                            // eslint-disable-next-line @next/next/no-img-element
+                                                            <img
+                                                                src={iconSrc}
+                                                                alt={solution.logoAlt || solution.title}
+                                                                style={{ width: "auto", height: "auto", maxWidth: "45px", maxHeight: "44px", objectFit: "contain" }}
+                                                            />
+                                                        )}
+                                                    </div>
+                                                    <div className="text"><h6>{solution.title}</h6></div>
+                                                </Link>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                <div className="col-lg-4 col-md-6 d-none d-lg-block">
+                                    <div className="choose-middle">
+                                        <div className="ai-box">
+                                            <Image className="spin2" src="/assets/images/choose/hm8-ai.webp" alt="AI Security illustration" width={424} height={424} sizes="100vw" style={{ width: "100%", height: "auto" }} />
+                                            <div className="circle"><h1>360°</h1></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="col-lg-4 col-md-6 col-sm-6">
+                                    <div className="choose-right">
+                                        {rightSolutions.map((solution, i) => {
+                                            const iconSrc = solution.logo || solution.image;
+                                            return (
+                                                <Link key={solution.id} href={`/solution/${solution.slug}`} className={`choose-box panzer-choose-link${i < rightSolutions.length - 1 ? ' mb-40' : ''}`}>
+                                                    <div className="icon">
+                                                        {iconSrc && (
+                                                            // eslint-disable-next-line @next/next/no-img-element
+                                                            <img
+                                                                src={iconSrc}
+                                                                alt={solution.logoAlt || solution.title}
+                                                                style={{ width: "auto", height: "auto", maxWidth: "45px", maxHeight: "44px", objectFit: "contain" }}
+                                                            />
+                                                        )}
+                                                    </div>
+                                                    <div className="text"><h6>{solution.title}</h6></div>
+                                                </Link>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })()}
+                </div>
+            </section>
+
+
+
+            <section className="tv-contact-section style-4 z-1">
+                <div className="tv-contact-inner space position-relative overflow-hidden bg-light2 ml-mx-0">
+                    <div className="container">
+                        <div className="row gy-30 contact-wrapper align-items-stretch">
+                            <div className="col-lg-6">
+                                <div className="contact-right-content">
+                                    <div className="title-wrap text-center">
+                                        <div className="sub-title-2 text-theme">Contact
+                                            Us</div>
+                                        <h2 className="sec-title no-title-animation">Feel free to touch base <br /> with Panzer IT</h2>
+                                    </div>
+                                    <div className="contact-form style-4">
+                                        <ServiceContactForm />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-lg-6">
+                                <div className="contact-left-thumb overflow-hidden">
+                                    <figure className="panzer-static-img">
+                                        <Image src="/assets/images/hero/deal.png" alt="Business deal discussion" width={1254} height={1254} sizes="100vw" style={{ width: "100%", height: "auto" }} />
+                                    </figure>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+
+
+            <div className="tv-marquee-section bg-light position-relative">
+                <div className="tv-marquee-inner ml-mx-0 position-relative">
+                    <div className="container-fluid p-0 overflow-hidden">
+                        <div className="slider__marquee clearfix br-0 marquee-wrap style-2">
+                            <div className="panzer-next-marquee-track">
+                                <ul className="marquee__group">
+                                    <li className="item m-item"><Image width={1098} height={960} className="icon" src="/assets/images/icons/icone2.png" alt="Security badge icon" />
+                                        Endpoint Security</li>
+                                    <li className="item m-item"><Image width={1098} height={960} className="icon" src="/assets/images/icons/icone2.png" alt="Security badge icon" />
+                                        Backup & Disaster Recovery</li>
+                                    <li className="item m-item"><Image width={1098} height={960} className="icon" src="/assets/images/icons/icone2.png" alt="Security badge icon" />
+                                        Data Loss Prevention (DLP)</li>
+                                    <li className="item m-item"><Image width={1098} height={960} className="icon" src="/assets/images/icons/icone2.png" alt="Security badge icon" />
+                                        Vulnerability Assessment & VAPT</li>
+                                    <li className="item m-item"><Image width={1098} height={960} className="icon" src="/assets/images/icons/icone2.png" alt="Security badge icon" />
+                                        IAM, PAM & Network Security</li>
+                                </ul>
+                                <ul className="marquee__group" aria-hidden="true">
+                                    <li className="item m-item"><Image width={1098} height={960} className="icon" src="/assets/images/icons/icone2.png" alt="Security badge icon" />
+                                        Endpoint Security</li>
+                                    <li className="item m-item"><Image width={1098} height={960} className="icon" src="/assets/images/icons/icone2.png" alt="Security badge icon" />
+                                        Backup & Disaster Recovery</li>
+                                    <li className="item m-item"><Image width={1098} height={960} className="icon" src="/assets/images/icons/icone2.png" alt="Security badge icon" />
+                                        Data Loss Prevention (DLP)</li>
+                                    <li className="item m-item"><Image width={1098} height={960} className="icon" src="/assets/images/icons/icone2.png" alt="Security badge icon" />
+                                        Vulnerability Assessment & VAPT</li>
+                                    <li className="item m-item"><Image width={1098} height={960} className="icon" src="/assets/images/icons/icone2.png" alt="Security badge icon" />
+                                        IAM, PAM & Network Security</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <section className="tv-blog-section space bg-color2">
+                <div className="container">
+
+                    <div className="row">
+                        <div className="col-lg-12">
+                            <div className="title-wrap text-center">
+                                <div className="sub-title-2  text-theme">Latest
+                                    Blogs
+                                </div>
+                                <h2 className="sec-title no-title-animation">Write-ups, Tech Stuff &amp; News </h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row gy-25 latest-blog-row">
+                        {publishedPosts.length === 0 ? (
+                            <div className="col-12 text-center" style={{ padding: "40px 0" }}>
+                                <p>No blog posts published yet. <Link href="/blog">View all posts</Link></p>
+                            </div>
+                        ) : (
+                            publishedPosts.map((post, index) => {
+                                const imgSrc = post.image || blogFallbackImages[index % blogFallbackImages.length];
+                                const categoryName = post.categoryId ? (homeCategoryById.get(post.categoryId) || "") : "";
+                                const dateStr = formatBlogDate(post.publishedAt || post.createdAt);
+                                return (
+                                    <div key={post.id} className="col-lg-4 col-md-6 col-sm-6">
+                                        <article className="blog-single-box h-100">
+                                            <div className="inner-box h-100 d-flex flex-column">
+                                                <div className="blog-image" style={{ height: '284px', overflow: 'hidden', position: 'relative' }}>
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                    <img
+                                                        src={imgSrc}
+                                                        alt={post.imageAlt || post.title}
+                                                        width={392}
+                                                        height={284}
+                                                        style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
+                                                    />
+                                                    <div className="category-tag"><span></span>{categoryName || dateStr}</div>
+                                                </div>
+                                                <div className="blog-content d-flex flex-column flex-grow-1">
+                                                    <h4 className="title"><Link href={`/blog/${post.slug}`}>{post.title}</Link></h4>
+                                                    <div className="pt-25 pb-30 mt-auto"><div className="border dark"></div></div>
+                                                    <div className="blog-meta">
+                                                        <Link href={`/blog/${post.slug}`} className="continue-reading">Read More</Link>
+                                                        <div className="blog-details__social-list">
+                                                            <span>Share:</span>
+                                                            <Link href="https://www.facebook.com/"><i className="fa-brands fa-facebook-f"></i></Link>
+                                                            <Link href="https://x.com/"><i className="fa-brands fa-x-twitter"></i></Link>
+                                                            <Link href="https://www.pinterest.com/"><i className="fa-brands fa-pinterest-p"></i></Link>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </article>
+                                    </div>
+                                );
+                            })
+                        )}
+                    </div>
+                </div>
+            </section>
+        </div>
+    );
+}

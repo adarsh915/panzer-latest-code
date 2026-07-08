@@ -2,24 +2,95 @@
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import SimplebarReactClient from '@/components/wrappers/SimplebarReactClient'
 import { Col, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Row } from 'react-bootstrap'
-import { notificationData, NotificationType } from '../data'
-import Image from 'next/image'
-import { timeSince } from '@/utils/date'
-import { useState } from 'react'
 import Link from 'next/link'
+import { timeSince } from '@/utils/date'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { getUnreadLeads, getUnreadCount, markLeadRead, markAllLeadsRead } from '@/app/admin/leads/leadStore'
+import { getUnreadSubmissions, countUnreadSubmissions, markSubmissionRead, markAllSubmissionsRead } from '@/app/admin/resources/questionnaires/questionnaireStore'
 
 const Notifications = () => {
-  const [notifications, setNotifications] = useState<NotificationType[]>(notificationData);
+  const queryClient = useQueryClient();
 
-  const dismissNotification = (id: number) => {
-    setNotifications((prev) => prev.filter((notification) => notification.id !== id));
-  };
+  const { data: unreadLeads = [] } = useQuery({
+    queryKey: ['unreadLeads'],
+    queryFn: () => getUnreadLeads(5),
+    refetchInterval: 30000,
+  });
+
+  const { data: unreadCount = 0 } = useQuery({
+    queryKey: ['unreadCount'],
+    queryFn: () => getUnreadCount(),
+    refetchInterval: 30000,
+  });
+
+  const { data: unreadSubmissions = [] } = useQuery({
+    queryKey: ['unreadSubmissions'],
+    queryFn: () => getUnreadSubmissions(5),
+    refetchInterval: 30000,
+  });
+
+  const { data: unreadSubmissionsCount = 0 } = useQuery({
+    queryKey: ['unreadSubmissionsCount'],
+    queryFn: () => countUnreadSubmissions(),
+    refetchInterval: 30000,
+  });
+
+  const totalUnread = unreadCount + unreadSubmissionsCount;
+
+  // Combine and sort notifications
+  const allNotifications = [
+    ...unreadLeads.map(l => ({
+      id: l.id,
+      type: 'lead' as const,
+      title: l.name,
+      subtitle: l.subject || 'Lead',
+      message: l.message || 'No message',
+      date: new Date(l.submittedAt)
+    })),
+    ...unreadSubmissions.map(s => ({
+      id: s.id,
+      type: 'submission' as const,
+      title: `${s.firstName} ${s.lastName}`,
+      subtitle: s.questionnaireName || 'Form Submission',
+      message: s.notes || 'No notes',
+      date: new Date(s.createdAt)
+    }))
+  ].sort((a, b) => b.date.getTime() - a.date.getTime()).slice(0, 5); // Keep top 5
+
+  const markReadMutation = useMutation({
+    mutationFn: (data: { id: string, type: 'lead' | 'submission' }) => 
+      data.type === 'lead' ? markLeadRead(data.id) : markSubmissionRead(data.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['unreadLeads'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadCount'] });
+      queryClient.invalidateQueries({ queryKey: ['leads'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadSubmissions'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadSubmissionsCount'] });
+      queryClient.invalidateQueries({ queryKey: ['submissions'] });
+    }
+  });
+
+  const markAllReadMutation = useMutation({
+    mutationFn: async () => {
+      await markAllLeadsRead();
+      await markAllSubmissionsRead();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['unreadLeads'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadCount'] });
+      queryClient.invalidateQueries({ queryKey: ['leads'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadSubmissions'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadSubmissionsCount'] });
+      queryClient.invalidateQueries({ queryKey: ['submissions'] });
+    }
+  });
+
   return (
     <div className="topbar-item">
       <Dropdown align={'end'}>
-        <DropdownToggle as={'button'} className="topbar-link drop-arrow-none" data-bs-toggle="dropdown" data-bs-offset="0,25" data-bs-auto-close="outside" aria-haspopup="false" aria-expanded="false">
+        <DropdownToggle as={'button'} className="topbar-link drop-arrow-none" data-bs-toggle="dropdown" data-bs-offset="0,25" aria-haspopup="false" aria-expanded="false">
           <IconifyIcon icon='tabler:bell' className="animate-ring fs-22" />
-          <span className="noti-icon-badge" />
+          {totalUnread > 0 && <span className="noti-icon-badge">{totalUnread > 9 ? '9+' : totalUnread}</span>}
         </DropdownToggle>
         <DropdownMenu className="p-0 dropdown-menu-start dropdown-menu-lg" style={{ minHeight: 300 }}>
           <div className="p-3 border-bottom border-dashed">
@@ -27,58 +98,31 @@ const Notifications = () => {
               <Col>
                 <h6 className="m-0 fs-16 fw-semibold"> Notifications</h6>
               </Col>
-              <Col xs={'auto'}>
-                <Dropdown>
-                  <DropdownToggle as={'a'} className="drop-arrow-none link-dark" data-bs-toggle="dropdown" data-bs-offset="0,15" aria-expanded="false">
-                    <IconifyIcon icon='tabler:settings' className="fs-22 align-middle" />
-                  </DropdownToggle>
-                  <DropdownMenu className="dropdown-menu-end">
-                    <DropdownItem>Mark as Read</DropdownItem>
-                    <DropdownItem>Delete All</DropdownItem>
-                    <DropdownItem>Do not Disturb</DropdownItem>
-                    <DropdownItem>Other Settings</DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-              </Col>
             </Row>
           </div>
           <SimplebarReactClient className="position-relative z-2 card shadow-none rounded-0" style={{ maxHeight: 300 }}>
             {
-              notifications.map((item, idx) => (
-                <div className="notification-item dropdown-item py-2 text-wrap" id="notification-1" key={idx}>
+              allNotifications.map((item) => (
+                <div className="notification-item dropdown-item py-2 text-wrap" key={`${item.type}-${item.id}`}>
                   <span className="d-flex align-items-center">
-                    {
-                      item.image ?
-                        <span className="me-3 position-relative flex-shrink-0">
-                          {
-                            item.image?.image &&
-                            <Image src={item.image.image} className="avatar-md rounded-circle" alt='avatar1' />
-                          }
-                          <span className={`position-absolute rounded-pill bg-${item.image.variant} notification-badge`}>
-                            <IconifyIcon icon={item.image.icon} />
-                            <span className="visually-hidden">unread messages</span>
-                          </span>
-                        </span>
-                        :
-                        <div className="avatar-md flex-shrink-0 me-3">
-                          <span className={`avatar-title bg-${item.icon?.variant}-subtle text-${item.icon?.variant} rounded-circle fs-22`}>
-                            {
-                              item.icon?.icon &&
-                              <IconifyIcon icon={item.icon.icon} />
-                            }
-                          </span>
-                        </div>
-                    }
+                    <div className="avatar-md flex-shrink-0 me-3">
+                      <span className={`avatar-title bg-primary-subtle text-primary rounded-circle fs-22`}>
+                        <IconifyIcon icon={item.type === 'lead' ? 'tabler:mail' : 'tabler:file-invoice'} />
+                      </span>
+                    </div>
 
                     <span className="flex-grow-1 text-muted">
-                      {item.title}
+                      <strong>{item.title}</strong> <span className="fs-12 opacity-75">({item.subtitle})</span>
                       <br />
-                      <span className="fs-12">{timeSince(item.time)}</span>
+                      <span className="fs-12 text-truncate d-inline-block" style={{ maxWidth: '180px' }}>
+                        {item.message}
+                      </span>
+                      <br />
+                      <span className="fs-12 text-primary">{timeSince(item.date)}</span>
                     </span>
-                    <span className="notification-item-close" onClick={() => dismissNotification(item.id)}>
-
-                      <button type="button" className="btn btn-ghost-danger rounded-circle btn-sm btn-icon" data-dismissible="#notification-1">
-                        <IconifyIcon icon='tabler:x' className="fs-16" />
+                    <span className="notification-item-close" onClick={() => markReadMutation.mutate({ id: item.id, type: item.type })}>
+                      <button type="button" className="btn btn-ghost-danger rounded-circle btn-sm btn-icon" title="Mark as read">
+                        <IconifyIcon icon='tabler:check' className="fs-16" />
                       </button>
                     </span>
                   </span>
@@ -87,15 +131,19 @@ const Notifications = () => {
             }
 
           </SimplebarReactClient>
-          <div style={{ height: 300 }} className="d-flex align-items-center justify-content-center text-center position-absolute top-0 bottom-0 start-0 end-0 z-1">
-            <div>
-              <IconifyIcon icon="line-md:bell-twotone-alert-loop" className="fs-80 text-secondary mt-2" />
-              <h4 className="fw-semibold mb-0 fst-italic lh-base mt-3">Hey! 👋 <br />You have no any notifications</h4>
+          {allNotifications.length === 0 && (
+            <div style={{ height: 300 }} className="d-flex align-items-center justify-content-center text-center position-absolute top-0 bottom-0 start-0 end-0 z-1 pointer-events-none">
+              <div>
+                <IconifyIcon icon="line-md:bell-twotone-alert-loop" className="fs-80 text-secondary mt-2" />
+                <h4 className="fw-semibold mb-0 fst-italic lh-base mt-3">Hey! 👋 <br />You have no unread notifications</h4>
+              </div>
             </div>
+          )}
+          <div className="border-top border-light py-2 text-center bg-white" style={{ position: 'sticky', bottom: 0, zIndex: 10, marginTop: '166px' }}>
+            <Link href="/admin/notifications" className="text-reset text-decoration-underline link-offset-2 fw-bold">
+              View All
+            </Link>
           </div>
-          <Link href="" className="dropdown-item notification-item position-fixed z-2 bottom-0 text-center text-reset text-decoration-underline link-offset-2 fw-bold notify-item border-top border-light py-2">
-            View All
-          </Link>
         </DropdownMenu>
       </Dropdown>
     </div>

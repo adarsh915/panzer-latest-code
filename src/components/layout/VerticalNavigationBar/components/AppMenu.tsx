@@ -358,7 +358,7 @@ const MenuItemLink = ({ item, className }: SubMenus) => {
   }
 
   return (
-    <Link href={item.url ?? ''} prefetch onClick={ToggleMenu} target={item.target} className={clsx(className, { disabled: item.isDisabled })}>
+    <Link href={item.url ?? ''} onClick={ToggleMenu} target={item.target} className={clsx(className, { disabled: item.isDisabled })}>
       {item.icon && (
         <span className="menu-icon">
           <IconifyIcon icon={item.icon} />

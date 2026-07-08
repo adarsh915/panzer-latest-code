@@ -7,13 +7,13 @@ const LogoBox = () => {
   return (
     <a href="/" className="logo">
       <span className="logo-light">
-        <span className="logo-lg"><Image width={109} height={22} src={logo} alt="logo" /></span>
+        <span className="logo-lg"><Image width={160} height={50} style={{ width: "auto", height: "auto" }} src="/assets/images/logo/logo.png" alt="logo" /></span>
         <span className="logo-sm"><Image width={19} height={24} src={logoSm} alt="small logo" /></span>
       </span>
-      <span className="logo-dark">
+      {/* <span className="logo-dark">
         <span className="logo-lg"><Image width={109} height={22} src={logoDark} alt="dark logo" /></span>
         <span className="logo-sm"><Image width={19} height={24} src={logoSm} alt="small logo" /></span>
-      </span>
+      </span> */}
     </a>
   )
 }

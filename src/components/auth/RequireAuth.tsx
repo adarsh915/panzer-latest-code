@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuthContext } from '@/context/useAuthContext'
 
@@ -8,17 +8,25 @@ const RequireAuth = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuthContext()
   const router = useRouter()
   const pathname = usePathname()
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.replace(`/auth/login?redirectTo=${encodeURIComponent(pathname || '/dashboard')}`)
-    }
-  }, [isLoading, isAuthenticated, router, pathname])
+    setIsMounted(true)
+  }, [])
 
+  useEffect(() => {
+    if (isMounted && !isLoading && !isAuthenticated) {
+      router.replace(`/auth/login?redirectTo=${encodeURIComponent(pathname || '/admin')}`)
+    }
+  }, [isMounted, isLoading, isAuthenticated, router, pathname])
+
+  if (!isMounted) return null
   if (isLoading) return null
   if (!isAuthenticated) return null
-  return children
+  
+  return <>{children}</>
 }
 
 export default RequireAuth
+
 
