@@ -72,21 +72,24 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     "@type": "FAQPage",
     "mainEntity": faqs.map(faq => ({
       "@type": "Question",
-      "name": faq.question,
+      "name": faq.question.replace(/<[^>]*>?/gm, '').trim(),
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": faq.answer
+        "text": faq.answer.replace(/<[^>]*>?/gm, '').trim()
       }
     }))
   } : null;
 
   const { html: descriptionHtml, toc: descriptionToc } = generateToc(sanitizeHtml(solution.description || ""));
 
-  const featureCardsToc = (solution.featureCards || []).map(item => ({
-    id: generateSlug(item.title),
-    text: item.title,
-    level: 3
-  }));
+  const featureCardsToc = (solution.featureCards || []).map(item => {
+    const plainTitle = item.title.replace(/<[^>]*>?/gm, '').trim();
+    return {
+      id: generateSlug(plainTitle),
+      text: plainTitle,
+      level: 3
+    };
+  });
 
   let processedExtraCards: any[] = [];
   let extraCardsToc: any[] = [];
@@ -187,6 +190,11 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         align-items: start;
     }
 }
+        .faq-question-title * {
+          margin-bottom: 0 !important;
+          margin-top: 0 !important;
+          display: inline !important;
+        }
       `}</style>
       <SolutionDetailSticky />
       <Breadcrumb
@@ -256,26 +264,29 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
               <div className="panzer-solution-detail-highlights">
                 {(() => {
                   const staticIcons = ["fa-shield-halved", "fa-user-lock", "fa-rotate", "fa-bug-slash"];
-                  return (solution.featureCards || []).map((item, index) => (
-                    <article key={item.id}>
-                      <span>
-                        {item.image ? (
-                          <img
-                            src={item.image}
-                            alt={item.imageAlt || item.title}
-                            title={item.imageTitle || item.title}
-                            data-caption={item.imageCaption}
-                            data-description={item.imageDescription}
-                            style={{ width: '60%', height: '60%', objectFit: 'contain' }}
-                          />
-                        ) : (
-                          <i className={`fa-solid ${staticIcons[index % staticIcons.length]}`}></i>
-                        )}
-                      </span>
-                      <h3 id={generateSlug(item.title)}>{item.title}</h3>
-                      <p>{item.description}</p>
-                    </article>
-                  ));
+                  return (solution.featureCards || []).map((item, index) => {
+                    const plainTitle = item.title.replace(/<[^>]*>?/gm, '').trim();
+                    return (
+                      <article key={item.id}>
+                        <span>
+                          {item.image ? (
+                            <img
+                              src={item.image}
+                              alt={item.imageAlt || plainTitle}
+                              title={item.imageTitle || plainTitle}
+                              data-caption={item.imageCaption}
+                              data-description={item.imageDescription}
+                              style={{ width: '60%', height: '60%', objectFit: 'contain' }}
+                            />
+                          ) : (
+                            <i className={`fa-solid ${staticIcons[index % staticIcons.length]}`}></i>
+                          )}
+                        </span>
+                        <h3 id={generateSlug(plainTitle)} dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.title) }}></h3>
+                        <div className="editor-content" dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.description) }}></div>
+                      </article>
+                    );
+                  });
                 })()}
               </div>
 
@@ -296,8 +307,8 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                   {(solution.implementationSteps || []).map((item) => (
                     <article key={item.id}>
                       <span>{item.step}</span>
-                      <h4>{item.title}</h4>
-                      <p>{item.description}</p>
+                      <h4 dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.title) }}></h4>
+                      <div className="editor-content" dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.description) }}></div>
                     </article>
                   ))}
                 </div>
@@ -309,8 +320,8 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                   {faqs.map((faq, index) => (
                     <details key={faq.id} open={index === 0}>
                       <summary>
-                        <span>
-                          {String(index + 1).padStart(2, "0")}. {faq.question}
+                        <span className="d-flex align-items-center gap-1 faq-question-title">
+                          {String(index + 1).padStart(2, "0")}. <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(faq.question) }} />
                         </span>
                         <i className="fa-solid fa-chevron-down"></i>
                       </summary>

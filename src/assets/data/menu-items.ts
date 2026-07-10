@@ -207,6 +207,12 @@ const MENU_ITEMS_DATA: MenuItemType[] = [
           },
         ],
       },
+      {
+        key: 'settings-theme',
+        label: 'Theme Colors',
+        url: '/admin/settings/theme',
+        parentKey: 'settings',
+      },
     ],
   },
   {

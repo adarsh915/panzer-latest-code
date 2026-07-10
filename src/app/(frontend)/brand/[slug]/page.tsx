@@ -100,10 +100,10 @@ export default async function Page({ params }: PageProps) {
     "@type": "FAQPage",
     "mainEntity": faqs.map(faq => ({
       "@type": "Question",
-      "name": faq.question,
+      "name": faq.question.replace(/<[^>]*>?/gm, '').trim(),
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": faq.answer
+        "text": faq.answer.replace(/<[^>]*>?/gm, '').trim()
       }
     }))
   } : null;
@@ -156,6 +156,11 @@ export default async function Page({ params }: PageProps) {
             flex-direction: column;
             gap: 18px;
           }
+        }
+        .faq-question-title * {
+          margin-bottom: 0 !important;
+          margin-top: 0 !important;
+          display: inline !important;
         }
       `}</style>
       <BrandDetailSticky />
@@ -248,7 +253,9 @@ export default async function Page({ params }: PageProps) {
                   {faqs.map((faq, index) => (
                     <details key={faq.id} open={index === 0}>
                       <summary>
-                        <span>{String(index + 1).padStart(2, "0")}. {faq.question}</span>
+                        <span className="d-flex align-items-center gap-1 faq-question-title">
+                          {String(index + 1).padStart(2, "0")}. <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(faq.question) }} />
+                        </span>
                         <i className="fa-solid fa-chevron-down"></i>
                       </summary>
                       <div className="editor-content" dangerouslySetInnerHTML={{ __html: faq.answer }} />

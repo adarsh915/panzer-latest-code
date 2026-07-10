@@ -371,7 +371,7 @@ export function SiteHeader({ headerData }: { headerData?: any }) {
                   fontFamily: "inherit"
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = "#1053f3"
+                  e.target.style.borderColor = "var(--theme-color)"
                   e.target.style.color = "#333333"
                 }}
                 onBlur={(e) => e.target.style.borderColor = "#e0e0e0"}
@@ -386,7 +386,7 @@ export function SiteHeader({ headerData }: { headerData?: any }) {
                   transform: "translateY(-50%)",
                   background: "none",
                   border: "none",
-                  color: "#1053f3",
+                  color: "var(--theme-color)",
                   cursor: "pointer",
                   fontSize: "16px",
                   padding: "8px",

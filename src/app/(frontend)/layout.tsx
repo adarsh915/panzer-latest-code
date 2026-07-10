@@ -5,6 +5,7 @@ import { LegacyMainScript } from "@/components/frontend/LegacyMainScript";
 import { OptimizedScripts } from "@/components/frontend/OptimizedScripts";
 import { SiteChrome } from "@/components/frontend/SiteChrome";
 import { getHeaderData } from "./headerDataStore";
+import { readSetting } from "@/app/admin/settings/settingsStore";
 import { ScrollToTop } from "@/components/frontend/ScrollToTop";
 import { NonBlockingCSS } from "@/components/frontend/NonBlockingCSS";
 
@@ -39,8 +40,20 @@ export default async function FrontendLayout({
   console.timeEnd('Header Data Load')
   console.log('Header data size:', JSON.stringify(headerData).length, 'bytes')
 
+  const themeColors = await readSetting<Record<string, string>>('frontend_theme_colors', {});
+  const cssVariables = Object.entries(themeColors)
+    .map(([key, value]) => `${key}: ${value};`)
+    .join('\n          ');
+
   return (
     <>
+      {cssVariables && (
+        <style dangerouslySetInnerHTML={{ __html: `
+          :root, html:root, body {
+            ${cssVariables}
+          }
+        `}} />
+      )}
       {/* Resource Hints - Improve connection speed */}
       <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
       <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
@@ -64,12 +77,7 @@ export default async function FrontendLayout({
       
       {/* ✅ OPTIMIZED: Bootstrap loaded via Next.js bundler (imported above) */}
       
-      {/* NON-BLOCKING CSS - Loaded asynchronously after initial render (via NonBlockingCSS component):
-          - flaticon.min.css (6KB)
-          - animate.min.css (60KB)
-          - select2.min.css (16KB)
-          - odometer.css (3KB)
-      */}
+      {/* NON-BLOCKING CSS - Loaded asynchronously after initial render */}
       <NonBlockingCSS />
 
       <SiteChrome headerData={headerData} footer={<SiteFooter />}>

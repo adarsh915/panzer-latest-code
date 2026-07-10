@@ -3,6 +3,21 @@
   This file is scoped only to the (frontend) route group layout.
 */
 
+:root {
+  --theme-color: #1053f3;
+  --theme-navy-dark: #061153;
+  --theme-blue-light: #79c6ff;
+  --theme-navy-darker: #061238;
+  --theme-blue-medium: #2f63dd;
+  --theme-navy-medium: #123b88;
+  --theme-blue-bright: #2b72ff;
+  --theme-navy-slate: #273553;
+  --theme-navy-deep: #07133d;
+  --theme-navy-slate-light: #34405e;
+  --theme-blue-dark: #051372;
+  --dark-color3: #000000;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -162,7 +177,7 @@ a.panzer-choose-link:hover {
   flex-shrink: 0;
   width: 16px;
   height: 16px;
-  accent-color: #1053f3;
+  accent-color: var(--theme-color);
   cursor: pointer;
 }
 
@@ -181,7 +196,7 @@ a.panzer-choose-link:hover {
 .search-btn {
   cursor: pointer !important;
   transition: color 0.3s ease !important;
-  color: var(--theme-color) !important;
+  color: var(--theme-navy-dark) !important;
 }
 
 .search-btn:hover {
@@ -210,7 +225,7 @@ i.fa-solid {
 }
 
 .panzer-page-brand-detail .panzer-brand-detail-overview h3 {
-  color: #061238;
+  color: var(--theme-navy-darker);
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 20px;
@@ -234,7 +249,7 @@ i.fa-solid {
 .panzer-page-brand-detail .panzer-brand-detail-overview li {
   display: flex;
   gap: 10px;
-  color: #061238;
+  color: var(--theme-navy-darker);
   font-size: 15px;
   line-height: 1.45;
   /* font-weight: 750; */
@@ -242,7 +257,7 @@ i.fa-solid {
 
 .panzer-page-brand-detail .panzer-brand-detail-overview li i {
   margin-top: 4px;
-  color: #1053f3;
+  color: var(--theme-color);
 }
 
 /* ── Rich Text Editor Content (Typography Reset) ───────────────── */
@@ -266,7 +281,7 @@ i.fa-solid {
   min-height: 40px !important;
   padding: 8px 14px !important;
   border-radius: 999px !important;
-  color: #061238 !important;
+  color: var(--theme-navy-darker) !important;
   background: #f2f6ff !important;
   font-size: 14px !important;
   line-height: 1.25 !important;
@@ -351,7 +366,7 @@ i.fa-solid {
   font-weight: inherit;
   /* Overrides the 750 weight leak */
   color: inherit;
-  /* Overrides the #061238 color leak */
+  /* Overrides the var(--theme-navy-darker) color leak */
   margin-bottom: 0.25em;
 }
 

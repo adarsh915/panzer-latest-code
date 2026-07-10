@@ -1,0 +1,135 @@
+.shell {
+  display: grid;
+  gap: 1.5rem;
+  padding-bottom: 3rem;
+}
+
+.card {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.cardTitle {
+  h3 { margin: 0; color: #111827; font-size: 16px; font-weight: 700; }
+  p { margin: 4px 0 0; color: #64748b; font-size: 13px; }
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.resetBtn, .saveBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.resetBtn {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #475569;
+  
+  &:hover:not(:disabled) { background: #f8fafc; color: #0f172a; }
+}
+
+.saveBtn {
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  
+  &:hover:not(:disabled) { background: #1d4ed8; }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+.colorItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid #f1f5f9;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.colorLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  
+  .hex {
+    font-size: 11px;
+    font-family: monospace;
+    background: #e2e8f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #475569;
+  }
+}
+
+.colorInputRow {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.colorPicker {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: transparent;
+  
+  &::-webkit-color-swatch-wrapper { padding: 0; }
+  &::-webkit-color-swatch { border: 1px solid #cbd5e1; border-radius: 6px; }
+}
+
+.textInput {
+  flex: 1;
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 14px;
+  font-family: monospace;
+  color: #0f172a;
+  text-transform: uppercase;
+  
+  &:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  }
+}

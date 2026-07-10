@@ -212,13 +212,14 @@ const FaqFormPage = ({ mode, faqId }: Props) => {
 
             <label className={styles.field}>
               <span>Question <em>*</em></span>
-              <input
-                type="text"
-                value={form.question}
-                onChange={(event) => handleQuestionChange(event.target.value)}
-                placeholder="Enter FAQ question"
-                autoFocus
-              />
+              <div className={styles.editorWrap}>
+                <JoditEditor
+                  value={form.question}
+                  config={editorConfig}
+                  onBlur={(value: string) => handleQuestionChange(value)}
+                  onChange={() => {}}
+                />
+              </div>
             </label>
 
             <label className={styles.field}>

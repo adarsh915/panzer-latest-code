@@ -48,8 +48,8 @@ const FaqsPanel = () => {
       .filter((faq) =>
         (!pageFilter || faq.pageKey === pageFilter) &&
         (!query ||
-        faq.question.toLowerCase().includes(query) ||
-        faq.answer.toLowerCase().includes(query) ||
+        stripHtml(faq.question).toLowerCase().includes(query) ||
+        stripHtml(faq.answer).toLowerCase().includes(query) ||
         faq.status.toLowerCase().includes(query) ||
         (faq.pageKey || '').toLowerCase().includes(query))
       )
@@ -73,7 +73,7 @@ const FaqsPanel = () => {
   }
 
   const handleDelete = async (faq: Faq) => {
-    const confirmed = await confirmDeleteWithName(faq.question)
+    const confirmed = await confirmDeleteWithName(stripHtml(faq.question))
     if (!confirmed) return
 
     await deleteFaq(faq.id)
@@ -179,7 +179,7 @@ const FaqsPanel = () => {
                         <td className={styles.tdNum}>{(page - 1) * pageSize + idx + 1}</td>
                         <td>
                           <div className="d-flex align-items-center gap-2 mb-1">
-                            <span className={styles.tdName} style={{ marginBottom: 0 }}>{faq.question}</span>
+                            <span className={styles.tdName} style={{ marginBottom: 0 }}>{stripHtml(faq.question)}</span>
                           </div>
                           <span className={styles.tdSub} style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{stripHtml(faq.answer)}</span>
                         </td>

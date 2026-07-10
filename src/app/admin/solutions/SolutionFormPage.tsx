@@ -668,9 +668,9 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
                         <div className={styles.repeaterCardHeader}>
                           <div className={styles.repeaterTitle}>
                             <span className={styles.repeaterIconPreview}>
-                              {card.image ? <img src={card.image} alt={card.imageAlt || card.title || 'Feature card'} /> : <IconifyIcon icon={card.icon || 'tabler:shield-check'} />}
+                              {card.image ? <img src={card.image} alt={card.imageAlt || stripHtml(card.title) || 'Feature card'} /> : <IconifyIcon icon={card.icon || 'tabler:shield-check'} />}
                             </span>
-                            <strong>{card.title || `Feature Card ${index + 1}`}</strong>
+                            <strong>{stripHtml(card.title) || `Feature Card ${index + 1}`}</strong>
                           </div>
                           <button type="button" className={styles.iconDangerBtn} onClick={() => removeFeatureCard(index)} aria-label="Delete feature card" title="Delete card">
                             <IconifyIcon icon="tabler:trash" />
@@ -681,7 +681,7 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
                           <div className={styles.miniUpload}>
                             {card.image ? (
                               <div className={styles.miniImagePreview}>
-                                <img src={card.image} alt={card.imageAlt || card.title || 'Feature card'} />
+                                <img src={card.image} alt={card.imageAlt || stripHtml(card.title) || 'Feature card'} />
                                 <button
                                   type="button"
                                   className={styles.removeImageBtn}
@@ -712,7 +712,13 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
                           <div className={styles.repeaterFields}>
                             <label className={styles.field}>
                               <span>Title</span>
-                              <input value={card.title} onChange={(event) => updateFeatureCard(index, 'title', event.target.value)} />
+                              <div style={{ maxWidth: '100%' }}>
+                                <JoditEditor
+                                  value={card.title}
+                                  config={editorConfig}
+                                  onChange={(value: string) => updateFeatureCard(index, 'title', value)}
+                                />
+                              </div>
                             </label>
                             {card.image && (
                               <div style={{ marginTop: '10px' }}>
@@ -736,7 +742,13 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
                             )}
                             <label className={styles.field}>
                               <span>Description</span>
-                              <textarea rows={3} value={card.description} onChange={(event) => updateFeatureCard(index, 'description', event.target.value)} />
+                              <div style={{ maxWidth: '100%' }}>
+                                <JoditEditor
+                                  value={card.description}
+                                  config={editorConfig}
+                                  onChange={(value: string) => updateFeatureCard(index, 'description', value)}
+                                />
+                              </div>
                             </label>
                           </div>
                         </div>
@@ -757,17 +769,27 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
                     {form.implementationSteps.map((step, index) => (
                       <div key={step.id} className={styles.flowCard}>
                         <div className={styles.flowStepBadge}>{String(index + 1).padStart(2, '0')}</div>
-                        <div className={styles.flowFields}>
-                          <div className={styles.gridTwo}>
-                            <label className={styles.field}>
-                              <span>Title</span>
-                              <input value={step.title} onChange={(event) => updateImplementationStep(index, 'title', event.target.value)} />
-                            </label>
-                            <label className={styles.field}>
-                              <span>Description</span>
-                              <input value={step.description} onChange={(event) => updateImplementationStep(index, 'description', event.target.value)} />
-                            </label>
-                          </div>
+                        <div className={styles.flowFields} style={{ display: 'flex', flexDirection: 'column', gap: '15px', width: '100%' }}>
+                          <label className={styles.field}>
+                            <span>Title</span>
+                            <div style={{ maxWidth: '100%' }}>
+                              <JoditEditor
+                                value={step.title}
+                                config={editorConfig}
+                                onChange={(value: string) => updateImplementationStep(index, 'title', value)}
+                              />
+                            </div>
+                          </label>
+                          <label className={styles.field}>
+                            <span>Description</span>
+                            <div style={{ maxWidth: '100%' }}>
+                              <JoditEditor
+                                value={step.description}
+                                config={editorConfig}
+                                onChange={(value: string) => updateImplementationStep(index, 'description', value)}
+                              />
+                            </div>
+                          </label>
                         </div>
                         <button type="button" className={styles.iconDangerBtn} onClick={() => removeImplementationStep(index)} aria-label="Delete implementation step" title="Delete step">
                           <IconifyIcon icon="tabler:trash" />
