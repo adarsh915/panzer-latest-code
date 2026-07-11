@@ -136,48 +136,12 @@
     var servicePrevButton = document.querySelector(".panzer-service-prev");
     var serviceNextButton = document.querySelector(".panzer-service-next");
 
+    // NOTE: service card pin animation is now managed by the HomeServicePins
+    // React component (src/components/frontend/HomeServicePins.tsx).
+    // It handles re-initialization on every navigation to "/" reliably.
+    // Do NOT init pins here to avoid double-initialization conflicts.
     function refreshServicePins() {
-      var serviceSection = document.querySelector(".tv-service-section.style-4");
-      if (!serviceSection || !window.gsap || !window.ScrollTrigger) return;
-
-      var serviceRows = Array.prototype.slice.call(serviceSection.querySelectorAll(".service-item-pin"));
-
-      window.ScrollTrigger.getAll().forEach(function (trigger) {
-        if (trigger.trigger && serviceSection.contains(trigger.trigger) && trigger.trigger.classList.contains("service-item-pin")) {
-          trigger.kill();
-        }
-      });
-
-      serviceRows.forEach(function (row) {
-        row.style.opacity = "";
-        row.style.transform = "";
-      });
-
-      if (window.innerWidth <= 992) {
-        window.ScrollTrigger.refresh();
-        return;
-      }
-
-      serviceRows.forEach(function (row) {
-        window.gsap.to(row, {
-          opacity: 0,
-          scale: 0.9,
-          y: 50,
-          scrollTrigger: {
-            trigger: row,
-            scrub: 0.5,
-            start: "top 100px",
-            end: "top -300px",    // ← yeh add karo
-            pin: true,
-            pinSpacing: false,
-            markers: false,
-          },
-        });
-      });
-
-      window.requestAnimationFrame(function () {
-        window.ScrollTrigger.refresh();
-      });
+      // Handled by HomeServicePins React component
     }
 
     if (serviceScroller && servicePrevButton && serviceNextButton && !serviceScroller.dataset.panzerServiceReady) {

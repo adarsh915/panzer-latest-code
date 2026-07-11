@@ -32,7 +32,12 @@ const emptyFaq: FaqFormData = {
   metaKeywords: '',
 }
 
-const stripHtml = (value: string) => value.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim()
+const stripHtml = (value: string) => {
+  if (!value) return ''
+  let s = value.replace(/<img[\s\S]*?(>|$)/ig, '')
+  s = s.replace(/<[^>]*>/g, '')
+  return s.replace(/&nbsp;/g, ' ').trim()
+}
 
 const FaqFormPage = ({ mode, faqId }: Props) => {
   const router = useRouter()
@@ -50,10 +55,7 @@ const FaqFormPage = ({ mode, faqId }: Props) => {
     enableDragAndDropFileToEditor: true,
     uploader: {
       insertImageAsBase64URI: true
-    },
-    askBeforePasteHTML: false,
-    askBeforePasteFromWord: false,
-    defaultActionOnPaste: 'insert_as_html'
+    }
   }), []);
   useEffect(() => {
     Promise.all([readSolutions(), readBrands()]).then(([sols, brnds]) => {

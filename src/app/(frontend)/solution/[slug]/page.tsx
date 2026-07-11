@@ -321,7 +321,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                     <details key={faq.id} open={index === 0}>
                       <summary>
                         <span className="d-flex align-items-center gap-1 faq-question-title">
-                          {String(index + 1).padStart(2, "0")}. <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(faq.question) }} />
+                          <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(faq.question) }} />
                         </span>
                         <i className="fa-solid fa-chevron-down"></i>
                       </summary>

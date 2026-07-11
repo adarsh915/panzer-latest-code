@@ -177,6 +177,19 @@ const MENU_ITEMS_DATA: MenuItemType[] = [
     icon: 'tabler:settings',
     children: [
       {
+        key: 'settings-pages',
+        label: 'Pages',
+        parentKey: 'settings',
+        children: [
+          {
+            key: 'settings-homepage',
+            label: 'Homepage',
+            url: '/admin/settings/pages/homepage',
+            parentKey: 'settings-pages',
+          },
+        ],
+      },
+      {
         key: 'settings-header',
         label: 'Header',
         url: '/admin/settings/header',
@@ -193,19 +206,6 @@ const MENU_ITEMS_DATA: MenuItemType[] = [
         label: 'Global SEO',
         url: '/admin/settings/seo',
         parentKey: 'settings',
-      },
-      {
-        key: 'settings-pages',
-        label: 'Pages',
-        parentKey: 'settings',
-        children: [
-          {
-            key: 'settings-homepage',
-            label: 'Homepage',
-            url: '/admin/settings/pages/homepage',
-            parentKey: 'settings-pages',
-          },
-        ],
       },
       {
         key: 'settings-theme',

@@ -28,7 +28,12 @@ type Props = {
   solutionId?: string
 }
 
-const stripHtml = (value: string) => value.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, '').trim()
+const stripHtml = (value: string) => {
+  if (!value) return ''
+  let s = value.replace(/<img[\s\S]*?(>|$)/ig, '')
+  s = s.replace(/<[^>]*>/g, '')
+  return s.replace(/&nbsp;/g, ' ').trim()
+}
 
 const createFeatureCard = (): SolutionFeatureCard => ({
   id: `feature-${Date.now()}`,
@@ -69,15 +74,32 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
 
   const editorConfig = useMemo(() => ({
     readonly: false,
-    placeholder: 'Write description here',
-    height: 400,
+    placeholder: 'Write here',
+    height: 300,
     enableDragAndDropFileToEditor: true,
     uploader: {
       insertImageAsBase64URI: true
-    },
-    askBeforePasteHTML: false,
-    askBeforePasteFromWord: false,
-    defaultActionOnPaste: 'insert_as_html'
+    }
+  }), []);
+
+  const editorConfig500 = useMemo(() => ({
+    readonly: false,
+    placeholder: 'Write description here',
+    height: 500,
+    enableDragAndDropFileToEditor: true,
+    uploader: {
+      insertImageAsBase64URI: true
+    }
+  }), []);
+
+  const editorConfig200 = useMemo(() => ({
+    readonly: false,
+    placeholder: 'Write extra card description',
+    height: 200,
+    enableDragAndDropFileToEditor: true,
+    uploader: {
+      insertImageAsBase64URI: true
+    }
   }), []);
 
   useEffect(() => {
@@ -124,7 +146,7 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
     const formData = new FormData()
     formData.append('file', file)
     formData.append('folder', 'solutions')
-    
+
     try {
       const toastId = toast.loading('Uploading image...')
       const res = await fetch('/api/upload', {
@@ -163,7 +185,7 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
     const formData = new FormData()
     formData.append('file', file)
     formData.append('folder', 'solutions')
-    
+
     try {
       const toastId = toast.loading('Uploading logo...')
       const res = await fetch('/api/upload', {
@@ -192,7 +214,7 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
   const updateFeatureCard = <K extends keyof SolutionFeatureCard>(index: number, key: K, value: SolutionFeatureCard[K]) => {
     setForm((previous) => ({
       ...previous,
-      featureCards: previous.featureCards.map((card, cardIndex) => 
+      featureCards: previous.featureCards.map((card, cardIndex) =>
         cardIndex === index ? { ...card, [key]: value } : card
       )
     }))
@@ -211,7 +233,7 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
     const formData = new FormData()
     formData.append('file', file)
     formData.append('folder', 'solutions')
-    
+
     try {
       const toastId = toast.loading('Uploading feature image...')
       const res = await fetch('/api/upload', {
@@ -242,7 +264,7 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
   const updateExtraCard = <K extends keyof SolutionExtraCard>(index: number, key: K, value: SolutionExtraCard[K]) => {
     setForm((previous) => ({
       ...previous,
-      extraCards: (previous.extraCards || []).map((card, cardIndex) => 
+      extraCards: (previous.extraCards || []).map((card, cardIndex) =>
         cardIndex === index ? { ...card, [key]: value } : card
       )
     }))
@@ -279,7 +301,7 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
   ) => {
     setForm((previous) => ({
       ...previous,
-      implementationSteps: previous.implementationSteps.map((step, stepIndex) => 
+      implementationSteps: previous.implementationSteps.map((step, stepIndex) =>
         stepIndex === index ? { ...step, [key]: value } : step
       )
     }))
@@ -479,11 +501,11 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
             </div>
 
             <div className="d-flex align-items-center gap-2 mb-4 bg-light p-3 rounded border">
-              <input 
-                type="checkbox" 
-                id="isFeatured" 
-                checked={form.isFeatured || false} 
-                onChange={(e) => set('isFeatured', e.target.checked)} 
+              <input
+                type="checkbox"
+                id="isFeatured"
+                checked={form.isFeatured || false}
+                onChange={(e) => set('isFeatured', e.target.checked)}
                 style={{ width: '18px', height: '18px', cursor: 'pointer', marginTop: 0 }}
               />
               <label htmlFor="isFeatured" style={{ margin: 0, cursor: 'pointer', fontWeight: 600, color: '#333' }}>
@@ -815,9 +837,9 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
                     {(form.extraCards || []).map((card, index) => (
                       <div key={card.id} className={styles.repeaterCard}>
                         <div className={styles.repeaterCardHeader}>
-                            <div className={styles.repeaterTitle}>
-                              <strong>Card {index + 1}</strong>
-                            </div>
+                          <div className={styles.repeaterTitle}>
+                            <strong>Card {index + 1}</strong>
+                          </div>
                           <div style={{ display: 'flex', gap: '5px' }}>
                             <button type="button" className={styles.iconBtn} onClick={() => moveExtraCardUp(index)} disabled={index === 0} aria-label="Move up" title="Move up" style={{ opacity: index === 0 ? 0.5 : 1 }}>
                               <IconifyIcon icon="tabler:arrow-up" />
@@ -838,9 +860,9 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
                               <div className={styles.editorWrap}>
                                 <JoditEditor
                                   value={card.heading}
-                                  config={{ ...editorConfig, height: 200 }}
+                                  config={editorConfig200}
                                   onBlur={(value: string) => updateExtraCard(index, 'heading', value)}
-                                  onChange={() => {}}
+                                  onChange={() => { }}
                                 />
                               </div>
                             </label>
@@ -851,11 +873,11 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
                                   value={card.description}
                                   config={editorConfig}
                                   onBlur={(value: string) => updateExtraCard(index, 'description', value)}
-                                  onChange={() => {}}
+                                  onChange={() => { }}
                                 />
                               </div>
                             </label>
-                            
+
                           </div>
                         </div>
                       </div>
@@ -874,9 +896,9 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
               <div className={styles.editorWrap}>
                 <JoditEditor
                   value={form.description}
-                  config={{ ...editorConfig, height: 500 }}
+                  config={editorConfig500}
                   onBlur={(value: string) => set('description', value)}
-                  onChange={() => {}}
+                  onChange={() => { }}
                 />
               </div>
             </label>

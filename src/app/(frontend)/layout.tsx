@@ -7,6 +7,7 @@ import { SiteChrome } from "@/components/frontend/SiteChrome";
 import { getHeaderData } from "./headerDataStore";
 import { readSetting } from "@/app/admin/settings/settingsStore";
 import { ScrollToTop } from "@/components/frontend/ScrollToTop";
+import { HomeServicePins } from "@/components/frontend/HomeServicePins";
 import { NonBlockingCSS } from "@/components/frontend/NonBlockingCSS";
 
 // PERFORMANCE FIX: Import CSS through Next.js bundler for optimization
@@ -89,6 +90,7 @@ export default async function FrontendLayout({
       <LegacyMainScript />
       <RouteScripts />
       <ScrollToTop />
+      <HomeServicePins />
     </>
   );
 }

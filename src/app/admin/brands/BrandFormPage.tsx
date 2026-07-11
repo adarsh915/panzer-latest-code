@@ -29,7 +29,12 @@ type Props = {
   brandId?: string
 }
 
-const stripHtml = (value: string) => value.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, '').trim()
+const stripHtml = (value: string) => {
+  if (!value) return ''
+  let s = value.replace(/<img[\s\S]*?(>|$)/ig, '')
+  s = s.replace(/<[^>]*>/g, '')
+  return s.replace(/&nbsp;/g, ' ').trim()
+}
 
 const BrandFormPage = ({ mode, brandId }: Props) => {
   const router = useRouter()
@@ -45,15 +50,42 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
 
   const editorConfig = useMemo(() => ({
     readonly: false,
-    placeholder: 'Write description here',
-    height: 400,
+    placeholder: 'Write here',
+    height: 300,
     enableDragAndDropFileToEditor: true,
     uploader: {
       insertImageAsBase64URI: true
-    },
-    askBeforePasteHTML: false,
-    askBeforePasteFromWord: false,
-    defaultActionOnPaste: 'insert_as_html'
+    }
+  }), []);
+
+  const editorConfig500 = useMemo(() => ({
+    readonly: false,
+    placeholder: 'Write brand description here',
+    height: 500,
+    enableDragAndDropFileToEditor: true,
+    uploader: {
+      insertImageAsBase64URI: true
+    }
+  }), []);
+
+  const editorConfig250 = useMemo(() => ({
+    readonly: false,
+    placeholder: 'Write extra card description',
+    height: 250,
+    enableDragAndDropFileToEditor: true,
+    uploader: {
+      insertImageAsBase64URI: true
+    }
+  }), []);
+
+  const editorConfig200 = useMemo(() => ({
+    readonly: false,
+    placeholder: 'Write feature description here',
+    height: 200,
+    enableDragAndDropFileToEditor: true,
+    uploader: {
+      insertImageAsBase64URI: true
+    }
   }), []);
 
   useEffect(() => {
@@ -494,7 +526,7 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
                 <div className={styles.editorWrap}>
                   <JoditEditor
                     value={form.capabilitiesTitle}
-                    config={{ ...editorConfig, height: 200 }}
+                    config={editorConfig200}
                     onBlur={(value: string) => set('capabilitiesTitle', value)}
                     onChange={() => {}}
                   />
@@ -505,7 +537,7 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
                 <div className={styles.editorWrap}>
                   <JoditEditor
                     value={form.capabilitiesHeading}
-                    config={{ ...editorConfig, height: 200 }}
+                    config={editorConfig200}
                     onBlur={(value: string) => set('capabilitiesHeading', value)}
                     onChange={() => {}}
                   />
@@ -516,7 +548,7 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
                 <div className={styles.editorWrap}>
                   <JoditEditor
                     value={form.capabilitiesPoints}
-                    config={{ ...editorConfig, height: 250 }}
+                    config={editorConfig250}
                     onBlur={(value: string) => set('capabilitiesPoints', value)}
                     onChange={() => {}}
                   />
@@ -555,7 +587,7 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
                         <div className={styles.editorWrap}>
                           <JoditEditor
                             value={card.heading}
-                            config={{ ...editorConfig, height: 200 }}
+                            config={editorConfig200}
                             onBlur={(value: string) => updateExtraCard(index, 'heading', value)}
                             onChange={() => {}}
                           />
@@ -611,7 +643,7 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
               <div className={styles.editorWrap}>
                 <JoditEditor
                   value={form.description}
-                  config={{ ...editorConfig, height: 500 }}
+                  config={editorConfig500}
                   onBlur={(value: string) => set('description', value)}
                   onChange={() => {}}
                 />

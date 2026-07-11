@@ -24,7 +24,12 @@ type Props = {
   postId?: string
 }
 
-const stripHtml = (value: string) => value.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, '').trim()
+const stripHtml = (value: string) => {
+  if (!value) return ''
+  let s = value.replace(/<img[\s\S]*?(>|$)/ig, '')
+  s = s.replace(/<[^>]*>/g, '')
+  return s.replace(/&nbsp;/g, ' ').trim()
+}
 
 const toDateLocal = (value?: string) => {
   if (!value) return ''

@@ -17,6 +17,10 @@ declare global {
     PanzerTheme?: {
       init?: () => void;
     };
+    ScrollTrigger?: {
+      refresh: () => void;
+      getAll: () => Array<{ trigger: Element | null; kill: () => void }>;
+    };
   }
 }
 
@@ -52,6 +56,15 @@ export function RouteScripts() {
     const initTheme = () => {
       if (window.PanzerTheme?.init) {
         window.PanzerTheme.init();
+
+        // After init, force ScrollTrigger to recalculate in case of navigation-back
+        const refreshScrollTrigger = () => {
+          if (window.ScrollTrigger) {
+            window.ScrollTrigger.refresh();
+          }
+        };
+        // Small delay to let the DOM settle after navigation
+        setTimeout(refreshScrollTrigger, 200);
         return;
       }
       if (attempt < 40) {

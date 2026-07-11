@@ -90438,7 +90438,7 @@ body {
   transform: rotate(180deg);
 }
 
-.panzer-page-brand-detail .panzer-brand-detail-faq details p {
+.panzer-page-brand-detail .panzer-brand-detail-faq details .editor-content {
   padding: 0 18px 18px;
 }
 
@@ -90877,7 +90877,7 @@ body {
   transform: rotate(180deg);
 }
 
-.panzer-page-solution-details .panzer-solution-detail-faq details p {
+.panzer-page-solution-details .panzer-solution-detail-faq details .editor-content {
   padding: 0 18px 18px;
 }
 
