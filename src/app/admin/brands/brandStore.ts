@@ -1,6 +1,7 @@
 'use server'
 
 import pool from '@/lib/db'
+import { revalidateTag } from 'next/cache'
 import type {
   BrandCategory,
   BrandCategoryFormData,
@@ -181,6 +182,8 @@ export const createBrand = async (data: BrandFormData): Promise<BrandPartner | {
 
   const created = await findBrand(id)
   if (!created) return { success: false as const, message: 'Failed to create brand' }
+  
+  revalidateTag('header-data')
   return created
 }
 
@@ -247,11 +250,14 @@ export const updateBrand = async (id: string, data: Partial<BrandFormData>): Pro
     }
   }
 
-  return findBrand(id)
+  const updated = await findBrand(id)
+  revalidateTag('header-data')
+  return updated
 }
 
 export const deleteBrand = async (id: string): Promise<void> => {
   await pool.query('DELETE FROM brands WHERE id = ?', [id])
+  revalidateTag('header-data')
 }
 
 // ─── Categories ──────────────────────────────────────────────────────────────

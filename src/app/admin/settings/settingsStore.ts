@@ -26,4 +26,29 @@ export const writeSetting = async <T>(key: string, value: T): Promise<void> => {
     'INSERT INTO site_settings (`key`, value, updated_at) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = ?, updated_at = ?',
     [key, jsonValue, updatedAt, jsonValue, updatedAt]
   )
+
+  // Clear cache for the whole app so settings changes are instantly visible
+  try {
+    const { revalidatePath } = await import('next/cache')
+    revalidatePath('/', 'layout')
+  } catch (e) {
+    console.error('Failed to revalidate cache after writing setting:', e)
+  }
 }
+
+import { cookies } from 'next/headers'
+
+export const setThemePreview = async (colors: Record<string, string>): Promise<void> => {
+  const cookieStore = await cookies();
+  cookieStore.set('theme_preview_colors', JSON.stringify(colors), {
+    path: '/',
+    maxAge: 3600, // 1 hour preview
+    sameSite: 'lax',
+  })
+}
+
+export const clearThemePreview = async (): Promise<void> => {
+  const cookieStore = await cookies();
+  cookieStore.delete('theme_preview_colors')
+}
+

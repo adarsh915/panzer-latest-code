@@ -1,7 +1,7 @@
 'use server'
 
 import pool from '@/lib/db'
-import { unstable_cache } from 'next/cache'
+import { cache } from 'react'
 
 type HomepageSolution = {
   id: number
@@ -93,6 +93,15 @@ async function fetchHomepageData(): Promise<HomepageData> {
     ? JSON.parse(settingsRows[0].value)
     : null
 
+  const sanitizeImage = (url: string | undefined | null): string | undefined => {
+    if (!url) return undefined;
+    if (url.startsWith('data:image/') && url.length > 50000) {
+      console.warn('Sanitizing massive base64 image URL in homepage to prevent payload explosions');
+      return undefined;
+    }
+    return url;
+  }
+
   return {
     solutions: (solutionsRows as any[]).map(s => ({
       id: s.id,
@@ -100,9 +109,9 @@ async function fetchHomepageData(): Promise<HomepageData> {
       slug: s.slug,
       subtitle: s.subtitle,
       description: '', // Don't load full description for homepage
-      image: s.image,
+      image: sanitizeImage(s.image),
       imageAlt: s.image_alt,
-      logo: s.logo,
+      logo: sanitizeImage(s.logo),
       logoAlt: s.logo_alt,
     })),
     posts: (postsRows as any[]).map(p => ({
@@ -110,9 +119,9 @@ async function fetchHomepageData(): Promise<HomepageData> {
       title: p.title,
       slug: p.slug,
       excerpt: '', // Don't load description for homepage
-      image: p.image,
+      image: sanitizeImage(p.image),
       imageAlt: p.image_alt,
-      featuredImage: p.image,
+      featuredImage: sanitizeImage(p.image),
       publishedAt: p.published_at instanceof Date ? p.published_at.toISOString() : p.published_at,
       createdAt: p.created_at instanceof Date ? p.created_at.toISOString() : p.created_at,
       categoryId: p.category_id,
@@ -121,12 +130,12 @@ async function fetchHomepageData(): Promise<HomepageData> {
       id: b.id,
       name: b.name,
       slug: b.slug,
-      logo: b.logo,
+      logo: sanitizeImage(b.logo),
       status: b.status,
     })),
     homepageSettings
   }
 }
 
-// Don't cache - data is too large (18MB) due to base64 images
-export const getHomepageData = fetchHomepageData
+// Cache homepage data for the duration of the request
+export const getHomepageData = cache(fetchHomepageData)

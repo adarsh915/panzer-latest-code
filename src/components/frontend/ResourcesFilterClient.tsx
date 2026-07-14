@@ -223,7 +223,7 @@ export default function ResourcesFilterClient({
 
           <div className="panzer-solution-detail-side-card mt-4" style={{ padding: '20px' }}>
             <h2 style={{ marginBottom: '15px', fontSize: '20px' }}>Questionnaires</h2>
-            <p style={{ fontSize: '14px', color: '#666', marginBottom: '20px' }}>
+            <p style={{ fontSize: '14px', marginBottom: '20px' }}>
               Access and fill out our questionnaires by clicking the link below.
             </p>
             <a

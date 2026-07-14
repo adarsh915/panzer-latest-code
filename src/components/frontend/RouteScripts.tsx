@@ -72,7 +72,10 @@ export function RouteScripts() {
         setTimeout(initTheme, 100);
       }
     };
-    initTheme();
+    // Wait for next paint + 300ms before first attempt so the new page DOM is ready
+    requestAnimationFrame(() => {
+      setTimeout(initTheme, 300);
+    });
   };
 
   if (!scriptSrc) return null;

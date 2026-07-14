@@ -75,6 +75,7 @@ export default async function Page({ params }: PageProps) {
   const author = post.author || "Admin";
   const dateStr = formatDate(post.publishedAt || post.createdAt);
   const categoryName = post.categoryId ? categoryById.get(post.categoryId) : "";
+  const postCategorySlug = post.categoryId ? categories.find(c => c.id === post.categoryId)?.slug || post.categoryId : "";
 
   const { html: contentHtml, toc } = generateToc(sanitizeHtml(post.description || ""));
 
@@ -168,7 +169,7 @@ export default async function Page({ params }: PageProps) {
                       <div className="blog-details__tags">
                         <span>Posted In :</span>
                         <ul className="blog-details__tags">
-                          {categoryName ? <li><Link href={`/blog?category=${post.categoryId}`}>{categoryName}</Link></li> : null}
+                          {categoryName ? <li><Link href={`/blog/category/${postCategorySlug}`}>{categoryName}</Link></li> : null}
                         </ul>
                       </div>
                       <div className="blog-details__social-list">
@@ -245,7 +246,7 @@ export default async function Page({ params }: PageProps) {
                         const postCount = publishedPosts.filter((p) => p.categoryId === cat.id).length;
                         return (
                           <li key={cat.id}>
-                            <Link href={`/blog?category=${cat.id}`}>
+                            <Link href={`/blog/category/${cat.slug || cat.id}`}>
                               {cat.name} <span>({postCount})</span>
                             </Link>
                           </li>

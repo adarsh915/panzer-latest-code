@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from 'next';
 import { getSeoData } from '@/app/admin/settings/seo/seoStore';
-export const dynamic = 'force-dynamic';
+export const revalidate = 60; // ISR: re-render at most once per minute
 import { getHomepageData } from "./homepageStore";
 import ServiceContactForm from "@/components/frontend/ServiceContactForm";
 import { HeroSlider } from "@/components/frontend/HeroSlider";
@@ -171,12 +171,29 @@ export default async function Page() {
                     position: relative;
                     z-index: 1;
                 }
+                /* Product card icon — turn blue on hover (matches original SVG hover effect) */
+                .tv-choose-section.style-6 .choose-box .icon img {
+                    transition: filter 0.3s ease;
+                }
+                .tv-choose-section.style-6 .choose-box:hover .icon img {
+                    filter: brightness(0) saturate(100%) invert(27%) sepia(95%) saturate(1600%) hue-rotate(210deg) brightness(105%) contrast(105%);
+                }
+                /* Dynamic Hero Settings Override */
+                .panzer-page-home .panzer-cyber-title,
+                .panzer-page-home .panzer-cyber-title span,
+                .panzer-page-home .panzer-cyber-text {
+                    color: var(--hero-text-color) !important;
+                }
+                .panzer-page-home .panzer-cyber-btn.primary {
+                    background: var(--hero-btn-bg) !important;
+                    border: none !important;
+                }
             `}</style>
             <section className="tv-hero-section style-4 panzer-cyber-hero">
                 <div className="panzer-cyber-slider-wrap">
                     {/* Gradient Background - Fast loading, no video buffering */}
                     <div className="panzer-cyber-video-bg" style={{
-                        background: 'linear-gradient(135deg, #0a1628 0%, #1a2847 25%, #0d1b3a 50%, #162640 75%, #0a1628 100%)',
+                        background: 'var(--hero-bg)',
                         position: 'absolute',
                         inset: 0,
                         zIndex: 0

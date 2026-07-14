@@ -34,7 +34,12 @@ JS TABLE OF CONTENTS
 
 ------------------------------------------------------------------*/
 
-(function ($) {
+(function initMainJS() {
+	if (typeof jQuery === "undefined" || typeof window.Lenis === "undefined" || typeof window.gsap === "undefined") {
+		setTimeout(initMainJS, 50);
+		return;
+	}
+	(function ($) {
 	"use strict";
 
 	/*===========================================
@@ -118,9 +123,27 @@ JS TABLE OF CONTENTS
 	=    Initialize Lenis / Smooth Scrolling    =
 	=    + Scroll To Top Progress Indicator     =
 	=============================================*/
-	function smoothScrolling() {
+	function smoothScrolling(retries = 0) {
+		if (typeof Lenis === "undefined") {
+			if (retries < 40) { // Try for 2 seconds (50ms * 40)
+				setTimeout(() => smoothScrolling(retries + 1), 50);
+			} else {
+				console.warn("Lenis failed to load after 2 seconds. Smooth scrolling disabled.");
+			}
+			return;
+		}
+
+		// Prevent multiple Lenis instances from running at the same time
+		if (window.lenisInstance) {
+			// Destroy old instance to clean up RAF and event listeners
+			window.lenisInstance.destroy();
+			cancelAnimationFrame(window.lenisRafId);
+		}
+
 		// Create a single Lenis instance for all scrolling features
+		// CSS 'scroll-behavior: smooth' has been removed so this won't conflict anymore
 		const lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+		window.lenisInstance = lenis;
 
 		// Scroll progress and scroll-to-top button
 		const scrollTopBox = document.querySelector(".scrollToTop");
@@ -143,9 +166,9 @@ JS TABLE OF CONTENTS
 		// Start the animation loop
 		function raf(time) {
 			lenis.raf(time);
-			requestAnimationFrame(raf);
+			window.lenisRafId = requestAnimationFrame(raf);
 		}
-		requestAnimationFrame(raf);
+		window.lenisRafId = requestAnimationFrame(raf);
 	}
 
 	// Deprecated: scrollTop() merged into smoothScrolling()
@@ -1843,4 +1866,5 @@ JS TABLE OF CONTENTS
 
 
 
-})(jQuery);
+	})(jQuery);
+})();

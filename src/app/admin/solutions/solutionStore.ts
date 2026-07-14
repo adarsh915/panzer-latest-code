@@ -1,6 +1,7 @@
 'use server'
 
 import pool from '@/lib/db'
+import { revalidateTag } from 'next/cache'
 import { toSlug } from './solutionHelpers'
 import type {
   SolutionCategory,
@@ -195,6 +196,7 @@ export const createSolution = async (data: SolutionFormData): Promise<SolutionSe
     }
 
     await connection.commit()
+    revalidateTag('header-data')
     
     // Fetch and return the fully constructed solution
     const [solutions] = await connection.query('SELECT * FROM solutions WHERE id = ?', [id])
@@ -290,6 +292,7 @@ export const updateSolution = async (id: string, data: SolutionFormData): Promis
     }
 
     await connection.commit()
+    revalidateTag('header-data')
     
     // We don't fetch full structure, just returning mocked structure for simplicity 
     // Normally we'd do readSolutions().find(x=>x.id === id)
@@ -304,6 +307,7 @@ export const updateSolution = async (id: string, data: SolutionFormData): Promis
 
 export const deleteSolution = async (id: string): Promise<void> => {
   await pool.query('DELETE FROM solutions WHERE id = ?', [id])
+  revalidateTag('header-data')
 }
 
 export const findSolution = async (id: string): Promise<SolutionService | undefined> => {
@@ -471,6 +475,7 @@ export const deleteCategory = async (id: string): Promise<void | { success: fals
     await connection.query('DELETE FROM solution_categories WHERE id = ?', [id])
 
     await connection.commit()
+    revalidateTag('header-data')
   } catch (error) {
     await connection.rollback()
     throw error

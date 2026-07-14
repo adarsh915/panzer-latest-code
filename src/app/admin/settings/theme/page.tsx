@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import ThemeSettingsPanel from './ThemeSettingsPanel'
 import { readSetting } from '@/app/admin/settings/settingsStore'
 
+import PageTitle from '@/components/PageTitle'
+
 export const metadata: Metadata = {
   title: 'Theme Settings | Panzer IT Admin',
 }
@@ -11,9 +13,9 @@ export default async function ThemeSettingsPage() {
   const themeColors = await readSetting<Record<string, string>>('frontend_theme_colors', {})
 
   return (
-    <div className="p-4">
-      <h1 className="mb-4 text-2xl font-bold">Theme Colors</h1>
+    <>
+      <PageTitle title="Theme Colors Settings" subTitle="Setting" />
       <ThemeSettingsPanel initialColors={themeColors} />
-    </div>
+    </>
   )
 }

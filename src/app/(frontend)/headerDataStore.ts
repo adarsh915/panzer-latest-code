@@ -1,7 +1,7 @@
 'use server'
 
 import pool from '@/lib/db'
-import { unstable_cache } from 'next/cache'
+import { cache } from 'react'
 
 type HeaderSolution = {
   label: string
@@ -60,21 +60,30 @@ async function fetchHeaderData(): Promise<HeaderData> {
     ? JSON.parse(settingsRows[0].value)
     : { logoUrl: '', logoAlt: 'Header Logo', logoWidth: 140 }
 
+  const sanitizeImage = (url: string | undefined | null) => {
+    if (!url) return url;
+    if (url.startsWith('data:image/') && url.length > 50000) {
+      console.warn('Sanitizing massive base64 image URL in header to prevent payload explosions');
+      return undefined;
+    }
+    return url;
+  }
+
   return {
     solutions: (solutionsRows as any[]).map(s => ({
       label: s.title,
-      logo: s.logo || undefined,
+      logo: sanitizeImage(s.logo) || undefined,
       logoAlt: s.logo_alt || s.title,
       icon: "fa-shield-check",
       href: `/solution/${s.slug}`
     })),
     brands: (brandsRows as any[]).map(b => ({
       label: b.name,
-      logo: b.logo || undefined,
+      logo: sanitizeImage(b.logo) || undefined,
       href: `/brand/${b.slug}`
     })),
     logoData
   }
 }
 
-export const getHeaderData = fetchHeaderData
+export const getHeaderData = cache(fetchHeaderData)

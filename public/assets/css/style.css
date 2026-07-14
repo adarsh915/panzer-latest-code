@@ -59,7 +59,7 @@
   --gray-color2: #616161;
   --white-color: #ffffff;
   --light-color: #f4f7ff;
-
+  --light-color2: #e8edfa;
   --light-color3: #e9eefb;
   --light-color4: #b9bfe4;
   --orange-color: #fd893c;
@@ -71,7 +71,7 @@
   --bs-text-color4: rgb(255 255 255 / 80%);
   --bs-text-color5: #161616;
   --bs-bg-color1: var(--theme-color);
-
+  --bs-bg-color2: #f3f6fe;
   --bs-bg-color3: rgba(16, 83, 243, 0.2);
   --bs-bg-color4: #dce5fc;
   --bs-bg-color5: rgba(255, 255, 255, 0.10);
@@ -92,11 +92,6 @@
   --bs-bg-color20: rgba(255, 255, 255, 0.50);
   --bs-bg-color21: #f2f5fd;
   --bs-bg-color22: rgba(255, 255, 255, 0.14);
-  --bs-bg-color23: #eef4ff;
-  --bs-bg-color24: #fbfdff;
-  --bs-bg-color25: #f6f9ff;
-  --light-color2: #e8edfa;
-  --bs-bg-color2: #f3f6fe;
   --cardmention: #ffffff;
   --bs-border-color: rgba(22, 22, 22, 0.10196078431372549);
   --bs-border-color2: rgba(3, 15, 68, 0.10);
@@ -136,7 +131,7 @@
 
 .panzer-page-privacy-policy .panzer-privacy-summary,
 .panzer-page-privacy-policy .panzer-privacy-content {
-  background: #ffffff;
+  background: var(--white-color);
   border: 1px solid rgba(16, 83, 243, 0.08);
   box-shadow: 0 12px 38px rgba(6, 17, 83, 0.06);
 }
@@ -285,7 +280,7 @@
 /*------------------- 1.4. Typography -------------------*/
 html,
 body {
-  scroll-behavior: smooth !important;
+  scroll-behavior: auto;
 }
 
 body {
@@ -295,7 +290,7 @@ body {
   color: var(--body-color);
   line-height: 26px;
   background: var(--light-color) !important;
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   /*===Scroll Bar=====*/
 }
@@ -475,7 +470,7 @@ p:empty {
 p {
   font-family: var(--body-font);
   margin: 0 0 15px 0;
-  color: var(--theme-navy-slate-light);
+  color: var(--gray-color2);
   line-height: 1.6;
 }
 
@@ -506,7 +501,7 @@ h5,
 .h6,
 h6 {
   font-family: var(--title-font);
-  color: var(--theme-navy-dark);
+  color: var(--title-color);
   text-transform: none;
   font-weight: 600;
   line-height: 1.4;
@@ -3556,7 +3551,7 @@ textarea.is-invalid {
   padding: 15px 60px 15px 40px;
   margin-bottom: 0px;
   color: var(--white-color);
-  background-color: var(--theme-color);
+  background-color: var(--theme-color3);
   display: inline-flex;
   overflow: hidden;
   justify-content: center;
@@ -4060,7 +4055,7 @@ body.bg-title .scroll-top::after {
   position: absolute;
   inset: 0;
   z-index: 3;
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 24px;
 }
 
@@ -4184,7 +4179,7 @@ body.bg-title .scroll-top::after {
   font-size: 16px;
   line-height: 26px;
   color: var(--theme-color);
-  /* background: var(--bs-bg-color5); */
+  background: var(--bs-bg-color5);
   font-weight: 500;
   font-family: var(--title-font);
   margin-bottom: 12px;
@@ -4300,7 +4295,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/asterisk.png") no-repeat center/cover;
+  background: url('/assets/images/icons/asterisk.png') no-repeat center/cover;
 }
 
 .arrow-down {
@@ -4319,7 +4314,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/arrow-down-long.png") no-repeat center/cover;
+  background: url('/assets/images/icons/arrow-down-long.png') no-repeat center/cover;
 }
 
 .icon-quote {
@@ -4338,7 +4333,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/quote.png") no-repeat center/cover;
+  background: url('/assets/images/icons/quote.png') no-repeat center/cover;
 }
 
 .icon-phone-circle {
@@ -4357,7 +4352,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/phone-circle.png") no-repeat center/cover;
+  background: url('/assets/images/icons/phone-circle.png') no-repeat center/cover;
 }
 
 .icon-phone-circle-small {
@@ -4376,7 +4371,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/phone-circle.png") no-repeat center/cover;
+  background: url('/assets/images/icons/phone-circle.png') no-repeat center/cover;
 }
 
 .icon-arrow-up-right {
@@ -4395,7 +4390,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/arrow-up-right.png") no-repeat center/cover;
+  background: url('/assets/images/icons/arrow-up-right.png') no-repeat center/cover;
 }
 
 .icon-switch {
@@ -4614,7 +4609,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/check-circle.png") no-repeat center/cover;
+  background: url('/assets/images/icons/check-circle.png') no-repeat center/cover;
 }
 
 .icon-check-circle {
@@ -4633,7 +4628,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/check-circle.png") no-repeat center/cover;
+  background: url('/assets/images/icons/check-circle.png') no-repeat center/cover;
 }
 
 .icon-since {
@@ -4652,7 +4647,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/icon-since.png") no-repeat center/cover;
+  background: url('/assets/images/icons/icon-since.png') no-repeat center/cover;
 }
 
 .icon-comercial {
@@ -4743,7 +4738,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/angel-left.png") no-repeat center/cover;
+  background: url('/assets/images/icons/angel-left.png') no-repeat center/cover;
 }
 
 .icon-angel-right {
@@ -4762,7 +4757,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/angel-right.png") no-repeat center/cover;
+  background: url('/assets/images/icons/angel-right.png') no-repeat center/cover;
 }
 
 .icon-3d-map {
@@ -4781,7 +4776,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/3d-map.png") no-repeat center/cover;
+  background: url('/assets/images/icons/3d-map.png') no-repeat center/cover;
 }
 
 .icon-growth-chart {
@@ -4800,7 +4795,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/growth-chart.png") no-repeat center/cover;
+  background: url('/assets/images/icons/growth-chart.png') no-repeat center/cover;
 }
 
 .icon-growth-chart2 {
@@ -4855,7 +4850,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/target-goal.png") no-repeat center/cover;
+  background: url('/assets/images/icons/target-goal.png') no-repeat center/cover;
 }
 
 .icon-frustration {
@@ -4874,7 +4869,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/icon-frustration.png") no-repeat center/cover;
+  background: url('/assets/images/icons/icon-frustration.png') no-repeat center/cover;
 }
 
 .icon-e {
@@ -4983,7 +4978,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/icon-handshake.png") no-repeat center/cover;
+  background: url('/assets/images/icons/icon-handshake.png') no-repeat center/cover;
 }
 
 .line-long-arrow {
@@ -5002,7 +4997,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/line-long-arrow.png") no-repeat center/cover;
+  background: url('/assets/images/icons/line-long-arrow.png') no-repeat center/cover;
 }
 
 .icon-check-circle2 {
@@ -5021,7 +5016,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/check-circle2.png") no-repeat center/cover;
+  background: url('/assets/images/icons/check-circle2.png') no-repeat center/cover;
 }
 
 .icon-calender {
@@ -5040,7 +5035,7 @@ body.bg-title .scroll-top::after {
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/icons/icon-calender.png") no-repeat center/cover;
+  background: url('/assets/images/icons/icon-calender.png') no-repeat center/cover;
 }
 
 /*------------------- 3.5. Common -------------------*/
@@ -6065,7 +6060,7 @@ label.error {
 
 .bg-dark {
   /* background-color: var(--dark-color) !important; */
-  background: var(--theme-color) !important;
+  background: var(--theme-navy-dark) !important;
 }
 
 .bg-dark2 {
@@ -6085,7 +6080,7 @@ label.error {
 }
 
 .bg-light2 {
-  background-color: var(--bs-bg-color24) !important;
+  background-color: var(--light-color2) !important;
 }
 
 .bg-gray {
@@ -7951,7 +7946,7 @@ a.text-theme:hover,
 
   25% {
     transform: translateY(-5px) rotate(-2deg) scale(1.02);
-    /* হালকা উপরে */
+    /* à¦¹à¦¾à¦²à¦•à¦¾ à¦‰à¦ªà¦°à§‡ */
   }
 
   50% {
@@ -7960,7 +7955,7 @@ a.text-theme:hover,
 
   75% {
     transform: translateY(-5px) rotate(2deg) scale(1.02);
-    /* আবার উপরে */
+    /* à¦†à¦¬à¦¾à¦° à¦‰à¦ªà¦°à§‡ */
   }
 
   100% {
@@ -12420,7 +12415,7 @@ a.text-theme:hover,
 
 .panzer-footer-newsletter .title {
   margin: 0 0 10px;
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 15px;
   font-weight: 700;
   line-height: 1.35;
@@ -12443,7 +12438,7 @@ a.text-theme:hover,
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 14px;
 }
 
@@ -12460,7 +12455,7 @@ a.text-theme:hover,
   border: 0;
   border-radius: 8px;
   background: var(--theme-color3);
-  color: #ffffff;
+  color: var(--white-color);
 }
 
 @media (max-width: 1199px) {
@@ -12742,11 +12737,16 @@ a.text-theme:hover,
 /* Panzer resource breadcrumb */
 .panzer-resource-breadcrumb-section {
   padding: 0 0 clamp(24px, 3vw, 42px);
-  background: #ffffff;
+  background: var(--white-color);
 }
 
 .panzer-resource-breadcrumb-shell {
-
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  min-height: clamp(280px, 23vw, 360px);
+  overflow: hidden;
   border: 1px solid rgba(6, 17, 118, 0.06);
   border-radius: clamp(18px, 2vw, 30px);
   background:
@@ -12755,23 +12755,14 @@ a.text-theme:hover,
   box-shadow: 0 22px 58px rgba(16, 35, 91, 0.08);
 }
 
-.breadcrumb-grid {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  min-height: clamp(180px, 23vw, 360px);
-  overflow: hidden;
-}
-
-/* .panzer-resource-breadcrumb-shell::before,
+.panzer-resource-breadcrumb-shell::before,
 .panzer-resource-breadcrumb-shell::after {
   position: absolute;
   inset: auto;
   content: "";
   pointer-events: none;
-} */
-/* hide ad */
+}
+
 /* .panzer-resource-breadcrumb-shell::before {
   left: 16%;
   right: 20%;
@@ -12783,7 +12774,7 @@ a.text-theme:hover,
   transform: rotate(-8deg);
 } */
 
-/* .panzer-resource-breadcrumb-shell::after {
+.panzer-resource-breadcrumb-shell::after {
   right: 10%;
   top: 12%;
   width: 118px;
@@ -12791,12 +12782,12 @@ a.text-theme:hover,
   background-image: radial-gradient(rgba(16, 83, 243, 0.24) 1.5px, transparent 1.5px);
   background-size: 18px 18px;
   opacity: 0.48;
-} */
-/* hide ad */
+}
+
 .panzer-resource-breadcrumb-copy {
   position: relative;
   z-index: 2;
-  /* padding: clamp(28px, 4vw, 54px) clamp(20px, 3.2vw, 48px) clamp(28px, 4vw, 54px) clamp(56px, 22.8vw, 144px); */
+  padding: clamp(28px, 4vw, 54px) clamp(20px, 3.2vw, 48px) clamp(28px, 4vw, 54px) clamp(56px, 22.8vw, 144px);
 }
 
 .panzer-resource-breadcrumb-title {
@@ -12820,8 +12811,8 @@ a.text-theme:hover,
 .panzer-resource-breadcrumb-nav {
   display: flex;
   justify-content: flex-start;
-  margin: 0 0 clamp(14px, 1.6vw, 22px);
-  padding: clamp(16px, 1.8vw, 22px) clamp(24px, 4.5vw, 52px) 0;
+  padding: 20px 0px;
+
 }
 
 .panzer-resource-breadcrumb-nav ol {
@@ -12885,12 +12876,9 @@ a.text-theme:hover,
   min-height: inherit;
   height: 100%;
   overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-/* .panzer-resource-breadcrumb-visual::before {
+.panzer-resource-breadcrumb-visual::before {
   position: absolute;
   inset: 0 auto 0 0;
   z-index: 2;
@@ -12898,15 +12886,19 @@ a.text-theme:hover,
   background: linear-gradient(90deg, #f5f8ff 0%, rgba(245, 248, 255, 0) 100%);
   content: "";
   pointer-events: none;
-} */
-/* hide ad */
+}
+
 .panzer-resource-breadcrumb-visual img {
-  width: 400px;
+  position: absolute;
+  right: auto;
+  left: 50%;
+  top: 50%;
+  width: min(88%, 560px);
   height: auto;
   max-width: none;
   mix-blend-mode: screen;
   opacity: 0.98;
-  display: block;
+  transform: translate(-50%, -50%);
 }
 
 @media (max-width: 991px) {
@@ -12937,20 +12929,7 @@ a.text-theme:hover,
   .panzer-resource-breadcrumb-visual img {
     left: 50%;
     width: min(82vw, 325px);
-
-  }
-}
-
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-  .panzer-page-solution-details .panzer-solution-detail-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 1100px) {
-  .panzer-resource-breadcrumb-copy {
-    padding: clamp(34px, 6vw, 52px) clamp(20px, 5vw, 44px) 22px;
-    /* text-align: left; */
+    transform: translate(-50%, -50%);
   }
 }
 
@@ -12990,7 +12969,7 @@ a.text-theme:hover,
   }
 
   .panzer-resource-breadcrumb-visual img {
-    width: 140px
+    width: min(39vw, 430px);
   }
 }
 
@@ -15859,8 +15838,7 @@ a.text-theme:hover,
 }
 
 .tv-feature-section.bg-light.space-top .tv-feature-box p {
-  /* color: var(--gray-color2); */
-  color: var(--theme-navy-slate-light);
+  color: var(--gray-color2);
 }
 
 .tv-feature-section.bg-light.space-top .tv-feature-box .logo img {
@@ -17093,7 +17071,7 @@ a.text-theme:hover,
   position: relative;
   padding: 40px 40px 40px 30px;
   border-radius: 30px;
-  background-image: linear-gradient(0deg, #f3f7ff 0%, #ffffff 100%);
+  background-image: linear-gradient(0deg, #f3f7ff 0%, var(--white-color) 100%);
 }
 
 .tv-about-section.style-5 .about-left-box::before {
@@ -17291,7 +17269,7 @@ a.text-theme:hover,
 
 .tv-about-section.style-5 .about-right .about-tags {
   position: relative;
-  background-image: linear-gradient(0deg, #f3f7ff 0%, #ffffff 100%);
+  background-image: linear-gradient(0deg, #f3f7ff 0%, var(--white-color) 100%);
   padding: 30px;
   border-radius: 30px;
   overflow: hidden;
@@ -17723,7 +17701,7 @@ a.text-theme:hover,
   position: relative;
   padding: 40px 40px 40px 30px;
   border-radius: 30px;
-  background-image: linear-gradient(0deg, #f3f7ff 0%, #ffffff 100%);
+  background-image: linear-gradient(0deg, #f3f7ff 0%, var(--white-color) 100%);
 }
 
 .tv-about-section.style-6 .about-left-box::before {
@@ -17835,7 +17813,7 @@ a.text-theme:hover,
 
 .tv-about-section.style-6 .about-right .about-tags {
   position: relative;
-  background-image: linear-gradient(0deg, #f3f7ff 0%, #ffffff 100%);
+  background-image: linear-gradient(0deg, #f3f7ff 0%, var(--white-color) 100%);
   padding: 30px;
   border-radius: 30px;
   overflow: hidden;
@@ -18669,7 +18647,7 @@ a.text-theme:hover,
 .tv-service-single-box::before {
   position: absolute;
   content: "";
-  background-image: url("../images/service/hm2-bg02.webp");
+  background-image: url('/assets/images/service/hm2-bg02.webp');
   top: 0;
   width: 0;
   height: 100%;
@@ -18722,7 +18700,7 @@ a.text-theme:hover,
 }
 
 .tv-service-section.inner .tv-service-inner .tv-service-single-box {
-  background: var(--cardmention);
+  background: var(--white-color);
   border: none;
   height: 100%;
   padding: 20px;
@@ -18771,7 +18749,7 @@ a.text-theme:hover,
 }
 
 .tv-service-section.inner .tv-service-inner .tv-service-single-box .inner-box p {
-  color: var(--theme-navy-slate-light);
+  color: var(--gray-color2);
 }
 
 .tv-service-section.inner .tv-service-inner .tv-service-single-box .inner-box .theme-btn {
@@ -19004,7 +18982,7 @@ a.text-theme:hover,
   height: 100%;
   width: 100%;
   border-radius: 30px 30px 0 0;
-  background-image: url(../images/service/hm4-bg01.png);
+  background-image: url('/assets/images/service/hm4-bg01.png');
   background-repeat: no-repeat;
   mix-blend-mode: screen;
 }
@@ -19474,7 +19452,7 @@ a.text-theme:hover,
   position: relative;
   overflow: hidden;
   border-radius: 30px 0 30px 30px;
-  background: var(--bs-bg-color23);
+  background-image: linear-gradient(0deg, #e7edf9 0%, #f3f7ff 100%);
   padding: 40px 35px 40px;
   transition: background-color 0.8s ease-in-out;
 }
@@ -27035,7 +27013,7 @@ a.text-theme:hover,
 .tv-process-section .process-inner .process-title::before {
   position: absolute;
   content: "";
-  border-bottom: 2px dashed #ffffff00;
+  border-bottom: 2px dashed var(--white-color)00;
   bottom: -90px;
   width: 100%;
   height: 100%;
@@ -27874,7 +27852,7 @@ a.text-theme:hover,
   top: 0;
   width: 100%;
   height: 100%;
-  background: url(../images/cta/hm4-bg01.webp);
+  background: url('/assets/images/cta/hm4-bg01.webp');
   background-size: cover;
   background-repeat: no-repeat;
   mix-blend-mode: plus-lighter;
@@ -27898,7 +27876,7 @@ a.text-theme:hover,
   top: 0;
   width: 100%;
   height: 100%;
-  background: url(../images/cta/hm5-bg01.webp);
+  background: url('/assets/images/cta/hm5-bg01.webp');
   background-size: cover;
   background-repeat: no-repeat;
   mix-blend-mode: plus-lighter;
@@ -30124,31 +30102,18 @@ a.text-theme:hover,
   content: "";
   height: 16px;
   width: 16px;
-  background-color: var(--white-color);
-  /* ✅ change this to whatever color you need */
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 11 11' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 1.54972e-06L0 0L2.38419e-07 11C1.65973e-07 4.92487 4.92487 1.62217e-06 11 1.54972e-06Z' fill='black'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 11 11' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 1.54972e-06L0 0L2.38419e-07 11C1.65973e-07 4.92487 4.92487 1.62217e-06 11 1.54972e-06Z' fill='black'/%3E%3C/svg%3E");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: contain;
-  mask-size: contain;
+  background: url('data:image/svg+xml,<svg viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-11 h-11"><path d="M11 1.54972e-06L0 0L2.38419e-07 11C1.65973e-07 4.92487 4.92487 1.62217e-06 11 1.54972e-06Z" fill="%23ffffff"></path></svg>');
   transform: rotate(270deg);
 }
 
 .blog-single-box .blog-image .category-tag::after {
-  content: "";
   position: absolute;
   left: 0px;
   top: -16px;
+  content: "";
   height: 16px;
   width: 16px;
-  background-color: var(--white-color);
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 11 11' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 1.54972e-06L0 0L2.38419e-07 11C1.65973e-07 4.92487 4.92487 1.62217e-06 11 1.54972e-06Z' fill='black'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 11 11' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 1.54972e-06L0 0L2.38419e-07 11C1.65973e-07 4.92487 4.92487 1.62217e-06 11 1.54972e-06Z' fill='black'/%3E%3C/svg%3E");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: contain;
-  mask-size: contain;
+  background: url('data:image/svg+xml,<svg viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-11 h-11"><path d="M11 1.54972e-06L0 0L2.38419e-07 11C1.65973e-07 4.92487 4.92487 1.62217e-06 11 1.54972e-06Z" fill="%23ffffff"></path></svg>');
   transform: rotate(270deg);
 }
 
@@ -31258,7 +31223,7 @@ a.text-theme:hover,
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
-  background: url("../images/blog/calender.webp") no-repeat center/cover;
+  background: url('/assets/images/blog/calender.webp') no-repeat center/cover;
 }
 
 
@@ -32346,7 +32311,7 @@ a.text-theme:hover,
   overflow: hidden;
   border-radius: 12px;
   aspect-ratio: 16/10;
-  background: #ffffff;
+  background: var(--white-color);
 }
 
 .tv-portfolio-box .box-image img {
@@ -78726,7 +78691,7 @@ button *,
   transform: translate(-50%, -50%);
   background:
     linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.82)),
-    url("../images/logo/logo.png") center / 82% auto no-repeat;
+    url('/assets/images/logo/logo.png') center / 82% auto no-repeat;
   box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.72), 0 12px 28px rgba(47, 99, 221, 0.14);
 }
 
@@ -78738,7 +78703,7 @@ button *,
 
 .panzer-preloader-orbit.one {
   border-color: rgba(47, 99, 221, 0.16) !important;
-  border-top-color: #ffffff !important;
+  border-top-color: var(--white-color) !important;
   border-right-color: rgb(47 99 221) !important;
   box-shadow: 0 0 32px rgba(47, 99, 221, 0.18), inset 0 0 28px rgba(255, 255, 255, 0.3) !important;
 }
@@ -78766,7 +78731,7 @@ button *,
 
 /* Panzer image header and footer theme */
 .panzer-image-header {
-  background: #eef8ff url("../images/about/header-img.jpeg") center bottom/cover no-repeat !important;
+  background: #eef8ff url('/assets/images/about/header-img.jpeg') center bottom/cover no-repeat !important;
   box-shadow: 0 1px 0 rgba(47, 99, 221, 0.12);
 }
 
@@ -78798,9 +78763,8 @@ button *,
   min-height: 42px;
   padding: 12px 24px;
   border-radius: 8px;
-  /* background: #fd893c; */
-  background-color: var(--theme-color);
-  color: #ffffff !important;
+  background: #fd893c;
+  color: var(--white-color) !important;
   font-size: 15px;
   font-weight: 700;
   line-height: 1;
@@ -78811,7 +78775,7 @@ button *,
 .panzer-header-cta:hover {
   transform: translateY(-2px);
   background: #1f53ce;
-  color: #ffffff !important;
+  color: var(--white-color) !important;
   box-shadow: 0 14px 28px rgba(47, 99, 221, 0.28);
 }
 
@@ -78825,7 +78789,7 @@ button *,
 
 .panzer-image-footer {
   position: relative;
-  background: #eef8ff url("../images/about/header-img.jpeg") center center/cover no-repeat !important;
+  background: #eef8ff url('/assets/images/about/header-img.jpeg') center center/cover no-repeat !important;
   box-shadow: 0 -1px 0 rgba(47, 99, 221, 0.12);
 }
 
@@ -78856,14 +78820,14 @@ button *,
 }
 
 .panzer-image-footer .footer-brand .social-links a {
-  background: #ffffff !important;
+  background: var(--white-color) !important;
   color: var(--theme-navy-medium) !important;
   box-shadow: 0 10px 24px rgba(47, 99, 221, 0.14);
 }
 
 .panzer-image-footer .footer-brand .social-links a:hover {
   background: var(--theme-blue-medium) !important;
-  color: #ffffff !important;
+  color: var(--white-color) !important;
 }
 
 .panzer-image-footer .panzer-footer-newsletter .newsletter-form input[type=email] {
@@ -78961,7 +78925,7 @@ button *,
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -79145,7 +79109,7 @@ button *,
   padding: 12px 24px;
   border-radius: 8px;
   background: #e76b1f;
-  color: #ffffff !important;
+  color: var(--white-color) !important;
   font-size: 15px;
   font-weight: 700;
   line-height: 1;
@@ -79156,7 +79120,7 @@ button *,
 .panzer-page-home .panzer-header-cta:hover {
   transform: translateY(-2px);
   background: #1f53ce;
-  color: #ffffff !important;
+  color: var(--white-color) !important;
   box-shadow: 0 14px 28px rgba(47, 99, 221, 0.28);
 }
 
@@ -79280,7 +79244,7 @@ button *,
 
 .panzer-page-home .panzer-cyber-title {
   margin: 0 0 20px;
-  color: #ffffff;
+  color: var(--white-color);
   font-size: clamp(36px, 5.2vw, 62px);
   line-height: 1.04;
   font-weight: 800;
@@ -79324,19 +79288,19 @@ button *,
 
 .panzer-page-home .panzer-cyber-btn:hover {
   transform: translateY(-3px);
-  color: #ffffff;
+  color: var(--white-color);
 }
 
 .panzer-page-home .panzer-cyber-btn.primary {
   background: var(--theme-color3);
-  color: #ffffff;
+  color: var(--white-color);
   box-shadow: 0 20px 40px rgba(16, 83, 243, 0.28);
 }
 
 .panzer-page-home .panzer-cyber-btn.secondary {
   border-color: rgba(255, 255, 255, 0.18);
   background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  color: var(--white-color);
   backdrop-filter: blur(12px);
 }
 
@@ -79408,7 +79372,7 @@ button *,
   border-radius: 999px;
   background: rgba(7, 20, 44, 0.78);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -79466,7 +79430,7 @@ button *,
 }
 
 .panzer-page-home .panzer-cyber-current {
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 18px;
   font-weight: 800;
 }
@@ -79492,7 +79456,7 @@ button *,
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 18px;
   transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
   backdrop-filter: blur(12px);
@@ -79524,7 +79488,7 @@ button *,
 }
 
 .panzer-page-home .panzer-cyber-hero .trusted-partners .title {
-  color: #ffffff !important;
+  color: var(--white-color) !important;
   letter-spacing: 0.08em;
 }
 
@@ -79545,7 +79509,7 @@ button *,
   max-width: 245px;
   padding: 24px 22px;
   border-radius: 10px;
-  background: #ffffff;
+  background: var(--white-color);
   box-shadow: 0 16px 36px rgba(1, 8, 24, 0.18);
 }
 
@@ -79574,7 +79538,7 @@ button *,
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 16px;
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18);
   backdrop-filter: blur(10px);
@@ -79850,7 +79814,7 @@ button *,
   --panzer-shadow: 0 22px 60px rgba(31, 65, 112, 0.12);
 
   background:
-    linear-gradient(180deg, #f7fbff 0%, #eef6ff 58%, #ffffff 100%);
+    linear-gradient(180deg, #f7fbff 0%, #eef6ff 58%, var(--white-color) 100%);
 }
 
 .panzer-page-home .panzer-cyber-slide {
@@ -79927,13 +79891,13 @@ button *,
 
 .panzer-page-home .panzer-cyber-btn.primary {
   background: var(--theme-color3);
-  color: #ffffff;
+  color: var(--white-color);
   box-shadow: 0 14px 28px rgba(16, 83, 243, 0.18);
 }
 
 .panzer-page-home .panzer-cyber-btn.secondary {
   border-color: rgba(16, 83, 243, 0.2);
-  background: #ffffff;
+  background: var(--white-color);
   color: #15375f;
 }
 
@@ -80007,7 +79971,7 @@ button *,
   height: 58px;
   border-radius: 18px;
   background: var(--theme-color);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 24px;
   box-shadow: 0 18px 34px rgba(16, 83, 243, 0.24);
 }
@@ -80102,7 +80066,7 @@ button *,
 .panzer-page-home .panzer-cyber-nav button {
   width: 52px;
   height: 52px;
-  background: #ffffff;
+  background: var(--white-color);
   border-color: rgba(16, 83, 243, 0.16);
   color: var(--theme-color);
   box-shadow: 0 14px 34px rgba(28, 73, 130, 0.16);
@@ -80111,7 +80075,7 @@ button *,
 .panzer-page-home .panzer-cyber-nav button:hover {
   background: var(--theme-color);
   border-color: var(--theme-color);
-  color: #ffffff;
+  color: var(--white-color);
 }
 
 .panzer-page-home .panzer-cyber-brand-panel {
@@ -80122,7 +80086,7 @@ button *,
 }
 
 .panzer-page-home .panzer-cyber-hero .trusted-partners .title {
-  color: #ffffff !important;
+  color: var(--white-color) !important;
 }
 
 @media (max-width: 1199px) {
@@ -80243,7 +80207,7 @@ button *,
   min-height: clamp(560px, 54vw, 690px);
   background:
     radial-gradient(circle at 72% 42%, rgba(16, 83, 243, 0.12), transparent 30%),
-    linear-gradient(180deg, #fbfdff 0%, #eef7ff 100%);
+    linear-gradient(180deg, var(--bs-bg-color24) 0%, #eef7ff 100%);
 }
 
 .panzer-page-home .panzer-cyber-slide::before {
@@ -80402,7 +80366,7 @@ button *,
   margin-bottom: 15px;
   padding: 10px;
   border-radius: 10px;
-  background: #ffffff;
+  background: var(--white-color);
 }
 
 .panzer-page-home .panzer-platform-chart span {
@@ -80424,7 +80388,7 @@ button *,
   min-height: 32px;
   padding: 8px 10px;
   border-radius: 9px;
-  background: #ffffff;
+  background: var(--white-color);
   color: #344966;
   font-size: 12px;
   font-weight: 800;
@@ -80771,14 +80735,14 @@ body {
 }
 
 .panzer-page-home .panzer-image-footer .footer-brand .social-links a {
-  background: #ffffff !important;
+  background: var(--white-color) !important;
   color: var(--theme-navy-medium) !important;
   box-shadow: 0 10px 24px rgba(47, 99, 221, 0.14);
 }
 
 .panzer-page-home .panzer-image-footer .footer-brand .social-links a:hover {
   background: var(--theme-blue-medium) !important;
-  color: #ffffff !important;
+  color: var(--white-color) !important;
 }
 
 .panzer-page-home .panzer-image-footer .panzer-footer-newsletter .newsletter-form input[type="email"] {
@@ -80804,7 +80768,7 @@ body {
 
 .panzer-page-home .panzer-footer-newsletter .title {
   margin: 0 0 10px;
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 15px;
   font-weight: 700;
   line-height: 1.35;
@@ -80827,7 +80791,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 14px;
 }
 
@@ -80844,7 +80808,7 @@ body {
   border: 0;
   border-radius: 8px;
   background: var(--theme-color3);
-  color: #ffffff;
+  color: var(--white-color);
 }
 
 @media (max-width: 1199px) {
@@ -81665,7 +81629,7 @@ body {
   padding: 7px 22px;
   border: 1px solid rgba(16, 83, 243, 0.42);
   border-radius: 999px;
-  background: #ffffff;
+  background: var(--white-color);
   color: var(--theme-color);
   font-size: 14px;
   line-height: 1;
@@ -81686,7 +81650,7 @@ body {
 
 .panzer-page-home .panzer-lock-about-title span {
   display: block;
-  color: var(--theme-navy-dark);
+  color: var(--theme-blue-dark);
 }
 
 .panzer-page-home .panzer-lock-about-title::after {
@@ -81727,7 +81691,7 @@ body {
   padding: 12px 14px;
   border: 1px solid rgba(16, 83, 243, 0.1);
   border-radius: 16px;
-  background: var(--cardmention);
+  background: rgba(255, 255, 255, 0.72);
 }
 
 .panzer-page-home .panzer-lock-feature-icon {
@@ -81737,7 +81701,7 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  color: #ffffff;
+  color: var(--white-color);
   background: linear-gradient(145deg, var(--theme-color) 0%, #5b82e7 100%);
   box-shadow: 0 14px 28px rgba(16, 83, 243, 0.22);
   font-size: 24px;
@@ -81746,7 +81710,7 @@ body {
 
 .panzer-page-home .panzer-lock-feature h3 {
   margin: 0;
-  color: var(--theme-navy-deep);
+  color: var(--dark-color3);
   font-size: clamp(20px, 1.8vw, 25px);
   line-height: 1.22;
   font-weight: 600;
@@ -81783,7 +81747,7 @@ body {
 }
 
 .panzer-page-home .panzer-lock-about-btn.primary {
-  color: #ffffff;
+  color: var(--white-color);
   background: var(--theme-navy-dark);
   box-shadow: 0 16px 34px rgba(16, 83, 243, 0.27);
 }
@@ -81792,7 +81756,7 @@ body {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #ffffff;
+  background: var(--white-color);
   color: var(--theme-color);
   font-size: 14px;
 }
@@ -81919,7 +81883,7 @@ body {
   padding: 18px 22px;
   border: 1px solid rgba(12, 39, 91, 0.08);
   border-radius: 14px;
-  background: var(--cardmention);
+  background: rgba(255, 255, 255, 0.92);
   box-shadow: 0 10px 28px rgba(12, 39, 91, 0.08);
 }
 
@@ -81943,13 +81907,13 @@ body {
   justify-content: center;
   border-radius: 50%;
   color: var(--theme-color);
-  background: #eef4ff;
+  background: var(--bs-bg-color23);
   font-size: 29px;
 }
 
 .panzer-page-home .panzer-lock-flow-card h3 {
   margin: 0 0 5px;
-  color: var(--theme-navy-deep);
+  color: var(--dark-color3);
   font-size: 20px;
   line-height: 1.18;
   font-weight: 800;
@@ -81957,7 +81921,7 @@ body {
 
 .panzer-page-home .panzer-lock-flow-card p {
   margin: 0;
-  color: var(--theme-navy-slate);
+  color: #35415c;
   font-size: 14px;
   line-height: 1.35;
   font-weight: 600;
@@ -83002,7 +82966,7 @@ body {
 }
 
 .panzer-page-about .panzer-horizontal-milestone {
-  background: #ffffff;
+  background: var(--white-color);
 }
 
 .panzer-page-about .panzer-horizontal-milestone .title-wrap {
@@ -83049,7 +83013,7 @@ body {
   justify-content: center;
   border: 3px solid #ff9738;
   border-radius: 50%;
-  background: #ffffff;
+  background: var(--white-color);
   color: #2a7775;
   font-size: 20px;
   box-shadow: 0 12px 28px rgba(6, 17, 83, 0.12);
@@ -83083,7 +83047,7 @@ body {
   min-height: 124px;
   padding: 24px 24px;
   border-radius: 14px;
-  background: #ffffff;
+  background: var(--white-color);
   box-shadow: 0 18px 40px rgba(6, 17, 83, 0.1);
   transform: translateX(-50%);
 }
@@ -83094,7 +83058,7 @@ body {
   left: 50%;
   width: 22px;
   height: 22px;
-  background: #ffffff;
+  background: var(--white-color);
   transform: translateX(-50%) rotate(45deg);
 }
 
@@ -83116,8 +83080,7 @@ body {
 
 .panzer-page-about .panzer-timeline-card p {
   margin: 0;
-  /* color: #2b2d36; */
-  color: var(--theme-navy-slate-light);
+  color: #2b2d36;
   font-size: 18px;
   line-height: 1.55;
   text-align: center;
@@ -83253,7 +83216,7 @@ body {
 .panzer-page-about .panzer-static-about-btn,
 .panzer-page-about .panzer-static-about-btn:hover {
   color: var(--white-color) !important;
-  background-color: var(--theme-color) !important;
+  background-color: var(--theme-color3) !important;
 }
 
 .panzer-page-about .panzer-static-about-btn .link-effect .effect-1:nth-child(2),
@@ -83289,7 +83252,7 @@ body {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -83426,7 +83389,7 @@ body {
 
 .panzer-page-about .panzer-cv-card {
   position: relative;
-  background: #ffffff;
+  background: var(--white-color);
   border-radius: 20px;
   padding: 36px 32px 32px;
   box-shadow: 0 6px 28px rgba(6, 17, 83, 0.07);
@@ -83572,8 +83535,7 @@ body {
 .panzer-page-about .panzer-cv-title {
   font-size: clamp(26px, 3.8vw, 40px);
   font-weight: 800;
-  /* color: #101a7b; */
-  color: var(--theme-navy-dark);
+  color: #101a7b;
   line-height: 1.2;
   margin-bottom: 14px;
 }
@@ -83595,7 +83557,7 @@ body {
 
 .panzer-page-about .panzer-cv-card {
   position: relative;
-  background: #ffffff;
+  background: var(--white-color);
   border-radius: 20px;
   padding: 36px 32px 32px;
   box-shadow: 0 6px 28px rgba(6, 17, 83, 0.07);
@@ -83686,8 +83648,7 @@ body {
 
 .panzer-page-about .panzer-cv-card-text {
   font-size: 14.5px;
-  /* color: #6a748a; */
-  color: var(--theme-navy-slate-light);
+  color: #6a748a;
   line-height: 1.7;
   margin: 0;
   transition: none;
@@ -83750,7 +83711,7 @@ body {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -83904,7 +83865,7 @@ body {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -84028,7 +83989,7 @@ body {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -84049,7 +84010,7 @@ body {
   height: 100%;
   padding: 34px;
   border-radius: 18px;
-  background: var(--cardmention);
+  background: var(--white-color);
   box-shadow: 0 18px 45px rgba(8, 30, 55, 0.08);
 }
 
@@ -84076,7 +84037,7 @@ body {
   padding: 18px;
   margin-bottom: 24px;
   border-radius: 14px;
-  background: #ffffff;
+  background: var(--white-color);
   border: 1px solid rgba(8, 30, 55, 0.08);
 }
 
@@ -84100,9 +84061,8 @@ body {
   min-height: 36px;
   padding: 8px 14px;
   border-radius: 999px;
-  background: #ffffff;
-  /* color: #293b52; */
-  color: var(--theme-navy-slate);
+  background: var(--white-color);
+  color: #293b52;
   font-size: 14px;
   font-weight: 700;
   box-shadow: 0 8px 22px rgba(8, 30, 55, 0.06);
@@ -84369,7 +84329,7 @@ body {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -84555,7 +84515,7 @@ body {
 
 .panzer-page-brand-detail .panzer-cyber-title {
   margin: 0 0 20px;
-  color: #ffffff;
+  color: var(--white-color);
   font-size: clamp(36px, 5.2vw, 62px);
   line-height: 1.04;
   font-weight: 800;
@@ -84599,19 +84559,19 @@ body {
 
 .panzer-page-brand-detail .panzer-cyber-btn:hover {
   transform: translateY(-3px);
-  color: #ffffff;
+  color: var(--white-color);
 }
 
 .panzer-page-brand-detail .panzer-cyber-btn.primary {
   background: var(--theme-color);
-  color: #ffffff;
+  color: var(--white-color);
   box-shadow: 0 20px 40px rgba(16, 83, 243, 0.28);
 }
 
 .panzer-page-brand-detail .panzer-cyber-btn.secondary {
   border-color: rgba(255, 255, 255, 0.18);
   background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  color: var(--white-color);
   backdrop-filter: blur(12px);
 }
 
@@ -84683,7 +84643,7 @@ body {
   border-radius: 999px;
   background: rgba(7, 20, 44, 0.78);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -84741,7 +84701,7 @@ body {
 }
 
 .panzer-page-brand-detail .panzer-cyber-current {
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 18px;
   font-weight: 800;
 }
@@ -84767,7 +84727,7 @@ body {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 18px;
   transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
   backdrop-filter: blur(12px);
@@ -84799,7 +84759,7 @@ body {
 }
 
 .panzer-page-brand-detail .panzer-cyber-hero .trusted-partners .title {
-  color: #ffffff !important;
+  color: var(--white-color) !important;
   letter-spacing: 0.08em;
 }
 
@@ -85065,7 +85025,7 @@ body {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -85358,7 +85318,7 @@ body {
   background:
     radial-gradient(circle at 10% 18%, rgba(255, 255, 255, 0.96) 0 16%, rgba(255, 255, 255, 0) 34%),
     radial-gradient(circle at 88% 0%, rgba(220, 246, 255, 0.96) 0 20%, rgba(220, 246, 255, 0) 46%),
-    linear-gradient(135deg, #ffffff 0%, #eefbff 48%, #ccefff 100%) !important;
+    linear-gradient(135deg, var(--white-color) 0%, #eefbff 48%, #ccefff 100%) !important;
   border: 1px solid rgba(47, 99, 221, 0.18) !important;
   box-shadow: 0 24px 60px rgba(47, 99, 221, 0.16);
 }
@@ -85518,7 +85478,7 @@ body {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -85811,7 +85771,7 @@ body {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -86093,7 +86053,7 @@ body {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -86279,7 +86239,7 @@ body {
 
 .panzer-page-solution-details .panzer-cyber-title {
   margin: 0 0 20px;
-  color: #ffffff;
+  color: var(--white-color);
   font-size: clamp(36px, 5.2vw, 62px);
   line-height: 1.04;
   font-weight: 800;
@@ -86323,19 +86283,19 @@ body {
 
 .panzer-page-solution-details .panzer-cyber-btn:hover {
   transform: translateY(-3px);
-  color: #ffffff;
+  color: var(--white-color);
 }
 
 .panzer-page-solution-details .panzer-cyber-btn.primary {
   background: var(--theme-color);
-  color: #ffffff;
+  color: var(--white-color);
   box-shadow: 0 20px 40px rgba(16, 83, 243, 0.28);
 }
 
 .panzer-page-solution-details .panzer-cyber-btn.secondary {
   border-color: rgba(255, 255, 255, 0.18);
   background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  color: var(--white-color);
   backdrop-filter: blur(12px);
 }
 
@@ -86407,7 +86367,7 @@ body {
   border-radius: 999px;
   background: rgba(7, 20, 44, 0.78);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -86465,7 +86425,7 @@ body {
 }
 
 .panzer-page-solution-details .panzer-cyber-current {
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 18px;
   font-weight: 800;
 }
@@ -86491,7 +86451,7 @@ body {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 18px;
   transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
   backdrop-filter: blur(12px);
@@ -86523,7 +86483,7 @@ body {
 }
 
 .panzer-page-solution-details .panzer-cyber-hero .trusted-partners .title {
-  color: #ffffff !important;
+  color: var(--white-color) !important;
   letter-spacing: 0.08em;
 }
 
@@ -87021,12 +86981,12 @@ body {
 
 .panzer-page-home .tv-service-section.style-4 .panzer-static-service-btn {
   background: var(--theme-color) !important;
-  color: #ffffff !important;
+  color: var(--white-color) !important;
   box-shadow: 0 16px 32px rgba(16, 83, 243, 0.18);
 }
 
 .panzer-page-home .tv-service-section.style-4 .panzer-static-service-btn .arrow-all {
-  background: #ffffff;
+  background: var(--white-color);
 }
 
 @media (max-width: 991px) {
@@ -87051,7 +87011,7 @@ body {
 .panzer-page-home .panzer-lock-about-title {
   max-width: 440px !important;
   margin: 20px 0 16px !important;
-  font-size: clamp(28px, 3.25vw, 50px) !important;
+  font-size: clamp(36px, 3.25vw, 50px) !important;
   line-height: 1.12 !important;
 }
 
@@ -87197,13 +87157,10 @@ body {
     text-align: center !important;
   }
 
-  .panzer-static-sec-title,
-  .panzer-lock-about-title,
-  .panzer-achievement-title,
-  .sec-title {
+  .panzer-page-home .panzer-lock-about-title {
     max-width: 420px !important;
     margin-inline: auto !important;
-    font-size: 28px !important;
+    font-size: clamp(32px, 9.4vw, 40px) !important;
     line-height: 1.12 !important;
   }
 
@@ -87441,7 +87398,7 @@ body {
 .panzer-page-home .panzer-cyber-title {
   max-width: 760px;
   margin-bottom: 24px;
-  color: #ffffff;
+  color: var(--white-color);
   font-size: clamp(44px, 4.25vw, 72px);
   font-weight: 800;
   line-height: 1.06;
@@ -87472,20 +87429,20 @@ body {
 .panzer-page-home .panzer-cyber-btn.primary {
   background: #2f766f;
   border-color: rgba(255, 255, 255, 0.92);
-  color: #ffffff;
+  color: var(--white-color);
   box-shadow: 0 18px 36px rgba(0, 0, 0, 0.24);
 }
 
 .panzer-page-home .panzer-cyber-btn.primary:hover {
-  background: #ffffff;
-  border-color: #ffffff;
+  background: var(--white-color);
+  border-color: var(--white-color);
   color: #0b2d33;
 }
 
 .panzer-page-home .panzer-cyber-btn.secondary {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.62);
-  color: #ffffff;
+  color: var(--white-color);
 }
 
 /* .panzer-page-home .panzer-cyber-visual {
@@ -87504,7 +87461,7 @@ body {
   height: clamp(44px, 3.2vw, 62px);
   background: transparent;
   border: 0;
-  color: #ffffff;
+  color: var(--white-color);
   font-size: clamp(24px, 2.4vw, 44px);
   box-shadow: none;
 }
@@ -87696,10 +87653,10 @@ body {
   min-width: 154px;
   min-height: 54px;
   padding: 14px 28px;
-  border: 2px solid #ffffff;
+  border: 2px solid var(--white-color);
   border-radius: 999px;
   background: #2f766f;
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 17px;
   line-height: 1;
   font-weight: 800;
@@ -87733,8 +87690,8 @@ body {
   top: 50%;
   width: 24px;
   height: 24px;
-  border-top: 7px solid #ffffff;
-  border-left: 7px solid #ffffff;
+  border-top: 7px solid var(--white-color);
+  border-left: 7px solid var(--white-color);
   border-radius: 4px 0 0 0;
   transition: border-color 0.25s ease, transform 0.25s ease;
 }
@@ -87922,7 +87879,6 @@ body {
   .panzer-page-home .tv-contact-section.style-4 .contact-left-thumb figure {
     min-height: 320px;
     border-radius: 18px;
-    display: none;
   }
 
   .panzer-page-home .tv-contact-section.style-4 .contact-left-thumb img {
@@ -87998,7 +87954,7 @@ body {
   max-width: 360px;
   display: flex;
   flex-direction: column;
-  background: #ffffff;
+  background: var(--white-color);
   box-shadow: 20px 0 55px rgba(6, 17, 83, 0.2);
 }
 
@@ -88007,7 +87963,7 @@ body {
   padding: 22px 78px 18px 22px;
   display: flex;
   align-items: center;
-  background: #ffffff;
+  background: var(--white-color);
   border-bottom: 1px solid rgba(6, 17, 83, 0.08);
 }
 
@@ -88061,7 +88017,7 @@ body {
   margin: 0 0 10px;
   padding: 6px 0;
   border-radius: 12px;
-  background: #f4f7ff;
+  background: var(--light-color);
 }
 
 .mobile-menu ul li ul li {
@@ -88090,13 +88046,13 @@ body {
 
 .mobile-menu ul .submenu-item-has-children.active>a>.mean-expand-class,
 .mobile-menu ul .submenu-item-has-children.active-class>a>.mean-expand-class {
-  color: #ffffff;
+  color: var(--white-color);
   background: var(--theme-color);
 }
 
 .contact-list-one {
   padding: 22px 24px;
-  background: linear-gradient(180deg, #ffffff 0%, #f7f9ff 100%);
+  background: linear-gradient(180deg, var(--white-color) 0%, #f7f9ff 100%);
 }
 
 .contact-list-one li {
@@ -88145,7 +88101,7 @@ body {
 }
 
 .mobile-menu-area .social-links li a {
-  color: #ffffff;
+  color: var(--white-color);
 }
 
 .mobile-menu-area .social-links li a:hover {
@@ -88209,7 +88165,7 @@ body {
   height: auto;
   aspect-ratio: 16 / 4.6;
   padding: clamp(14px, 2.2vw, 26px);
-  background: #ffffff;
+  background: var(--white-color);
   border: 1px solid rgba(8, 30, 55, 0.08);
 }
 
@@ -88223,7 +88179,7 @@ body {
 }
 
 .panzer-page-brand .panzer-brand-page .tv-service-single-box:hover .solution-card-image.panzer-brand-logo {
-  background: #ffffff;
+  background: var(--white-color);
   border-color: rgba(255, 255, 255, 0.82);
 }
 
@@ -88243,7 +88199,7 @@ body {
   overflow: hidden;
   border-radius: 12px !important;
   border: 1px solid rgba(6, 17, 83, 0.1) !important;
-  background: var(--cardmention) !important;
+  background: var(--white-color) !important;
   box-shadow: 0 8px 22px rgba(6, 17, 83, 0.05);
   backdrop-filter: none !important;
   transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
@@ -88273,7 +88229,7 @@ body {
   height: 34px;
   margin-bottom: 20px;
   border-radius: 8px;
-  background: #eef4ff;
+  background: var(--bs-bg-color23);
   color: #4a78e2;
   font-size: 15px;
   line-height: 1;
@@ -88292,8 +88248,7 @@ body {
 
 .panzer-page-solution .panzer-solution-card .title {
   margin: 0 0 10px !important;
-  /* color: #17233c !important; */
-  color: var(--theme-navy-deep);
+  color: #17233c !important;
   font-size: clamp(15px, 1.12vw, 18px) !important;
   line-height: 1.28 !important;
   font-weight: 800 !important;
@@ -88303,8 +88258,7 @@ body {
 .panzer-page-solution .panzer-solution-card .text {
   margin: 0 0 22px !important;
   padding-bottom: 0 !important;
-  /* color: #5f6f86 !important; */
-  color: var(--theme-navy-slate-light) !important;
+  color: #5f6f86 !important;
   font-size: 15px !important;
   line-height: 1.58 !important;
   font-weight: 500;
@@ -88315,8 +88269,7 @@ body {
   align-items: center;
   gap: 7px;
   margin-top: auto;
-  /* color: #2465e8 !important; */
-  color: var(--theme-blue-medium);
+  color: #2465e8 !important;
   font-size: 18px;
   line-height: 1;
   font-weight: 800;
@@ -88340,9 +88293,8 @@ body {
 
 .panzer-page-solution .panzer-solution-card:hover .panzer-solution-icon {
   transform: translateY(-2px);
-  /* background: #4a78e2; */
-  background-color: var(--theme-blue-medium);
-  color: #ffffff;
+  background: #4a78e2;
+  color: var(--white-color);
 }
 
 .panzer-page-solution .panzer-solution-card:hover .panzer-solution-learn {
@@ -88471,7 +88423,7 @@ body {
 .panzer-page-home .panzer-cyber-title {
   max-width: 640px;
   margin: 0 0 22px;
-  color: #ffffff !important;
+  color: var(--white-color) !important;
   opacity: 1;
   font-family: "Alegreya", sans-serif;
   font-size: clamp(42px, 4.4vw, 72px);
@@ -88483,7 +88435,7 @@ body {
 }
 
 .panzer-page-home .panzer-cyber-title span {
-  color: #ffffff !important;
+  color: var(--white-color) !important;
 }
 
 .panzer-page-home .panzer-cyber-text {
@@ -88513,7 +88465,7 @@ body {
   border: 0;
   border-radius: 4px;
   background: #e76b1f;
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 16px;
   line-height: 1;
   font-weight: 800;
@@ -88522,7 +88474,7 @@ body {
 }
 
 .panzer-page-home .panzer-cyber-btn.primary:hover {
-  background: #ffffff;
+  background: var(--white-color);
   color: #080b12;
 }
 
@@ -88570,8 +88522,8 @@ body {
   top: 50%;
   width: clamp(15px, 1.2vw, 21px);
   height: clamp(15px, 1.2vw, 21px);
-  border-top: clamp(3px, 0.28vw, 5px) solid #ffffff;
-  border-left: clamp(3px, 0.28vw, 5px) solid #ffffff;
+  border-top: clamp(3px, 0.28vw, 5px) solid var(--white-color);
+  border-left: clamp(3px, 0.28vw, 5px) solid var(--white-color);
   border-radius: 3px 0 0 0;
   transition: border-color 0.22s ease, transform 0.22s ease;
 }
@@ -88593,12 +88545,12 @@ body {
 }
 
 .panzer-page-home .panzer-cyber-prev:hover::before {
-  border-color: #ffffff;
+  border-color: var(--white-color);
   transform: translate(-48%, -50%) rotate(-45deg);
 }
 
 .panzer-page-home .panzer-cyber-next:hover::before {
-  border-color: #ffffff;
+  border-color: var(--white-color);
   transform: translate(48%, -50%) rotate(135deg);
 }
 
@@ -88626,8 +88578,8 @@ body {
 }
 
 .panzer-page-home .panzer-cyber-pagination .swiper-pagination-bullet-active {
-  background: #ffffff;
-  border-color: #ffffff;
+  background: var(--white-color);
+  border-color: var(--white-color);
   transform: scale(1.12);
 }
 
@@ -88916,13 +88868,14 @@ body {
 
 /* Clean home achievement section */
 .panzer-page-home .panzer-home-achievement-section {
-  background: #f6f9ff !important;
+  background: var(--bs-bg-color25) !important;
 }
 
 .panzer-page-home .panzer-home-achievement-section .tv-achivement-inner {
   /* margin: 0 !important; */
   padding: clamp(64px, 7vw, 110px) 0;
-
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(241, 247, 255, 0.98) 100%) !important;
   border-top: 1px solid rgba(17, 43, 84, 0.08);
   border-bottom: 1px solid rgba(17, 43, 84, 0.08);
 }
@@ -89005,7 +88958,7 @@ body {
   overflow: hidden;
   border: 1px solid rgba(47, 99, 221, 0.14);
   border-radius: 8px;
-  background: #ffffff !important;
+  background: var(--white-color) !important;
   box-shadow: 0 18px 42px rgba(16, 33, 61, 0.08);
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
@@ -89039,7 +88992,7 @@ body {
   width: 52px;
   height: 52px;
   border-radius: 8px;
-  background: #eef4ff;
+  background: var(--bs-bg-color23);
 }
 
 .panzer-page-home .panzer-home-achievement-section .counter-box .counter-inner .icon img {
@@ -89109,7 +89062,8 @@ body {
   /* margin: 0 !important; */
   padding: clamp(48px, 5vw, 78px) 0;
   background:
-    var(--bs-bg-color24);
+    radial-gradient(circle at 50% 55%, rgba(16, 83, 243, 0.08), transparent 26%),
+    linear-gradient(180deg, var(--white-color) 0%, var(--bs-bg-color24) 100%) !important;
   border-top: 1px solid rgba(16, 83, 243, 0.07);
   border-bottom: 1px solid rgba(16, 83, 243, 0.07);
 }
@@ -89134,7 +89088,7 @@ body {
   padding: 7px 18px;
   border: 1px solid rgba(16, 83, 243, 0.34);
   border-radius: 999px;
-  background: #ffffff;
+  background: var(--white-color);
   color: var(--theme-color);
   font-size: 13px;
   line-height: 1;
@@ -89150,7 +89104,7 @@ body {
 .panzer-page-home .panzer-achievement-title {
   max-width: 820px;
   margin: 24px 0 18px;
-  color: var(--theme-navy-dark);
+  color: var(--theme-navy-deep);
   font-size: clamp(34px, 3.8vw, 54px);
   line-height: 1.1;
   font-weight: 800;
@@ -89187,7 +89141,7 @@ body {
   overflow: hidden;
   border: 1px solid rgba(16, 83, 243, 0.12);
   border-radius: 14px;
-  background: var(--cardmention);
+  background: rgba(255, 255, 255, 0.92);
   box-shadow: 0 18px 42px rgba(12, 39, 91, 0.08);
 }
 
@@ -89240,7 +89194,7 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #eef4ff;
+  background: var(--bs-bg-color23);
   color: var(--theme-color);
   font-size: 11px;
   font-weight: 400;
@@ -89249,7 +89203,7 @@ body {
 .panzer-page-home .panzer-protection-item strong,
 .panzer-page-home .panzer-protection-item span:not(.panzer-protection-icon) {
   display: block;
-  color: var(--theme-navy-slate);
+  color: var(--theme-navy-deep);
   font-size: clamp(11px, 0.85vw, 13px);
   line-height: 1.25;
   font-weight: 800;
@@ -89266,7 +89220,7 @@ body {
   overflow: hidden;
   border: 1px solid rgba(16, 83, 243, 0.12);
   border-radius: 16px;
-  background: var(--cardmention);
+  background: rgba(255, 255, 255, 0.96);
   box-shadow: 0 16px 38px rgba(12, 39, 91, 0.09);
 }
 
@@ -89312,7 +89266,7 @@ body {
   justify-content: center;
   border: 1px solid rgba(255, 255, 255, 0.26);
   border-radius: 50%;
-  color: #ffffff;
+  color: var(--white-color);
   font-size: 34px;
 }
 
@@ -89329,7 +89283,7 @@ body {
   margin-bottom: 12px;
   padding: 5px 12px;
   border-radius: 999px;
-  background: #eef4ff;
+  background: var(--bs-bg-color23);
   color: var(--theme-blue-bright);
   font-size: 10px;
   line-height: 1;
@@ -89366,7 +89320,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   border-top: 1px solid rgba(16, 83, 243, 0.12);
-
+  background: rgba(255, 255, 255, 0.74);
 }
 
 .panzer-page-home .panzer-achievement-footer-item {
@@ -89674,7 +89628,7 @@ body {
     height: 38px;
     margin: 0;
     border-radius: 10px;
-    background: #eef4ff;
+    background: var(--bs-bg-color23);
     font-size: 23px;
   }
 
@@ -89856,25 +89810,25 @@ body {
 .footer-section.panzer-compact-footer.panzer-image-footer .footer-brand .contact-info .contact-item a:hover,
 .footer-section.panzer-compact-footer.panzer-image-footer .footer-bottom p a:hover,
 .footer-section.panzer-compact-footer.panzer-image-footer .footer-bottom .footer-policy a:hover {
-  color: #ffffff !important;
+  color: var(--white-color) !important;
 }
 
 .footer-section.panzer-compact-footer.panzer-image-footer .footer-brand .social-links a {
   border-color: rgba(255, 255, 255, 0.18) !important;
   background: rgba(255, 255, 255, 0.08) !important;
-  color: #ffffff !important;
+  color: var(--white-color) !important;
 }
 
 .footer-section.panzer-compact-footer.panzer-image-footer .footer-brand .social-links a:hover {
-  border-color: #ffffff !important;
-  background: #ffffff !important;
+  border-color: var(--white-color) !important;
+  background: var(--white-color) !important;
   color: #091528 !important;
 }
 
 .footer-section.panzer-compact-footer.panzer-image-footer .panzer-footer-newsletter .newsletter-form input[type="email"] {
   border-color: rgba(255, 255, 255, 0.16) !important;
   background: rgba(255, 255, 255, 0.08) !important;
-  color: #ffffff !important;
+  color: var(--white-color) !important;
 }
 
 .footer-section.panzer-compact-footer.panzer-image-footer .panzer-footer-newsletter .newsletter-form input[type="email"]::placeholder {
@@ -89882,7 +89836,7 @@ body {
 }
 
 .footer-section.panzer-compact-footer.panzer-image-footer .panzer-footer-newsletter .newsletter-form button[type="submit"] {
-  background: #ffffff !important;
+  background: var(--white-color) !important;
   color: #091528 !important;
 }
 
@@ -89952,7 +89906,7 @@ body {
 .panzer-page-home .panzer-brand-partners-section {
   min-height: 0 !important;
   padding: clamp(42px, 5vw, 72px) 0 !important;
-  background: var(--bs-bg-color2) !important;
+  background: var(--bs-bg-color25) !important;
   overflow: visible !important;
 }
 
@@ -90021,12 +89975,12 @@ body {
 
 .panzer-page-home .panzer-brand-partners-section .brands-slider-three::before {
   left: 0;
-  background: linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%) !important;
+  background: linear-gradient(90deg, var(--white-color) 0%, rgba(255, 255, 255, 0) 100%) !important;
 }
 
 .panzer-page-home .panzer-brand-partners-section .brands-slider-three::after {
   right: 0;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, #ffffff 100%) !important;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--white-color) 100%) !important;
 }
 
 .panzer-page-home .panzer-brand-partners-section .tv-brands-section.style-3 .sponsors-outer .brand-item {
@@ -90114,7 +90068,7 @@ body {
 .panzer-page-home .panzer-brand-partners-section .panzer-brand-nav button:hover {
   border-color: var(--theme-color) !important;
   background: var(--theme-color) !important;
-  color: #ffffff !important;
+  color: var(--white-color) !important;
 }
 
 /* About page secure choose section refresh */
@@ -90206,7 +90160,7 @@ body {
 .panzer-page-brand-detail .panzer-brand-detail-faq {
   border: 1px solid rgba(6, 17, 118, 0.08);
   border-radius: 18px;
-  background: #ffffff;
+  background: var(--white-color);
   box-shadow: 0 18px 46px rgba(10, 31, 77, 0.07);
 }
 
@@ -90248,7 +90202,7 @@ body {
 }
 
 .panzer-page-brand-detail .panzer-brand-detail-side-card nav a:hover {
-  color: #ffffff;
+  color: var(--white-color);
   background: var(--theme-color);
   border-color: var(--theme-color);
 }
@@ -90260,7 +90214,7 @@ body {
 
 .panzer-page-brand-detail .panzer-brand-detail-help {
   padding: 26px;
-  color: #ffffff;
+  color: var(--white-color);
   background:
     radial-gradient(circle at top right, rgba(84, 141, 255, 0.38), transparent 34%),
     linear-gradient(145deg, var(--theme-navy-dark) 0%, #122a8e 100%);
@@ -90274,13 +90228,13 @@ body {
   justify-content: center;
   border-radius: 50%;
   color: var(--theme-color);
-  background: #ffffff;
+  background: var(--white-color);
   font-size: 22px;
 }
 
 .panzer-page-brand-detail .panzer-brand-detail-help h3 {
   margin-top: 20px;
-  color: #ffffff;
+  color: var(--white-color);
 }
 
 .panzer-page-brand-detail .panzer-brand-detail-help p {
@@ -90299,7 +90253,7 @@ body {
   padding: 0 18px;
   border-radius: 999px;
   color: var(--theme-color);
-  background: #ffffff;
+  background: var(--white-color);
   font-size: 14px;
   line-height: 1;
   font-weight: 850;
@@ -90425,8 +90379,8 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  min-height: 28px;
-  padding: 8px 3px;
+  min-height: 40px;
+  padding: 8px 14px;
   border-radius: 999px;
   color: var(--theme-navy-darker);
   background: #f2f6ff;
@@ -90488,11 +90442,9 @@ body {
   padding: 0 18px 18px;
 }
 
-@media (min-width: 1024px) and (max-width: 1199px) {
+@media (max-width: 1199px) {
   .panzer-page-brand-detail .panzer-brand-detail-layout {
-
-    grid-template-columns: minmax(260px, 330px) minmax(0, 1fr);
-
+    grid-template-columns: 1fr;
   }
 
   .panzer-page-brand-detail .panzer-brand-detail-sidebar {
@@ -90504,7 +90456,9 @@ body {
     top: auto;
   }
 
-
+  .panzer-page-brand-detail .panzer-brand-detail-side-card nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 991px) {
@@ -90514,10 +90468,6 @@ body {
 
   .panzer-page-brand-detail .panzer-brand-detail-side-card nav {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .panzer-page-brand-detail .panzer-brand-detail-layout {
-    grid-template-columns: 1fr;
   }
 }
 
@@ -90638,12 +90588,12 @@ body {
 
 .panzer-page-solution-details .panzer-solution-detail-side-card nav a:hover,
 .panzer-page-solution-details .panzer-solution-detail-side-card nav a.active {
-  color: #ffffff;
+  color: var(--white-color);
   background: var(--theme-color);
 }
 
 .panzer-page-solution-details .panzer-solution-detail-help {
-  color: #ffffff;
+  color: var(--white-color);
   background: var(--theme-navy-dark);
 }
 
@@ -90655,13 +90605,13 @@ body {
   justify-content: center;
   border-radius: 50%;
   color: var(--theme-color);
-  background: #ffffff;
+  background: var(--white-color);
   font-size: 22px;
 }
 
 .panzer-page-solution-details .panzer-solution-detail-help h3,
 .panzer-page-solution-details .panzer-solution-detail-help p {
-  color: #ffffff;
+  color: var(--white-color);
 }
 
 .panzer-page-solution-details .panzer-solution-detail-help p,
@@ -90679,7 +90629,7 @@ body {
 }
 
 .panzer-page-solution-details .panzer-solution-detail-help p {
-  color: #ffffff;
+  color: var(--white-color);
   opacity: 0.84;
 }
 
@@ -90694,7 +90644,7 @@ body {
   padding: 0 18px;
   border-radius: 999px;
   color: var(--theme-color);
-  background: #ffffff;
+  background: var(--white-color);
   font-size: 14px;
   line-height: 1;
   font-weight: 850;
@@ -90731,7 +90681,7 @@ body {
 }
 
 .panzer-page-solution-details .panzer-solution-detail-hero h2 {
-
+  max-width: 650px;
   margin: 20px 0 14px;
   color: var(--theme-navy-darker);
   font-size: clamp(34px, 3.6vw, 52px);
@@ -90754,13 +90704,13 @@ body {
 }
 
 .panzer-page-solution-details .panzer-solution-detail-actions a:first-child {
-  color: #ffffff;
+  color: var(--white-color);
   background: var(--theme-color);
 }
 
 .panzer-page-solution-details .panzer-solution-detail-actions a:last-child {
   color: var(--theme-navy-darker);
-  background: #eef4ff;
+  background: var(--bs-bg-color23);
 }
 
 .panzer-page-solution-details .panzer-solution-detail-image {
@@ -91022,8 +90972,8 @@ body {
   gap: 18px;
   padding: 0 18px 0 34px;
   border-radius: 999px;
-  color: #ffffff !important;
-  background: var(--theme-color);
+  color: var(--white-color) !important;
+  background: var(--theme-navy-dark);
   font-size: clamp(18px, 1.6vw, 22px);
   line-height: 1;
   font-weight: 800;
@@ -91051,7 +91001,7 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #ffffff;
+  background: var(--white-color);
   color: var(--theme-color);
   font-size: 20px;
 }
@@ -91095,8 +91045,7 @@ body {
 }
 
 .panzer-about-secure-stat strong {
-  /* color: #101a7b; */
-  color: var(--theme-navy-dark);
+  color: #101a7b;
   font-size: clamp(24px, 2vw, 30px);
   line-height: 1;
   font-weight: 900;
@@ -91104,14 +91053,13 @@ body {
 
 .panzer-about-secure-stat p {
   margin: 4px 0 0;
-  /* color: #4b556c; */
-  color: var(--theme-navy-slate);
+  color: #4b556c;
   font-size: 14px;
   line-height: 1.25;
   font-weight: 650;
 }
 
-@media (min-width: 1024px) and (max-width: 1199px) {
+@media (max-width: 1199px) {
   .panzer-page-about .panzer-about-secure-section .panzer-about-secure-visual.tv-choose-right-box {
     margin-top: 30px !important;
   }
@@ -91125,7 +91073,9 @@ body {
   }
 
   .panzer-resource-breadcrumb-visual img {
+
     width: min(65%, 560px);
+
   }
 }
 
@@ -91240,34 +91190,6 @@ body {
 
   .tv-contact-section.inner .contact-form button {
     width: 100%;
-  }
-}
-
-/* ── Mobile Homepage Typography Fix ────────────────────────────────── */
-@media (max-width: 767px) {
-
-  .panzer-static-sec-title,
-  .panzer-lock-about-title,
-  .panzer-achievement-title,
-  .sec-title {
-    font-size: 28px !important;
-    line-height: 1.3 !important;
-  }
-
-  .tv-choose-section.style-6 .choose-left .choose-box .text h6,
-  .tv-choose-section.style-6 .choose-right .choose-box .text h6 {
-    font-size: 18px;
-    line-height: 1.2;
-    color: var(--white-color);
-    font-weight: 600;
-    font-family: var(--title-font);
-    margin: 0;
-  }
-}
-
-@media only screen and (min-device-width: 768px) and (max-device-width: 991px) {
-  .panzer-page-solution-details .panzer-solution-detail-layout {
-    grid-template-columns: 1fr;
   }
 }
 

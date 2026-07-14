@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 type ScriptConfig = {
   src: string;
-  strategy: "afterInteractive" | "lazyOnload";
+  strategy: "beforeInteractive" | "afterInteractive" | "lazyOnload";
   pages?: string[]; // If specified, only load on these pages
 };
 
@@ -14,17 +14,16 @@ const scripts: ScriptConfig[] = [
   { src: "/assets/js/vendor/jquery-3.7.1.min.js", strategy: "afterInteractive" },
   { src: "/assets/js/bootstrap.min.js", strategy: "afterInteractive" },
   
-  // DEPENDENCIES - Must load before main.js (afterInteractive ensures they load early)
+  // DEPENDENCIES - Must load before main.js
   { src: "/assets/js/gsap.min.js", strategy: "afterInteractive" }, // main.js needs this
   { src: "/assets/js/ScrollTrigger.min.js", strategy: "afterInteractive" },
-  { src: "/assets/js/lenis.min.js", strategy: "afterInteractive" }, // main.js needs this
+  { src: "/assets/js/lenis.min.js", strategy: "afterInteractive" }, // lenis added back
   { src: "/assets/js/select2.min.js", strategy: "afterInteractive" }, // main.js needs this
   { src: "/assets/js/swiper-bundle.min.js", strategy: "afterInteractive" },
   
   // SECONDARY - Can load after dependencies
   { src: "/assets/js/wow.min.js", strategy: "lazyOnload" },
   { src: "/assets/js/gsap-scroll-to-plugin.min.js", strategy: "lazyOnload" },
-  { src: "/assets/js/ScrollSmoother.js", strategy: "lazyOnload" },
   
   // PAGE-SPECIFIC - Only load where absolutely needed
   { 

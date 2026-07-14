@@ -61,7 +61,7 @@ export default function ServiceContactForm() {
     const formData = new FormData(e.currentTarget);
     const fields: Record<string, string> = {};
     formData.forEach((val, key) => { fields[key] = val.toString(); });
-    
+
     // Add selected service to fields
     fields.service = selectedService;
 
@@ -120,7 +120,7 @@ export default function ServiceContactForm() {
           padding: 12px 40px 12px 15px;
           border: 1px solid #e0e0e0;
           border-radius: 8px;
-          background: #ffffff;
+          background: var(--light-color);
           font-size: 14px;
           color: #333;
           text-align: left;
