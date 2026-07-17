@@ -230,9 +230,21 @@ export default async function Page({ params }: PageProps) {
                   {brand.capabilitiesHeading && (
                     <div className="editor-content" dangerouslySetInnerHTML={{ __html: brand.capabilitiesHeading }} />
                   )}
-                  {pointsHtml && (
-                    <div className="editor-content panzer-brand-detail-capabilities-points" dangerouslySetInnerHTML={{ __html: pointsHtml }} />
-                  )}
+                  {pointsHtml && (() => {
+                    // Extract text from each <li> and render as pill badges
+                    const pills = Array.from(
+                      pointsHtml.matchAll(/<li[^>]*>([\s\S]*?)<\/li>/gi)
+                    ).map(m => m[1].replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim()).filter(Boolean);
+                    return pills.length > 0 ? (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '16px' }}>
+                        {pills.map((pill, i) => (
+                          <h4 key={i} className="panzer-brand-detail-pill">{pill}</h4>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="editor-content panzer-brand-detail-capabilities-points" dangerouslySetInnerHTML={{ __html: pointsHtml }} />
+                    );
+                  })()}
                 </div>
               ) : null}
 

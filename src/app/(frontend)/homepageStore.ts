@@ -2,6 +2,7 @@
 
 import pool from '@/lib/db'
 import { cache } from 'react'
+import { sanitizeDeep } from '@/lib/sanitize'
 
 type HomepageSolution = {
   id: number
@@ -89,8 +90,10 @@ async function fetchHomepageData(): Promise<HomepageData> {
   `)
   console.timeEnd('DB Query: Settings')
 
-  const homepageSettings = settingsRows[0]?.value 
-    ? JSON.parse(settingsRows[0].value)
+  // Sanitize the entire settings object recursively — this JSON blob can contain
+  // nested image fields at any depth, so a top-level check alone isn't enough.
+  const homepageSettings = settingsRows[0]?.value
+    ? sanitizeDeep(JSON.parse(settingsRows[0].value))
     : null
 
   const sanitizeImage = (url: string | undefined | null): string | undefined => {

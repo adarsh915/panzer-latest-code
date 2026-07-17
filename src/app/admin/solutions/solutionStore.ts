@@ -3,6 +3,7 @@
 import pool from '@/lib/db'
 import { revalidateTag } from 'next/cache'
 import { toSlug } from './solutionHelpers'
+import { sanitizeDeep, stripBase64 } from '@/lib/sanitize'
 import type {
   SolutionCategory,
   SolutionCategoryFormData,
@@ -119,7 +120,7 @@ export const readSolutionsPaginated = async (page: number = 1, limit: number = 1
     })
   }))
   
-  return { solutions: mappedSolutions, total }
+  return { solutions: mappedSolutions.map(sanitizeDeep), total }
 }
 
 export const createSolution = async (data: SolutionFormData): Promise<SolutionService | { success: false, message: string }> => {
@@ -146,12 +147,12 @@ export const createSolution = async (data: SolutionFormData): Promise<SolutionSe
         data.subtitle || '',
         data.description || '',
         data.category || '',
-        data.image || '',
+        data.image ? stripBase64(data.image) : '',
         data.imageTitle || '',
         data.imageCaption || '',
         data.imageDescription || '',
         data.imageAlt || '',
-        data.logo || '',
+        data.logo ? stripBase64(data.logo) : '',
         data.logoAlt || '',
         slug,
         data.order || 0,
@@ -169,7 +170,7 @@ export const createSolution = async (data: SolutionFormData): Promise<SolutionSe
         const fcId = `fc${Date.now()}${Math.floor(Math.random() * 1000)}`
         await connection.query(
           `INSERT INTO solution_feature_cards (id, solution_id, icon, image, image_title, image_caption, image_description, image_alt, title, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [fcId, id, fc.icon || '', fc.image || '', fc.imageTitle || '', fc.imageCaption || '', fc.imageDescription || '', fc.imageAlt || '', fc.title || '', fc.description || '']
+          [fcId, id, fc.icon || '', fc.image ? stripBase64(fc.image) : '', fc.imageTitle || '', fc.imageCaption || '', fc.imageDescription || '', fc.imageAlt || '', fc.title || '', fc.description || '']
         )
       }
     }
@@ -190,7 +191,7 @@ export const createSolution = async (data: SolutionFormData): Promise<SolutionSe
         const pointsStr = JSON.stringify(ec.points || []);
         await connection.query(
           `INSERT INTO solution_extra_cards (id, solution_id, heading, description, image, image_title, image_caption, image_description, image_alt, points) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [ecId, id, ec.heading || '', ec.description || '', ec.image || '', ec.imageTitle || '', ec.imageCaption || '', ec.imageDescription || '', ec.imageAlt || '', pointsStr]
+          [ecId, id, ec.heading || '', ec.description || '', ec.image ? stripBase64(ec.image) : '', ec.imageTitle || '', ec.imageCaption || '', ec.imageDescription || '', ec.imageAlt || '', pointsStr]
         )
       }
     }
@@ -236,12 +237,12 @@ export const updateSolution = async (id: string, data: SolutionFormData): Promis
         data.subtitle || '',
         data.description || '',
         data.category || '',
-        data.image || '',
+        data.image ? stripBase64(data.image) : '',
         data.imageTitle || '',
         data.imageCaption || '',
         data.imageDescription || '',
         data.imageAlt || '',
-        data.logo || '',
+        data.logo ? stripBase64(data.logo) : '',
         data.logoAlt || '',
         slug,
         data.order || 0,
@@ -264,7 +265,7 @@ export const updateSolution = async (id: string, data: SolutionFormData): Promis
         const fcId = `fc${Date.now()}${Math.floor(Math.random() * 1000)}`
         await connection.query(
           `INSERT INTO solution_feature_cards (id, solution_id, icon, image, image_title, image_caption, image_description, image_alt, title, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [fcId, id, fc.icon || '', fc.image || '', fc.imageTitle || '', fc.imageCaption || '', fc.imageDescription || '', fc.imageAlt || '', fc.title || '', fc.description || '']
+          [fcId, id, fc.icon || '', fc.image ? stripBase64(fc.image) : '', fc.imageTitle || '', fc.imageCaption || '', fc.imageDescription || '', fc.imageAlt || '', fc.title || '', fc.description || '']
         )
       }
     }
@@ -286,7 +287,7 @@ export const updateSolution = async (id: string, data: SolutionFormData): Promis
         const ecId = `ec${Date.now()}${Math.floor(Math.random() * 1000)}`
         await connection.query(
           `INSERT INTO solution_extra_cards (id, solution_id, heading, description, image, image_title, image_caption, image_description, image_alt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [ecId, id, ec.heading || '', ec.description || '', ec.image || '', ec.imageTitle || '', ec.imageCaption || '', ec.imageDescription || '', ec.imageAlt || '']
+          [ecId, id, ec.heading || '', ec.description || '', ec.image ? stripBase64(ec.image) : '', ec.imageTitle || '', ec.imageCaption || '', ec.imageDescription || '', ec.imageAlt || '']
         )
       }
     }

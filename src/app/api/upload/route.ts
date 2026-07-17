@@ -4,33 +4,59 @@ import path from 'path';
 import { getSessionUser } from '@/lib/session';
 
 export async function POST(request: NextRequest) {
+  console.log('[UPLOAD] Received POST request to /api/upload');
+  
   // Auth guard — must be a logged-in admin
   const sessionUser = await getSessionUser()
   if (!sessionUser) {
+    console.log('[UPLOAD] Unauthorized request');
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
+    console.log('[UPLOAD] Authorized. Parsing form data...');
     const formData = await request.formData();
+    console.log('[UPLOAD] Form data parsed. Keys:', Array.from(formData.keys()));
+    
     const file = formData.get('file') as File | null;
     const folder = formData.get('folder') as string || 'misc';
+    console.log('[UPLOAD] Extracted file:', file ? file.name : 'null', 'Folder:', folder);
 
     if (!file) {
+      console.log('[UPLOAD] Error: No file provided in formData');
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
     // Sanitize folder name to prevent path traversal
     const safeFolder = folder.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 50) || 'misc'
 
+    console.log('[UPLOAD] Reading file arrayBuffer...');
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const originalName = file.name;
-    const extension = path.extname(originalName).toLowerCase();
+    const originalName = (file as any).name || 'uploaded_file';
+    let extension = path.extname(originalName).toLowerCase();
+    
+    // If no extension found in name, try to guess from mime type
+    if (!extension && file.type) {
+      const mimeToExt: Record<string, string> = {
+        'image/jpeg': '.jpg',
+        'image/png': '.png',
+        'image/gif': '.gif',
+        'image/webp': '.webp',
+        'image/svg+xml': '.svg',
+        'application/pdf': '.pdf',
+        'text/plain': '.txt',
+      };
+      extension = mimeToExt[file.type] || '';
+    }
+
+    console.log('[UPLOAD] Original Name:', originalName, 'Extension:', extension, 'Mime:', file.type);
 
     // Whitelist allowed extensions
     const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.mp4', '.webm', '.mov', '.avi']
     if (!allowedExtensions.includes(extension)) {
+      console.log('[UPLOAD] Error: Extension not allowed:', extension);
       return NextResponse.json({ error: 'File type not allowed' }, { status: 400 });
     }
 

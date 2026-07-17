@@ -48,14 +48,36 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
   const [showLogoPicker, setShowLogoPicker] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
+  const joditUploader = {
+    insertImageAsBase64URI: false,
+    filesVariableName: (t?: number) => 'file',
+    url: '/api/upload',
+    format: 'json',
+    method: 'POST',
+    prepareData(data: FormData) { data.append('folder', 'media'); return data; },
+    isSuccess(resp: any) { return resp.success; },
+    getMsg(resp: any) { return resp.error || 'Upload failed'; },
+    process(resp: any) {
+      const url: string = resp.url || '';
+      const lastSlash = url.lastIndexOf('/');
+      const baseurl = url.substring(0, lastSlash + 1);
+      const filename = url.substring(lastSlash + 1);
+      return {
+        files: filename ? [filename] : [],
+        baseurl,
+        isImages: [true],
+        error: resp.error ? 1 : 0,
+        msg: resp.error || '',
+      };
+    },
+  };
+
   const editorConfig = useMemo(() => ({
     readonly: false,
     placeholder: 'Write here',
     height: 300,
     enableDragAndDropFileToEditor: true,
-    uploader: {
-      insertImageAsBase64URI: true
-    }
+    uploader: joditUploader
   }), []);
 
   const editorConfig500 = useMemo(() => ({
@@ -63,9 +85,7 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
     placeholder: 'Write brand description here',
     height: 500,
     enableDragAndDropFileToEditor: true,
-    uploader: {
-      insertImageAsBase64URI: true
-    }
+    uploader: joditUploader
   }), []);
 
   const editorConfig250 = useMemo(() => ({
@@ -73,9 +93,7 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
     placeholder: 'Write extra card description',
     height: 250,
     enableDragAndDropFileToEditor: true,
-    uploader: {
-      insertImageAsBase64URI: true
-    }
+    uploader: joditUploader
   }), []);
 
   const editorConfig200 = useMemo(() => ({
@@ -83,9 +101,7 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
     placeholder: 'Write feature description here',
     height: 200,
     enableDragAndDropFileToEditor: true,
-    uploader: {
-      insertImageAsBase64URI: true
-    }
+    uploader: joditUploader
   }), []);
 
   useEffect(() => {

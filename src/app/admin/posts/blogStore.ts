@@ -2,6 +2,7 @@
 
 import pool from '@/lib/db'
 import { toSlug } from './blogHelpers'
+import { sanitizeDeep, stripBase64 } from '@/lib/sanitize'
 import type {
   BlogCategory,
   BlogCategoryFormData,
@@ -40,7 +41,7 @@ export const readPostsPaginated = async (page: number = 1, limit: number = 10): 
     [limit, offset]
   )
   
-  const posts = (rows as any[]).map((row) => ({
+  const posts = (rows as any[]).map((row) => sanitizeDeep({
     id: row.id,
     title: row.title,
     slug: row.slug,
@@ -90,7 +91,7 @@ export const createPost = async (data: BlogPostFormData): Promise<BlogPost | { s
       data.author || '',
       data.authorBio || '',
       data.description || '',
-      data.image || '',
+      data.image ? stripBase64(data.image) : '',
       data.imageTitle || '',
       data.imageCaption || '',
       data.imageDescription || '',
@@ -135,7 +136,7 @@ export const updatePost = async (id: string, data: BlogPostFormData): Promise<Bl
       data.author || '',
       data.authorBio || '',
       data.description || '',
-      data.image || '',
+      data.image ? stripBase64(data.image) : '',
       data.imageTitle || '',
       data.imageCaption || '',
       data.imageDescription || '',
@@ -168,7 +169,7 @@ export const findPost = async (id: string): Promise<BlogPost | undefined> => {
   const row = (rows as any[])[0]
   if (!row) return undefined
 
-  return {
+  return sanitizeDeep({
     id: row.id,
     title: row.title,
     slug: row.slug,
@@ -188,7 +189,7 @@ export const findPost = async (id: string): Promise<BlogPost | undefined> => {
     metaTitle: row.meta_title ?? '',
     metaDescription: row.meta_description ?? '',
     metaKeywords: row.meta_keywords ?? '',
-  }
+  })
 }
 
 

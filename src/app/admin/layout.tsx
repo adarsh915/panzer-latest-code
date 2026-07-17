@@ -4,9 +4,9 @@ import VerticalLayout from '@/components/layout/VerticalLayout'
 import RequireAuth from '@/components/auth/RequireAuth'
 import AppProvidersWrapper from '@/components/wrappers/AppProvidersWrapper'
 
-// Load minimal admin CSS (80KB instead of 546KB)
-import '@/assets/scss/admin-core.scss'
-
+// Load full admin CSS here so it doesn't bloat the frontend
+import 'flatpickr/dist/flatpickr.min.css'
+import '@/assets/scss/app.scss';
 const AdminLayout = ({ children }: ChildrenType) => {
 
   return (

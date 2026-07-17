@@ -72,14 +72,38 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
   const [showFeatureImagePickerIndex, setShowFeatureImagePickerIndex] = useState<number | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
+  const joditUploader = {
+    insertImageAsBase64URI: false,
+    filesVariableName: (t?: number) => 'file',
+    url: '/api/upload',
+    format: 'json',
+    method: 'POST',
+    prepareData(data: FormData) { data.append('folder', 'media'); return data; },
+    isSuccess(resp: any) { return resp.success; },
+    getMsg(resp: any) { return resp.error || 'Upload failed'; },
+    process(resp: any) {
+      // Jodit needs: files=filenames, baseurl=base path, isImages=bool array
+      // It constructs the src as baseurl + filename
+      const url: string = resp.url || '';
+      const lastSlash = url.lastIndexOf('/');
+      const baseurl = url.substring(0, lastSlash + 1);  // e.g. /uploads/media/
+      const filename = url.substring(lastSlash + 1);    // e.g. abc123.jpg
+      return {
+        files: filename ? [filename] : [],
+        baseurl,
+        isImages: [true],
+        error: resp.error ? 1 : 0,
+        msg: resp.error || '',
+      };
+    },
+  };
+
   const editorConfig = useMemo(() => ({
     readonly: false,
     placeholder: 'Write here',
     height: 300,
     enableDragAndDropFileToEditor: true,
-    uploader: {
-      insertImageAsBase64URI: true
-    }
+    uploader: joditUploader
   }), []);
 
   const editorConfig500 = useMemo(() => ({
@@ -87,9 +111,7 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
     placeholder: 'Write description here',
     height: 500,
     enableDragAndDropFileToEditor: true,
-    uploader: {
-      insertImageAsBase64URI: true
-    }
+    uploader: joditUploader
   }), []);
 
   const editorConfig200 = useMemo(() => ({
@@ -97,9 +119,7 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
     placeholder: 'Write extra card description',
     height: 200,
     enableDragAndDropFileToEditor: true,
-    uploader: {
-      insertImageAsBase64URI: true
-    }
+    uploader: joditUploader
   }), []);
 
   useEffect(() => {

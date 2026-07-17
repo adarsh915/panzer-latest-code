@@ -54,7 +54,27 @@ const FaqFormPage = ({ mode, faqId }: Props) => {
     height: 350,
     enableDragAndDropFileToEditor: true,
     uploader: {
-      insertImageAsBase64URI: true
+      insertImageAsBase64URI: false,
+      filesVariableName: (t?: number) => 'file',
+      url: '/api/upload',
+      format: 'json',
+      method: 'POST',
+      prepareData(data: FormData) { data.append('folder', 'media'); return data; },
+      isSuccess(resp: any) { return resp.success; },
+      getMsg(resp: any) { return resp.error || 'Upload failed'; },
+      process(resp: any) {
+        const url: string = resp.url || '';
+        const lastSlash = url.lastIndexOf('/');
+        const baseurl = url.substring(0, lastSlash + 1);
+        const filename = url.substring(lastSlash + 1);
+        return {
+          files: filename ? [filename] : [],
+          baseurl,
+          isImages: [true],
+          error: resp.error ? 1 : 0,
+          msg: resp.error || '',
+        };
+      },
     }
   }), []);
   useEffect(() => {

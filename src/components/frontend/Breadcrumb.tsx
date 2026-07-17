@@ -44,7 +44,7 @@ export function Breadcrumb({ title, paths, image, imageAlt, imageTitle, imageCap
             </ol>
           </nav>
         </div>
-        <div className="container-fluid panzer-resource-breadcrumb-shell">
+        <div className="container-fluid panzer-resource-breadcrumb-shell breadcrumb-grid">
           <div className="panzer-resource-breadcrumb-copy">
             <h1 className="panzer-resource-breadcrumb-title">{title}</h1>
             {!hideDescription && (

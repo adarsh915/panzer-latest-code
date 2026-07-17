@@ -154,7 +154,7 @@ export default function ServiceContactForm() {
           top: calc(100% + 5px);
           left: 0;
           right: 0;
-          background: #ffffff;
+          background: var(--light-color);
           border: 1px solid #e0e0e0;
           border-radius: 8px;
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -179,7 +179,8 @@ export default function ServiceContactForm() {
           color: #333;
         }
         .panzer-custom-dropdown-option:hover {
-          background-color: #f5f5f5;
+          background-color: var(--theme-color);
+          color: var(--text-light);
         }
         .panzer-custom-dropdown-option.selected {
           background-color: var(--theme-color);

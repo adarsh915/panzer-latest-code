@@ -2,6 +2,7 @@
 
 import pool from '@/lib/db'
 import { toSlug } from '../solutions/solutionHelpers'
+import { sanitizeDeep, stripBase64 } from '@/lib/sanitize'
 import type {
   ResourceCategory,
   ResourceCategoryFormData,
@@ -44,12 +45,12 @@ export const readResourcesPaginated = async (page: number = 1, limit: number = 1
     downloadCount: row.download_count || 0,
   }))
   
-  return { items, total }
+  return { items: items.map(sanitizeDeep), total }
 }
 
 export const readAllResources = async (): Promise<ResourceItem[]> => {
   const [rows] = await pool.query('SELECT * FROM resources ORDER BY sort_order ASC, created_at DESC')
-  return (rows as any[]).map(row => ({
+  return (rows as any[]).map(row => sanitizeDeep({
     id: row.id,
     title: row.title,
     slug: row.slug,
@@ -91,7 +92,7 @@ export const createResource = async (data: ResourceFormData): Promise<ResourceIt
         data.description || '',
         data.fileUrl,
         data.fileType || '',
-        data.image || '',
+        data.image ? stripBase64(data.image) : '',
         data.imageTitle || '',
         data.imageCaption || '',
         data.imageDescription || '',
@@ -126,7 +127,7 @@ export const updateResource = async (id: string, data: ResourceFormData): Promis
         data.description || '',
         data.fileUrl,
         data.fileType || '',
-        data.image || '',
+        data.image ? stripBase64(data.image) : '',
         data.imageTitle || '',
         data.imageCaption || '',
         data.imageDescription || '',

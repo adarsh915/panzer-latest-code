@@ -363,7 +363,7 @@ export function SiteHeader({ headerData }: { headerData?: any }) {
                   border: "2px solid #e0e0e0",
                   outline: "none",
                   marginTop: "10px",
-                  background: "#ffffff",
+                  background: "var(--white-color)",
                   fontSize: "14px",
                   color: "#333333",
                   transition: "border-color 0.3s ease",

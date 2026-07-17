@@ -125,7 +125,7 @@ const colorCategories: Record<string, string[]> = {
     '--bs-bg-color23',
     '--white-color',
     '--bs-bg-color2',
-    // '--bs-bg-color24',
+    '--bs-bg-color24',
     '--bs-bg-color25',
     '--light-color',
     '--light-color2',
@@ -253,7 +253,11 @@ export default function ThemeSettingsPanel({ initialColors }: ThemeSettingsPanel
               <h4 className={styles.categoryTitle}>{category}</h4>
               <div className={styles.grid}>
                 {keys.map((key) => (
-                  <div key={key} className={styles.colorItem}>
+                  <div
+                    key={key}
+                    className={styles.colorItem}
+                    style={{ zIndex: activePicker === key ? 100 : undefined }}
+                  >
                     <label className={styles.colorLabel}>
                       <span>{colorLabels[key] || key}</span>
                       <span className={styles.hex}>{colors[key]}</span>

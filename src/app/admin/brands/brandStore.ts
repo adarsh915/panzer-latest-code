@@ -2,6 +2,7 @@
 
 import pool from '@/lib/db'
 import { revalidateTag } from 'next/cache'
+import { sanitizeDeep, stripBase64 } from '@/lib/sanitize'
 import type {
   BrandCategory,
   BrandCategoryFormData,
@@ -82,7 +83,7 @@ export const readBrandsPaginated = async (page: number = 1, limit: number = 10):
     }))
   }))
   
-  return { brands: mappedBrands, total }
+  return { brands: mappedBrands.map(sanitizeDeep), total }
 }
 
 export const findBrand = async (id: string): Promise<BrandPartner | undefined> => {
@@ -150,12 +151,12 @@ export const createBrand = async (data: BrandFormData): Promise<BrandPartner | {
       data.website || '',
       data.category || '',
       data.description || '',
-      data.image || '',
+      data.image ? stripBase64(data.image) : '',
       data.imageTitle || '',
       data.imageCaption || '',
       data.imageDescription || '',
       data.imageAlt || '',
-      data.logo || '',
+      data.logo ? stripBase64(data.logo) : '',
       data.logoAlt || '',
       data.order || 1,
       data.featured ? 1 : 0,
@@ -227,6 +228,7 @@ export const updateBrand = async (id: string, data: Partial<BrandFormData>): Pro
       updates.push(`${dbField} = ?`)
       let val = (data as any)[key]
       if (key === 'featured') val = val ? 1 : 0
+      if ((key === 'image' || key === 'logo') && typeof val === 'string') val = stripBase64(val)
       values.push(val)
     }
   }
