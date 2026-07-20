@@ -6,6 +6,7 @@ export const revalidate = 60; // ISR: re-render at most once per minute
 import { getHomepageData } from "./homepageStore";
 import ServiceContactForm from "@/components/frontend/ServiceContactForm";
 import { HeroSlider } from "@/components/frontend/HeroSlider";
+import { NewHeroSlider } from "@/components/frontend/NewHeroSlider";
 import { BrandSlider } from "@/components/frontend/BrandSlider";
 import { createPageMetadata } from "@/utils/metadata";
 
@@ -189,16 +190,16 @@ export default async function Page() {
                     border: none !important;
                 }
             `}</style>
+            <NewHeroSlider />
+            {/* 
             <section className="tv-hero-section style-4 panzer-cyber-hero">
                 <div className="panzer-cyber-slider-wrap">
-                    {/* Gradient Background - Fast loading, no video buffering */}
                     <div className="panzer-cyber-video-bg" style={{
                         background: 'var(--hero-bg)',
                         position: 'absolute',
                         inset: 0,
                         zIndex: 0
                     }}>
-                        {/* Overlay pattern for depth */}
                         <div style={{ 
                             position: 'absolute', 
                             inset: 0, 
@@ -262,6 +263,7 @@ export default async function Page() {
                     <HeroSlider />
                 </div>
             </section>
+            */}
 
 
 
