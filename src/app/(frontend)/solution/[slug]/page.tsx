@@ -2,7 +2,7 @@ import { Breadcrumb } from "@/components/frontend/Breadcrumb";
 import { SolutionDetailSticky } from "@/components/frontend/SolutionDetailSticky";
 import Image from "next/image";
 import Link from "next/link";
-import { readSolutions } from "@/app/admin/solutions/solutionStore";
+import { readSolutions, readCategories as readSolutionCategories } from "@/app/admin/solutions/solutionStore";
 import { readActiveFaqs } from "@/app/admin/faqs/faqStore";
 import { notFound } from "next/navigation";
 import { sanitizeHtml } from "@/utils/sanitize";
@@ -53,9 +53,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
-  const [solutions, allFaqs] = await Promise.all([
+  const [solutions, allFaqs, categories] = await Promise.all([
     readSolutions(),
-    readActiveFaqs()
+    readActiveFaqs(),
+    readSolutionCategories()
   ]);
 
   const solution = solutions.find((s) => s.slug === slug);
@@ -98,11 +99,11 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     processedExtraCards = solution.extraCards.map((card) => {
       const { html, toc } = generateToc(sanitizeHtml(card.description || ""));
       const headingId = generateSlug(card.heading);
-      
+
       // We still add to TOC, but keep in mind heading might have HTML now
       // The generateSlug will strip HTML internally if it just uses regex to remove non-words
       extraCardsToc.push({ id: headingId, text: card.heading.replace(/<[^>]*>?/gm, ''), level: 3 }, ...toc);
-      
+
       return { ...card, processedHtml: html, headingId };
     });
   }
@@ -164,12 +165,17 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         /* Fix iPad and tablet layout */
         @media (max-width: 1024px) {
           .panzer-page-solution-details .panzer-solution-detail-layout {
-            grid-template-columns: 1fr !important;
+            display: flex !important;
+            flex-direction: column;
             gap: 20px;
           }
           .panzer-page-solution-details .panzer-solution-detail-sidebar {
+            order: 2;
             position: static !important;
             top: auto !important;
+          }
+          .panzer-page-solution-details .panzer-solution-detail-content {
+            order: 1;
           }
           .panzer-page-solution-details .panzer-solution-detail-sidebar-inner {
             position: static !important;
@@ -195,6 +201,90 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           margin-top: 0 !important;
           display: inline !important;
         }
+        .panzer-category-pills-container {
+          flex-wrap: wrap;
+          max-width: 100%;
+        }
+        .panzer-mobile-category-dropdown {
+          background: var(--cardmention);
+          border: 1px solid var(--cardmention);
+          border-radius: 8px;
+        
+          width: 100%;
+        }
+        .panzer-mobile-category-dropdown summary {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 16px 20px;
+          color: var(--theme-navy-dark);
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          list-style: none;
+        }
+        .panzer-mobile-category-dropdown summary::-webkit-details-marker {
+          display: none;
+        }
+        .panzer-mobile-category-dropdown summary .summary-left {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .panzer-mobile-category-dropdown summary .summary-left i {
+          font-size: 18px;
+        }
+        .panzer-mobile-category-dropdown[open] summary .summary-chevron {
+          transform: rotate(180deg);
+        }
+        .panzer-mobile-category-dropdown summary .summary-chevron {
+          transition: transform 0.3s ease;
+        }
+        .panzer-mobile-category-dropdown-content {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          padding: 0 20px 20px 20px;
+        }
+        .panzer-mobile-category-pill {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 14px;
+          padding: 12px 18px;
+          border-radius: 12px;
+          color: var(--theme-navy-darker);
+          background: #f3f7ff;
+          font-size: 14px;
+          line-height: 1.3;
+          font-weight: 800;
+          text-decoration: none !important;
+          white-space: normal;
+        }
+        .panzer-mobile-category-pill:hover,
+        .panzer-mobile-category-pill.active {
+          color: var(--text-light);
+          background: var(--theme-color) !important;
+        }
+        @media (max-width: 768px) {
+          .panzer-category-pills-container {
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            -ms-overflow-style: none !important;  /* IE and Edge */
+            scrollbar-width: none !important;  /* Firefox */
+            padding-bottom: 4px;
+            max-width: calc(100vw - 30px);
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
+          }
+          .panzer-category-pills-container::-webkit-scrollbar {
+            display: none !important;
+          }
+          .panzer-category-pills-container .panzer-solution-detail-pill {
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
+          }
+        }
       `}</style>
       <SolutionDetailSticky />
       <Breadcrumb
@@ -213,7 +303,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           <div className="panzer-solution-detail-layout">
             <aside className="panzer-solution-detail-sidebar" aria-label="Solution categories">
               <div className="panzer-solution-detail-sidebar-inner">
-                <div className="panzer-solution-detail-side-card">
+                <div className="panzer-solution-detail-side-card d-none d-lg-block">
                   <h2>Solutions</h2>
                   <nav>
                     {solutions.map((solution) => (
@@ -228,6 +318,23 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                     ))}
                   </nav>
                 </div>
+
+                {categories.length > 0 && (
+                  <div className="panzer-solution-detail-side-card d-none d-lg-block" style={{ marginTop: '20px' }}>
+                    <h2>Categories</h2>
+                    <nav>
+                      {categories.filter(c => c.status === "active").map((category) => (
+                        <Link
+                          href={`/solution/category/${category.slug}`}
+                          key={category.id}
+                        >
+                          <span>{category.name}</span>
+                          <i className="fa-solid fa-arrow-right"></i>
+                        </Link>
+                      ))}
+                    </nav>
+                  </div>
+                )}
 
                 {/* <TableOfContents toc={fullToc} /> */}
 
@@ -246,10 +353,61 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
             </aside>
 
             <div className="panzer-solution-detail-content">
+              {/* Mobile Solutions Dropdown (Replaces Sidebar Solutions on Mobile) */}
+              {solutions.length > 0 && (
+                <details className="panzer-mobile-category-dropdown d-block d-lg-none">
+                  <summary>
+                    <div className="summary-left">
+                      <i className="fa-solid fa-list"></i>
+                      <span>Solutions</span>
+                    </div>
+                    <i className="fa-solid fa-chevron-down summary-chevron"></i>
+                  </summary>
+                  <div className="panzer-mobile-category-dropdown-content">
+                    {solutions.map((s) => (
+                      <Link
+                        href={`/solution/${s.slug}`}
+                        key={s.id}
+                        className={`panzer-mobile-category-pill ${s.slug === slug ? 'active' : ''}`}
+                      >
+                        <span>{s.title}</span>
+                        <i className="fa-solid fa-arrow-right"></i>
+                      </Link>
+                    ))}
+                  </div>
+                </details>
+              )}
+
+              {/* Mobile Categories Dropdown (Replaces Sidebar Categories on Mobile) */}
+              {categories.length > 0 && (
+                <details className="panzer-mobile-category-dropdown d-block d-lg-none">
+                  <summary>
+                    <div className="summary-left">
+                      <i className="fa-solid fa-table-cells-large"></i>
+                      <span>Categories</span>
+                    </div>
+                    <i className="fa-solid fa-chevron-down summary-chevron"></i>
+                  </summary>
+                  <div className="panzer-mobile-category-dropdown-content">
+                    {categories.filter(c => c.status === "active").map((category) => (
+                      <Link
+                        href={`/solution/category/${category.slug}`}
+                        key={category.id}
+                        className="panzer-mobile-category-pill"
+                      >
+                        <span>{category.name}</span>
+                        <i className="fa-solid fa-arrow-right"></i>
+                      </Link>
+                    ))}
+                  </div>
+                </details>
+              )}
+
               <div className="panzer-solution-detail-hero" style={{ display: "block" }}>
+
                 {/* 2. Text Content (Title, Description) - Image removed, now in breadcrumb */}
                 <div style={{ display: "block", clear: "none" }}>
-                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                  <div className="panzer-category-pills-container" style={{ display: "flex", gap: "10px" }}>
                     {solution.category ? solution.category.split(',').map(c => c.trim()).filter(Boolean).map((cat, idx) => (
                       <div key={idx} className="panzer-solution-detail-pill">{cat}</div>
                     )) : (
@@ -290,15 +448,22 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                 })()}
               </div>
 
-              {(processedExtraCards && processedExtraCards.length > 0) && (
-                <div className="panzer-solution-detail-overview">
+              {processedExtraCards && processedExtraCards.length > 0 && (
+                <>
                   {processedExtraCards.map((card) => (
-                    <div key={card.id}>
-                      <h3 id={card.headingId} className="editor-content-heading" dangerouslySetInnerHTML={{ __html: card.heading }} />
-                      <div className="editor-content" dangerouslySetInnerHTML={{ __html: card.processedHtml }} />
+                    <div key={card.id} className="panzer-solution-detail-overview">
+                      <h3
+                        id={card.headingId}
+                        className="editor-content-heading"
+                        dangerouslySetInnerHTML={{ __html: card.heading }}
+                      />
+                      <div
+                        className="editor-content"
+                        dangerouslySetInnerHTML={{ __html: card.processedHtml }}
+                      />
                     </div>
                   ))}
-                </div>
+                </>
               )}
 
               <div className="panzer-solution-detail-process">

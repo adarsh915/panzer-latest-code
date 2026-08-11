@@ -50,7 +50,7 @@ const FaqFormPage = ({ mode, faqId }: Props) => {
 
   const editorConfig = useMemo(() => ({
     readonly: false,
-    placeholder: 'Write FAQ answer here',
+    placeholder: '',
     height: 350,
     enableDragAndDropFileToEditor: true,
     uploader: {
@@ -172,13 +172,16 @@ const FaqFormPage = ({ mode, faqId }: Props) => {
       if (mode === 'edit' && faqId) {
         await updateFaq(faqId, payload)
         toast.success('FAQ updated successfully')
+        queryClient.invalidateQueries({ queryKey: ['faqs'] })
+        router.refresh()
+        // Stay on edit page instead of redirecting
       } else {
         await createFaq(payload)
         toast.success('FAQ created successfully')
+        queryClient.invalidateQueries({ queryKey: ['faqs'] })
+        router.refresh()
+        router.push('/admin/faqs')
       }
-      queryClient.invalidateQueries({ queryKey: ['faqs'] })
-      router.refresh()
-      router.push('/admin/faqs')
     } catch (err: any) {
       toast.error(err.message || 'An error occurred while saving to the database.')
     } finally {

@@ -264,6 +264,9 @@ i.fa-solid {
 .editor-content {
   color: inherit;
   line-height: 1.6;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
 .editor-content-heading p {
@@ -373,8 +376,11 @@ i.fa-solid {
 /* Tables */
 .editor-content table {
   width: 100%;
+  max-width: 100%;
   margin-bottom: 1.5em;
   border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
 }
 
 .editor-content th,
@@ -383,6 +389,7 @@ i.fa-solid {
   /* Nice light gray border */
   padding: 0.75rem;
   text-align: left;
+  word-break: break-word;
 }
 
 .editor-content th {

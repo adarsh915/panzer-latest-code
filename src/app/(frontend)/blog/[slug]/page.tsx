@@ -292,7 +292,7 @@ export default async function Page({ params }: PageProps) {
                     <div className="widget-box">
                       <ul className="blog-details__tags" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                         {allTags.map((tag, idx) => (
-                          <li key={idx}><Link href={`/blog?tag=${encodeURIComponent(tag)}`}>{tag}</Link></li>
+                          <li key={idx}><Link href={`/blog/tag/${encodeURIComponent(tag)}`}>{tag}</Link></li>
                         ))}
                       </ul>
                     </div>

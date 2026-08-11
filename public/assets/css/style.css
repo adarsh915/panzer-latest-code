@@ -353,9 +353,13 @@ section>.outer-box {
   }
 }
 
+iframe:not([width]) {
+  width: 100%;
+}
+
 iframe {
   border: none;
-  width: 100%;
+  max-width: 100%;
 }
 
 figure {
@@ -12800,7 +12804,7 @@ a.text-theme:hover,
   /* align-items: center; */
   text-align: left;
   height: 100%;
-  padding: 15px 75px;
+  padding: 15px 0px;
 }
 
 .panzer-resource-breadcrumb-title {
@@ -12960,7 +12964,7 @@ a.text-theme:hover,
 
 @media (max-width: 1100px) {
   .panzer-resource-breadcrumb-copy {
-    padding: clamp(34px, 6vw, 52px) clamp(20px, 5vw, 44px) 22px;
+    padding: clamp(34px, 6vw, 52px) clamp(1px, 0vw, 44px) 22px;
     /* text-align: left; */
   }
 }
@@ -12975,7 +12979,7 @@ a.text-theme:hover,
   }
 
   .panzer-resource-breadcrumb-copy {
-    padding: 16px 16px 18px;
+    padding: 16px 0px 18px;
   }
 
   .panzer-resource-breadcrumb-title {
@@ -88941,6 +88945,11 @@ body {
     width: 9px;
     height: 9px;
   }
+
+  .panzer-page-home .service-view-all-btn {
+
+    width: 100%;
+  }
 }
 
 @media (max-width: 390px) {
@@ -91305,6 +91314,10 @@ body {
 
   .panzer-about-secure-bottom {
     grid-template-columns: 1fr;
+  }
+
+  .service-btn-wrapper {
+    width: 100%;
   }
 
   .panzer-page-about .panzer-static-about-btn {

@@ -36,11 +36,8 @@ export default async function FrontendLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  console.time('Header Data Load')
   // Optimized: Single cached query instead of loading full datasets
   const headerData = await getHeaderData();
-  console.timeEnd('Header Data Load')
-  console.log('Header data size:', JSON.stringify(headerData).length, 'bytes')
 
   let themeColors = await readSetting<Record<string, string>>('frontend_theme_colors', {});
   

@@ -34,7 +34,11 @@ type HomepageBrand = {
   name: string
   slug: string
   logo?: string
+  logoAlt?: string
+  image?: string
+  imageAlt?: string
   status: string
+  featured: boolean
 }
 
 type HomepageData = {
@@ -48,7 +52,6 @@ type HomepageData = {
  * Optimized homepage data query - only fetches what's displayed
  */
 async function fetchHomepageData(): Promise<HomepageData> {
-  console.time('DB Query: Solutions')
   // Only fetch featured solutions (limit 9) - exclude large description field
   const [solutionsRows] = await pool.query(`
     SELECT id, title, slug, subtitle, image, image_alt, logo, logo_alt
@@ -57,9 +60,7 @@ async function fetchHomepageData(): Promise<HomepageData> {
     ORDER BY sort_order ASC
     LIMIT 9
   `)
-  console.timeEnd('DB Query: Solutions')
 
-  console.time('DB Query: Posts')
   // Only fetch recent published posts (limit 3) - exclude large description field
   const [postsRows] = await pool.query(`
     SELECT id, title, slug, image, image_alt, published_at, created_at, category_id
@@ -68,27 +69,22 @@ async function fetchHomepageData(): Promise<HomepageData> {
     ORDER BY published_at DESC
     LIMIT 3
   `)
-  console.timeEnd('DB Query: Posts')
 
-  console.time('DB Query: Brands')
-  // Only fetch active brands for homepage
+  // Only fetch featured brands for homepage products section (limit 6)
   const [brandsRows] = await pool.query(`
-    SELECT id, name, slug, logo, status
+    SELECT id, name, slug, logo, logo_alt, image, image_alt, status, featured
     FROM brands 
-    WHERE status = 'active'
+    WHERE status = 'active' AND featured = 1
     ORDER BY sort_order ASC
-    LIMIT 20
+    LIMIT 6
   `)
-  console.timeEnd('DB Query: Brands')
 
-  console.time('DB Query: Settings')
   // Fetch homepage settings
   const [settingsRows] = await pool.query<any[]>(`
     SELECT value 
     FROM site_settings 
     WHERE \`key\` = 'PANZER_HOMEPAGE_SETTINGS'
   `)
-  console.timeEnd('DB Query: Settings')
 
   // Sanitize the entire settings object recursively — this JSON blob can contain
   // nested image fields at any depth, so a top-level check alone isn't enough.
@@ -134,7 +130,11 @@ async function fetchHomepageData(): Promise<HomepageData> {
       name: b.name,
       slug: b.slug,
       logo: sanitizeImage(b.logo),
+      logoAlt: b.logo_alt,
+      image: sanitizeImage(b.image),
+      imageAlt: b.image_alt,
       status: b.status,
+      featured: Boolean(b.featured),
     })),
     homepageSettings
   }

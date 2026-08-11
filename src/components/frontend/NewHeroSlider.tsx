@@ -54,7 +54,7 @@ const ICONS: Record<string, React.ReactNode> = {
   )
 };
 
-const slides = [
+const defaultSlides = [
   {
     eyebrow: "Identity & Access",
     titleLine1: "Control",
@@ -192,12 +192,37 @@ const ORBIT_FACTORS = [
   { x: -0.866, y: -0.5 }
 ];
 
-export function NewHeroSlider() {
+// One distinct dark bg per slide — cycles if there are more slides than colors
+const BADGE_COLORS = [
+  '#061153', // deep navy    (slide 1 – Identity & Access)
+  '#1a0a2e', // dark indigo  (slide 2 – Data Resilience)
+  '#0d2318', // dark forest  (slide 3 – Insider Threat)
+  '#2d0d0d', // dark crimson (slide 4 – Threat Defence)
+  '#0a1f2d', // dark teal    (slide 5 – Data Protection)
+  '#1c1a04', // dark olive   (slide 6 – Compliance)
+  '#1a0e28', // deep plum    (slide 7 – Enterprise)
+];
+
+export function NewHeroSlider({ dynamicSlides, cta, ctaUrl, secondaryText, secondaryUrl, colors, marqueeItems }: {
+  dynamicSlides?: any[]
+  cta?: string
+  ctaUrl?: string
+  secondaryText?: string
+  secondaryUrl?: string
+  colors?: Record<string, string>
+  marqueeItems?: any[]
+}) {
   const [index, setIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const slideCount = slides.length;
+  // Build CSS var overrides from colors prop
+  const colorVars = colors
+    ? Object.fromEntries(Object.entries(colors).map(([k, v]) => [k, v]))
+    : {};
+
+  const finalSlides = dynamicSlides && dynamicSlides.length > 0 ? dynamicSlides : defaultSlides;
+  const slideCount = finalSlides.length;
 
   useEffect(() => {
     if (isHovered) return;
@@ -226,163 +251,216 @@ export function NewHeroSlider() {
     setTimeout(() => setIsTransitioning(false), 200);
   };
 
-  const currentSlide = slides[index];
+  const currentSlide = finalSlides[index];
 
   return (
-    <>
-    <section className={styles.hero}>
-      <div className={styles.heroBackground}>
-        <img src="/assets/images/homepageicons/who-we-right.png" alt="" className={styles.bgImage} />
-        <div className={styles.overlay}></div>
-      </div>
-
-      <div className={styles.heroInner}>
-
-        {/* LEFT SLIDER */}
-        <div
-          className={styles.textCol}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          <div
-            className={styles.slideTrack}
-            style={{ transform: `translateX(-${index * 100}%)` }}
-          >
-            {slides.map((s, i) => (
-              <div
-                key={i}
-                className={styles.slide}
-                style={{ '--accent': s.accent } as React.CSSProperties}
-              >
-                <span className={styles.eyebrow}>{s.eyebrow}</span>
-                <h1 className={styles.title}>{s.titleLine1}<span>{s.titleLine2}</span></h1>
-                <p className={styles.desc}>{s.desc}</p>
-                <div className={styles.tagRow}>
-                  {s.tags.map((t, idx) => (
-                    <span key={idx} className={styles.pillTag}>{t}</span>
-                  ))}
-                </div>
-                <div className={styles.ctaRow}>
-                  <button className={styles.btnPrimary}>{s.cta}</button>
-                  <a href="#" className={styles.btnLink}>See how it works →</a>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className={styles.sliderControls}>
-            <div className={`${styles.timeline} ${isHovered ? styles.paused : ''}`}>
-              {slides.map((_, i) => (
-                <button
-                  key={i}
-                  className={`${styles.timelineItem} ${i === index ? styles.active : ''}`}
-                  onClick={() => handleGoTo(i)}
-                  aria-label={`Go to slide ${i + 1}`}
-                >
-                  <div className={styles.timelineProgress}></div>
-                </button>
-              ))}
-            </div>
-            <div className={styles.arrows}>
-              <button className={styles.arrowBtn} onClick={handlePrev} aria-label="Previous">‹</button>
-              <button className={styles.arrowBtn} onClick={handleNext} aria-label="Next">›</button>
-            </div>
-          </div>
+    <div style={colorVars as React.CSSProperties}>
+      <section className={styles.hero}>
+        <div className={styles.heroBackground}>
+          <img src="/assets/images/homepageicons/who-we-right.png" alt="" className={styles.bgImage} />
+          <div className={styles.overlay}></div>
         </div>
 
-        {/* RIGHT ORBIT VISUAL */}
-        <div className={styles.visualCol}>
+        <div className={styles.heroInner}>
+
+          {/* LEFT SLIDER */}
           <div
-            className={styles.orbitField}
-            style={{ '--accent': currentSlide.accent } as React.CSSProperties}
+            className={styles.textCol}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           >
-            <div className={styles.ring}></div>
-            <div className={`${styles.ring} ${styles.ring2}`}></div>
-            <div className={styles.glow}></div>
-
-            {/* center image */}
-            <div className={styles.laptopWrap}>
-              <img 
-                src="/assets/images/homepageicons/lockimage.png" 
-                alt="Center Security Shield" 
-                style={{ 
-                  width: '200px', 
-                  height: '200px', 
-                  objectFit: 'contain',
-                  opacity: isTransitioning ? 0 : 1,
-                  transition: 'opacity 0.22s ease'
-                }} 
-              />
-            </div>
-
-            {/* orbiting badges */}
-            <div className={styles.orbitWrap}>
-              {currentSlide.orbit.map((o, i) => (
-                <div key={i} className={styles.iconSlot} style={{ '--x': ORBIT_FACTORS[i].x, '--y': ORBIT_FACTORS[i].y } as React.CSSProperties}>
-                  <div className={styles.iconUpright}>
-                    <div className={styles.iconContent}>
-                      <div
-                        className={styles.badge}
-                        style={{
-                          background: '#061153',
-                          opacity: isTransitioning ? 0 : 1
-                        }}
-                      >
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          style={{ opacity: isTransitioning ? 0 : 1 }}
-                        >
-                          {ICONS[o.icon]}
-                        </svg>
-                      </div>
-                      <span
-                        className={styles.orbitTag}
-                        style={{ opacity: isTransitioning ? 0 : 1 }}
-                      >
-                        {o.label}
-                      </span>
-                    </div>
+            <div
+              className={styles.slideTrack}
+              style={{ transform: `translateX(-${index * 100}%)` }}
+            >
+              {finalSlides.map((s, i) => (
+                <div
+                  key={i}
+                  className={styles.slide}
+                  style={{ '--accent': s.accent } as React.CSSProperties}
+                >
+                  <span className={styles.eyebrow}>{s.eyebrow}</span>
+                  <h1 className={styles.title}>{s.titleLine1}<span>{s.titleLine2}</span></h1>
+                  <p className={styles.desc}>{s.desc}</p>
+                  <div className={styles.tagRow}>
+                    {s.tags?.map((t: string, idx: number) => (
+                      <span key={idx} className={styles.pillTag}>{t}</span>
+                    ))}
+                  </div>
+                  <div className={styles.ctaRow}>
+                    {ctaUrl
+                      ? <a href={ctaUrl} className={styles.btnPrimary}>{cta || 'Know More'}</a>
+                      : <button className={styles.btnPrimary}>{cta || 'Know More'}</button>
+                    }
+                    {secondaryUrl && (
+                      <a href={secondaryUrl} className={styles.btnLink}>
+                        {secondaryText || 'See how it works'} →
+                      </a>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
+
+            <div className={styles.sliderControls}>
+              <div className={`${styles.timeline} ${isHovered ? styles.paused : ''}`}>
+                {finalSlides.map((_, i) => (
+                  <button
+                    key={i}
+                    className={`${styles.timelineItem} ${i === index ? styles.active : ''}`}
+                    onClick={() => handleGoTo(i)}
+                    aria-label={`Go to slide ${i + 1}`}
+                  >
+                    <div className={styles.timelineProgress}></div>
+                  </button>
+                ))}
+              </div>
+              <div className={styles.arrows}>
+                <button className={styles.arrowBtn} onClick={handlePrev} aria-label="Previous">‹</button>
+                <button className={styles.arrowBtn} onClick={handleNext} aria-label="Next">›</button>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT ORBIT VISUAL */}
+          <div className={styles.visualCol}>
+            <div
+              className={styles.orbitField}
+              style={{ '--accent': currentSlide.accent } as React.CSSProperties}
+            >
+              <div className={styles.ring}></div>
+              <div className={`${styles.ring} ${styles.ring2}`}></div>
+              <div className={styles.glow}></div>
+
+              {/* center image */}
+              <div className={styles.laptopWrap}>
+                <img
+                  src={currentSlide.centerImage || "/assets/images/homepageicons/lockimage.png"}
+                  alt="Center Security Shield"
+                  style={{
+                    width: '200px',
+                    height: '200px',
+                    objectFit: 'contain',
+                    opacity: isTransitioning ? 0 : 1,
+                    transition: 'opacity 0.22s ease'
+                  }}
+                />
+              </div>
+
+              {/* orbiting badges */}
+              <div className={styles.orbitWrap}>
+                {currentSlide.orbit?.map((o: any, i: number) => {
+                  const factorX = ORBIT_FACTORS[i] ? ORBIT_FACTORS[i].x : 0;
+                  const factorY = ORBIT_FACTORS[i] ? ORBIT_FACTORS[i].y : 0;
+                  return (
+                    <div key={i} className={styles.iconSlot} style={{ '--x': factorX, '--y': factorY } as React.CSSProperties}>
+                      <div className={styles.iconUpright}>
+                        <div className={styles.iconContent}>
+                          <div
+                            className={styles.badge}
+                            style={{
+                              background: currentSlide.accent || colors?.['--nh-badge-bg-default'] || BADGE_COLORS[index % BADGE_COLORS.length],
+                              opacity: isTransitioning ? 0 : 1
+                            }}
+                          >
+                            {o.image ? (
+                              <img
+                                src={o.image}
+                                alt={o.label}
+                                style={{ width: '50%', height: '50%', objectFit: 'contain', borderRadius: '50%' }}
+                              />
+                            ) : (
+                              <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                style={{ opacity: isTransitioning ? 0 : 1 }}
+                              >
+                                {ICONS[o.icon] || ICONS['lock']}
+                              </svg>
+                            )}
+                          </div>
+                          <span
+                            className={styles.orbitTag}
+                            style={{ opacity: isTransitioning ? 0 : 1 }}
+                          >
+                            {o.label}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-      </div>
-    </section>
+      </section>
 
       {/* MARQUEE */}
       <div className={styles.marquee}>
         <div className={styles.marqueeGroup}>
-          <span>ENTERPRISE CYBERSECURITY</span> <span className={styles.marqueeDot}></span>
-          <span>DATA PROTECTION</span> <span className={styles.marqueeDot}></span>
-          <span>24x7 SOC MONITORING</span> <span className={styles.marqueeDot}></span>
-          <span>ZERO TRUST ARCHITECTURE</span> <span className={styles.marqueeDot}></span>
-          <span>VAPT & COMPLIANCE</span> <span className={styles.marqueeDot}></span>
-          <span>ENTERPRISE CYBERSECURITY</span> <span className={styles.marqueeDot}></span>
-          <span>DATA PROTECTION</span> <span className={styles.marqueeDot}></span>
-          <span>24x7 SOC MONITORING</span> <span className={styles.marqueeDot}></span>
-          <span>ZERO TRUST ARCHITECTURE</span> <span className={styles.marqueeDot}></span>
-          <span>VAPT & COMPLIANCE</span> <span className={styles.marqueeDot}></span>
+          {marqueeItems && marqueeItems.length > 0 ? (
+            <>
+              {marqueeItems.map((item: any, idx: number) => (
+                <React.Fragment key={`m1-${idx}`}>
+                  <span>{item.text}</span> <span className={styles.marqueeDot}></span>
+                </React.Fragment>
+              ))}
+              {marqueeItems.map((item: any, idx: number) => (
+                <React.Fragment key={`m1-dup-${idx}`}>
+                  <span>{item.text}</span> <span className={styles.marqueeDot}></span>
+                </React.Fragment>
+              ))}
+            </>
+          ) : (
+            <>
+              <span>ENTERPRISE CYBERSECURITY</span> <span className={styles.marqueeDot}></span>
+              <span>DATA PROTECTION</span> <span className={styles.marqueeDot}></span>
+              <span>24x7 SUPPORT</span> <span className={styles.marqueeDot}></span>
+              <span>ZERO TRUST ARCHITECTURE</span> <span className={styles.marqueeDot}></span>
+              <span>VAPT & COMPLIANCE</span> <span className={styles.marqueeDot}></span>
+              <span>ENTERPRISE CYBERSECURITY</span> <span className={styles.marqueeDot}></span>
+              <span>DATA PROTECTION</span> <span className={styles.marqueeDot}></span>
+              <span>24x7 SUPPORT</span> <span className={styles.marqueeDot}></span>
+              <span>ZERO TRUST ARCHITECTURE</span> <span className={styles.marqueeDot}></span>
+              <span>VAPT & COMPLIANCE</span> <span className={styles.marqueeDot}></span>
+            </>
+          )}
         </div>
         <div className={styles.marqueeGroup} aria-hidden="true">
-          <span>ENTERPRISE CYBERSECURITY</span> <span className={styles.marqueeDot}></span>
-          <span>DATA PROTECTION</span> <span className={styles.marqueeDot}></span>
-          <span>24x7 SOC MONITORING</span> <span className={styles.marqueeDot}></span>
-          <span>ZERO TRUST ARCHITECTURE</span> <span className={styles.marqueeDot}></span>
-          <span>VAPT & COMPLIANCE</span> <span className={styles.marqueeDot}></span>
-          <span>ENTERPRISE CYBERSECURITY</span> <span className={styles.marqueeDot}></span>
-          <span>DATA PROTECTION</span> <span className={styles.marqueeDot}></span>
-          <span>24x7 SOC MONITORING</span> <span className={styles.marqueeDot}></span>
-          <span>ZERO TRUST ARCHITECTURE</span> <span className={styles.marqueeDot}></span>
-          <span>VAPT & COMPLIANCE</span> <span className={styles.marqueeDot}></span>
+          {marqueeItems && marqueeItems.length > 0 ? (
+            <>
+              {marqueeItems.map((item: any, idx: number) => (
+                <React.Fragment key={`m2-${idx}`}>
+                  <span>{item.text}</span> <span className={styles.marqueeDot}></span>
+                </React.Fragment>
+              ))}
+              {marqueeItems.map((item: any, idx: number) => (
+                <React.Fragment key={`m2-dup-${idx}`}>
+                  <span>{item.text}</span> <span className={styles.marqueeDot}></span>
+                </React.Fragment>
+              ))}
+            </>
+          ) : (
+            <>
+              <span>ENTERPRISE CYBERSECURITY</span> <span className={styles.marqueeDot}></span>
+              <span>DATA PROTECTION</span> <span className={styles.marqueeDot}></span>
+              <span>24x7 SUPPORT</span> <span className={styles.marqueeDot}></span>
+              <span>ZERO TRUST ARCHITECTURE</span> <span className={styles.marqueeDot}></span>
+              <span>VAPT & COMPLIANCE</span> <span className={styles.marqueeDot}></span>
+              <span>ENTERPRISE CYBERSECURITY</span> <span className={styles.marqueeDot}></span>
+              <span>DATA PROTECTION</span> <span className={styles.marqueeDot}></span>
+              <span>24x7 SUPPORT</span> <span className={styles.marqueeDot}></span>
+              <span>ZERO TRUST ARCHITECTURE</span> <span className={styles.marqueeDot}></span>
+              <span>VAPT & COMPLIANCE</span> <span className={styles.marqueeDot}></span>
+            </>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

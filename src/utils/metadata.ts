@@ -9,17 +9,8 @@ export function formatPageTitle(title: string | undefined | null): string {
   if (!title) {
     return "Panzer IT | Make 'IT' Secure";
   }
-  
-  // If title already contains "Panzer IT", don't add it again
-  if (title.includes('Panzer IT')) {
-    // Check if it already has the tagline
-    if (title.includes("Make 'IT' Secure")) {
-      return title;
-    }
-    return `${title} | Make 'IT' Secure`;
-  }
-  
-  return `${title} | Panzer IT | Make 'IT' Secure`;
+
+  return title;
 }
 
 /**

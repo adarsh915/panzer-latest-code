@@ -100,7 +100,7 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
 
   const editorConfig = useMemo(() => ({
     readonly: false,
-    placeholder: 'Write here',
+    placeholder: '',
     height: 300,
     enableDragAndDropFileToEditor: true,
     uploader: joditUploader
@@ -108,7 +108,7 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
 
   const editorConfig500 = useMemo(() => ({
     readonly: false,
-    placeholder: 'Write description here',
+    placeholder: '',
     height: 500,
     enableDragAndDropFileToEditor: true,
     uploader: joditUploader
@@ -116,7 +116,7 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
 
   const editorConfig200 = useMemo(() => ({
     readonly: false,
-    placeholder: 'Write extra card description',
+    placeholder: '',
     height: 200,
     enableDragAndDropFileToEditor: true,
     uploader: joditUploader
@@ -314,6 +314,42 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
     set('extraCards', cards);
   }
 
+  const moveFeatureCardUp = (index: number) => {
+    if (index === 0) return;
+    const cards = [...form.featureCards];
+    const temp = cards[index - 1];
+    cards[index - 1] = cards[index];
+    cards[index] = temp;
+    set('featureCards', cards);
+  }
+
+  const moveFeatureCardDown = (index: number) => {
+    const cards = [...form.featureCards];
+    if (index === cards.length - 1) return;
+    const temp = cards[index + 1];
+    cards[index + 1] = cards[index];
+    cards[index] = temp;
+    set('featureCards', cards);
+  }
+
+  const moveImplementationStepUp = (index: number) => {
+    if (index === 0) return;
+    const steps = [...form.implementationSteps];
+    const temp = steps[index - 1];
+    steps[index - 1] = steps[index];
+    steps[index] = temp;
+    set('implementationSteps', steps);
+  }
+
+  const moveImplementationStepDown = (index: number) => {
+    const steps = [...form.implementationSteps];
+    if (index === steps.length - 1) return;
+    const temp = steps[index + 1];
+    steps[index + 1] = steps[index];
+    steps[index] = temp;
+    set('implementationSteps', steps);
+  }
+
   const updateImplementationStep = <K extends keyof SolutionImplementationStep>(
     index: number,
     key: K,
@@ -416,6 +452,9 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
           return
         }
         toast.success('Solution updated successfully')
+        queryClient.invalidateQueries({ queryKey: ['solutions'] })
+        router.refresh()
+        // Stay on edit page instead of redirecting
       } else {
         const res = await createSolution(payload)
         if (res && 'success' in res && res.success === false) {
@@ -423,10 +462,10 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
           return
         }
         toast.success('Solution created successfully')
+        queryClient.invalidateQueries({ queryKey: ['solutions'] })
+        router.refresh()
+        router.push('/admin/solutions')
       }
-      queryClient.invalidateQueries({ queryKey: ['solutions'] })
-      router.refresh()
-      router.push('/admin/solutions')
     } catch (err: any) {
       toast.error(err.message || 'An error occurred while saving to the database.')
     } finally {
@@ -661,6 +700,18 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
               </label>
             </div>
 
+            <label className={styles.field}>
+              <span>Description <em>*</em></span>
+              <div className={styles.editorWrap}>
+                <JoditEditor
+                  value={form.description}
+                  config={editorConfig500}
+                  onBlur={(value: string) => set('description', value)}
+                  onChange={() => { }}
+                />
+              </div>
+            </label>
+
             <div className={styles.tabBox}>
               <div className={styles.tabHeader} role="tablist" aria-label="Solution content sections">
                 <button
@@ -714,9 +765,17 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
                             </span>
                             <strong>{stripHtml(card.title) || `Feature Card ${index + 1}`}</strong>
                           </div>
-                          <button type="button" className={styles.iconDangerBtn} onClick={() => removeFeatureCard(index)} aria-label="Delete feature card" title="Delete card">
-                            <IconifyIcon icon="tabler:trash" />
-                          </button>
+                          <div style={{ display: 'flex', gap: '5px' }}>
+                            <button type="button" className={styles.iconBtn} onClick={() => moveFeatureCardUp(index)} disabled={index === 0} aria-label="Move up" title="Move up" style={{ opacity: index === 0 ? 0.5 : 1 }}>
+                              <IconifyIcon icon="tabler:arrow-up" />
+                            </button>
+                            <button type="button" className={styles.iconBtn} onClick={() => moveFeatureCardDown(index)} disabled={index === form.featureCards.length - 1} aria-label="Move down" title="Move down" style={{ opacity: index === form.featureCards.length - 1 ? 0.5 : 1 }}>
+                              <IconifyIcon icon="tabler:arrow-down" />
+                            </button>
+                            <button type="button" className={styles.iconDangerBtn} onClick={() => removeFeatureCard(index)} aria-label="Delete feature card" title="Delete card">
+                              <IconifyIcon icon="tabler:trash" />
+                            </button>
+                          </div>
                         </div>
 
                         <div className={styles.repeaterBody}>
@@ -833,9 +892,17 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
                             </div>
                           </label>
                         </div>
-                        <button type="button" className={styles.iconDangerBtn} onClick={() => removeImplementationStep(index)} aria-label="Delete implementation step" title="Delete step">
-                          <IconifyIcon icon="tabler:trash" />
-                        </button>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                          <button type="button" className={styles.iconBtn} onClick={() => moveImplementationStepUp(index)} disabled={index === 0} aria-label="Move up" title="Move up" style={{ opacity: index === 0 ? 0.5 : 1 }}>
+                            <IconifyIcon icon="tabler:arrow-up" />
+                          </button>
+                          <button type="button" className={styles.iconBtn} onClick={() => moveImplementationStepDown(index)} disabled={index === form.implementationSteps.length - 1} aria-label="Move down" title="Move down" style={{ opacity: index === form.implementationSteps.length - 1 ? 0.5 : 1 }}>
+                            <IconifyIcon icon="tabler:arrow-down" />
+                          </button>
+                          <button type="button" className={styles.iconDangerBtn} onClick={() => removeImplementationStep(index)} aria-label="Delete implementation step" title="Delete step">
+                            <IconifyIcon icon="tabler:trash" />
+                          </button>
+                        </div>
                       </div>
                     ))}
                     <button
@@ -910,18 +977,6 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
                 )}
               </div>
             </div>
-
-            <label className={styles.field}>
-              <span>Description <em>*</em></span>
-              <div className={styles.editorWrap}>
-                <JoditEditor
-                  value={form.description}
-                  config={editorConfig500}
-                  onBlur={(value: string) => set('description', value)}
-                  onChange={() => { }}
-                />
-              </div>
-            </label>
 
             <div className={styles.seoBox} style={{ marginTop: '30px' }}>
               <div className={styles.sectionTitle}>

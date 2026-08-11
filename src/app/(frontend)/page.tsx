@@ -9,6 +9,7 @@ import { HeroSlider } from "@/components/frontend/HeroSlider";
 import { NewHeroSlider } from "@/components/frontend/NewHeroSlider";
 import { BrandSlider } from "@/components/frontend/BrandSlider";
 import { createPageMetadata } from "@/utils/metadata";
+import ServiceSliderArrows from "@/components/frontend/ServiceSliderArrows";
 
 const formatBlogDate = (value?: string) => {
     if (!value) return "";
@@ -27,10 +28,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-    console.time('Homepage Data Load')
     // Optimized: Single query with only needed data
     const { solutions: activeSolutions, posts: publishedPosts, brands: allBrands, homepageSettings } = await getHomepageData();
-    console.timeEnd('Homepage Data Load')
 
     // Create empty map for categories (posts now include categoryId but we don't need category names)
     const homeCategoryById = new Map();
@@ -128,6 +127,14 @@ export default async function Page() {
         { id: 'partner-somansa', name: 'Somansa', logo: '/assets/images/brands/03.webp', logoAlt: 'Somansa logo' },
         { id: 'partner-vembu', name: 'Vembu', logo: '/assets/images/brands/01.png', logoAlt: 'Vembu logo' },
     ];
+    
+    const marqueeItems = homepageSettings?.marqueeItems?.length > 0 ? homepageSettings.marqueeItems : [
+        { id: 'marquee-1', text: 'ENTERPRISE CYBERSECURITY' },
+        { id: 'marquee-2', text: 'DATA PROTECTION' },
+        { id: 'marquee-3', text: '24x7 SUPPORT' },
+        { id: 'marquee-4', text: 'ZERO TRUST ARCHITECTURE' },
+        { id: 'marquee-5', text: 'VAPT & COMPLIANCE' },
+    ];
 
     const heroVideoUrl = homepageSettings?.heroVideoUrl || '/assets/images/hero/banner.mp4';
 
@@ -190,7 +197,15 @@ export default async function Page() {
                     border: none !important;
                 }
             `}</style>
-            <NewHeroSlider />
+            <NewHeroSlider
+              dynamicSlides={homepageSettings?.newHeroSlides}
+              cta={homepageSettings?.newHeroCta}
+              ctaUrl={homepageSettings?.newHeroCtaUrl}
+              secondaryText={homepageSettings?.newHeroSecondaryText}
+              secondaryUrl={homepageSettings?.newHeroSecondaryUrl}
+              colors={homepageSettings?.newHeroColors}
+              marqueeItems={marqueeItems}
+            />
             {/* 
             <section className="tv-hero-section style-4 panzer-cyber-hero">
                 <div className="panzer-cyber-slider-wrap">
@@ -316,7 +331,7 @@ export default async function Page() {
                                 <div className="service-slider swiper panzer-scroll-service">
                                     <div className="swiper-wrapper panzer-service-rows-ready">
                                         {chunkedSolutions.map((chunk, chunkIndex) => (
-                                            <div key={chunkIndex} className={`panzer-service-row service-item-wrap ${chunkIndex === 0 ? 'service-item-pin' : ''}`}>
+                                            <div key={chunkIndex} className={`panzer-service-row service-item-wrap ${chunkIndex < chunkedSolutions.length - 1 ? 'service-item-pin' : ''}`}>
                                                 {chunk.map((solution, index) => (
                                                     <div className="swiper-slide" key={solution.id}>
                                                         <div className={`service-box-four ${index === 1 ? 'current' : ''}`}>
@@ -350,14 +365,7 @@ export default async function Page() {
                                         ))}
                                     </div>
                                 </div>
-                                <div className="panzer-service-arrows">
-                                    <button type="button" className="panzer-service-arrow panzer-service-prev" aria-label="Previous service">
-                                        <i className="fa-solid fa-arrow-left"></i>
-                                    </button>
-                                    <button type="button" className="panzer-service-arrow panzer-service-next" aria-label="Next service">
-                                        <i className="fa-solid fa-arrow-right"></i>
-                                    </button>
-                                </div>
+                                <ServiceSliderArrows />
                             </div>
                         </div>
                     </div>
@@ -541,29 +549,29 @@ export default async function Page() {
                     </div>
 
                     {(() => {
-                        const productSolutions = activeSolutions.slice(0, 6);
-                        const leftSolutions = productSolutions.slice(0, 3);
-                        const rightSolutions = productSolutions.slice(3, 6);
+                        const featuredBrands = allBrands.filter((b: any) => b.featured).slice(0, 6);
+                        const leftBrands = featuredBrands.slice(0, 3);
+                        const rightBrands = featuredBrands.slice(3, 6);
 
                         return (
                             <div className="row gy-30">
                                 <div className="col-lg-4 col-md-6 col-sm-6">
                                     <div className="choose-left">
-                                        {leftSolutions.map((solution, i) => {
-                                            const iconSrc = solution.logo || solution.image;
+                                        {leftBrands.map((brand: any, i: number) => {
+                                            const iconSrc = brand.logo || brand.image;
                                             return (
-                                                <Link key={solution.id} href={`/solution/${solution.slug}`} className={`choose-box panzer-choose-link${i < leftSolutions.length - 1 ? ' mb-40' : ''}`}>
+                                                <Link key={brand.id} href={`/brand/${brand.slug}`} className={`choose-box panzer-choose-link${i < leftBrands.length - 1 ? ' mb-40' : ''}`}>
                                                     <div className="icon">
                                                         {iconSrc && (
                                                             // eslint-disable-next-line @next/next/no-img-element
                                                             <img
                                                                 src={iconSrc}
-                                                                alt={solution.logoAlt || solution.title}
+                                                                alt={brand.logoAlt || brand.name}
                                                                 style={{ width: "auto", height: "auto", maxWidth: "45px", maxHeight: "44px", objectFit: "contain" }}
                                                             />
                                                         )}
                                                     </div>
-                                                    <div className="text"><h6>{solution.title}</h6></div>
+                                                    <div className="text"><h6>{brand.name}</h6></div>
                                                 </Link>
                                             );
                                         })}
@@ -581,21 +589,21 @@ export default async function Page() {
 
                                 <div className="col-lg-4 col-md-6 col-sm-6">
                                     <div className="choose-right">
-                                        {rightSolutions.map((solution, i) => {
-                                            const iconSrc = solution.logo || solution.image;
+                                        {rightBrands.map((brand: any, i: number) => {
+                                            const iconSrc = brand.logo || brand.image;
                                             return (
-                                                <Link key={solution.id} href={`/solution/${solution.slug}`} className={`choose-box panzer-choose-link${i < rightSolutions.length - 1 ? ' mb-40' : ''}`}>
+                                                <Link key={brand.id} href={`/brand/${brand.slug}`} className={`choose-box panzer-choose-link${i < rightBrands.length - 1 ? ' mb-40' : ''}`}>
                                                     <div className="icon">
                                                         {iconSrc && (
                                                             // eslint-disable-next-line @next/next/no-img-element
                                                             <img
                                                                 src={iconSrc}
-                                                                alt={solution.logoAlt || solution.title}
+                                                                alt={brand.logoAlt || brand.name}
                                                                 style={{ width: "auto", height: "auto", maxWidth: "45px", maxHeight: "44px", objectFit: "contain" }}
                                                             />
                                                         )}
                                                     </div>
-                                                    <div className="text"><h6>{solution.title}</h6></div>
+                                                    <div className="text"><h6>{brand.name}</h6></div>
                                                 </Link>
                                             );
                                         })}
@@ -609,7 +617,7 @@ export default async function Page() {
 
 
 
-            <section className="tv-contact-section style-4 z-1">
+            {/* <section className="tv-contact-section style-4 z-1">
                 <div className="tv-contact-inner space position-relative overflow-hidden bg-light2 ml-mx-0">
                     <div className="container">
                         <div className="row gy-30 contact-wrapper align-items-stretch">
@@ -635,7 +643,7 @@ export default async function Page() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
 
 
@@ -684,11 +692,31 @@ export default async function Page() {
 
                     <div className="row">
                         <div className="col-lg-12">
-                            <div className="title-wrap text-center">
-                                <div className="sub-title-2  text-theme">Latest
-                                    Blogs
+                            <div className="service-title-area d-flex justify-content-between align-items-end sm-flex-column sm-mb-30 pb-30">
+                                <div className="title-wrap mb-0">
+                                    <div className="sub-title-2  text-theme">Latest
+                                        Blogs
+                                    </div>
+                                    <h2 className="sec-title no-title-animation mb-0">Write-ups, Tech Stuff &amp; News </h2>
                                 </div>
-                                <h2 className="sec-title no-title-animation">Write-ups, Tech Stuff &amp; News </h2>
+                                <div className="service-btn-wrapper mt-sm-20">
+                                    <Link href="/blog" className="theme-btn br-30 service-view-all-btn">
+                                        <span className="link-effect">
+                                            <span className="effect-1">View All</span>
+                                            <span className="effect-1">View All</span>
+                                        </span>
+                                        <span className="arrow-all">
+                                            <i>
+                                                <svg width="16" height="19" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M2 6H10M10 6L6 2M10 6L6 10" stroke="var(--theme-color)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                                <svg width="16" height="19" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M2 6H10M10 6L6 2M10 6L6 10" stroke="var(--theme-color)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                            </i>
+                                        </span>
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     </div>

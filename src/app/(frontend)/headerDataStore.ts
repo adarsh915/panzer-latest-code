@@ -27,7 +27,6 @@ export type HeaderData = {
  * Optimized header data query - only fetches minimal fields needed for navigation
  */
 async function fetchHeaderData(): Promise<HeaderData> {
-  console.time('Header Query: Solutions')
   // Single optimized query for header navigation
   const [solutionsRows] = await pool.query(`
     SELECT id, title, slug, logo, logo_alt
@@ -36,9 +35,7 @@ async function fetchHeaderData(): Promise<HeaderData> {
     ORDER BY sort_order ASC
     LIMIT 20
   `)
-  console.timeEnd('Header Query: Solutions')
 
-  console.time('Header Query: Brands')
   const [brandsRows] = await pool.query(`
     SELECT id, name, slug, logo
     FROM brands 
@@ -46,15 +43,12 @@ async function fetchHeaderData(): Promise<HeaderData> {
     ORDER BY sort_order ASC
     LIMIT 30
   `)
-  console.timeEnd('Header Query: Brands')
 
-  console.time('Header Query: Settings')
   const [settingsRows] = await pool.query<any[]>(`
     SELECT value 
     FROM site_settings 
     WHERE \`key\` = 'PANZER_HEADER_SETTINGS'
   `)
-  console.timeEnd('Header Query: Settings')
 
   const logoData = settingsRows[0]?.value 
     ? JSON.parse(settingsRows[0].value)

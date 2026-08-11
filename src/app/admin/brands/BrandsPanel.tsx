@@ -151,7 +151,6 @@ const BrandsPanel = () => {
                     <th className={styles.thSort} onClick={() => handleSort('name')}>Name <SortIcon col="name" /></th>
                     <th className={styles.thSort} onClick={() => handleSort('category')}>Category <SortIcon col="category" /></th>
                     <th className={styles.thSort} onClick={() => handleSort('slug')}>Slug <SortIcon col="slug" /></th>
-                    <th>Featured</th>
                     <th className={styles.thSort} onClick={() => handleSort('status')}>Status <SortIcon col="status" /></th>
                     <th className={styles.thCenter}>Action</th>
                   </tr>
@@ -162,12 +161,19 @@ const BrandsPanel = () => {
                       <tr key={brand.id}>
                         <td className={styles.tdNum}>{(page - 1) * pageSize + idx + 1}</td>
                         <td>
-                          <span className={styles.tdName}>{brand.name}</span>
+                          <div className="d-flex align-items-center gap-2 mb-1">
+                            <span className={styles.tdName} style={{ marginBottom: 0 }}>{brand.name}</span>
+                            {brand.featured && (
+                              <span className="badge bg-warning text-dark border d-inline-flex align-items-center gap-1" style={{ fontSize: '0.65rem', padding: '0.2rem 0.4rem' }}>
+                                <IconifyIcon icon="tabler:star-filled" width={12} height={12} />
+                                Featured
+                              </span>
+                            )}
+                          </div>
                           {brand.website && <span className={styles.tdSub}>{brand.website}</span>}
                         </td>
                         <td><span className={styles.catChip}>{brand.category || '-'}</span></td>
                         <td><code className={styles.slugCode}>{brand.slug || '-'}</code></td>
-                        <td>{brand.featured ? 'Yes' : 'No'}</td>
                         <td>
                           <span className={clsx(styles.badge, brand.status === 'active' ? styles.badgeActive : styles.badgeInactive)}>
                             {brand.status}
@@ -195,7 +201,7 @@ const BrandsPanel = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={7} className={styles.emptyRow}>
+                      <td colSpan={6} className={styles.emptyRow}>
                         <IconifyIcon icon="tabler:building-store" />
                         <span>No brands found</span>
                       </td>

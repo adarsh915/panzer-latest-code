@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import Script from 'next/script'
 import styles from './footer.module.css'
 import NewsletterForm from './NewsletterForm'
 
@@ -125,10 +126,10 @@ export function Footer({ columns, contact = {} }: Props) {
           <p className={styles.newsletterDesc}>
             Stay informed on the latest cybersecurity trends, solutions and updates.
           </p>
-          <NewsletterForm 
-            className={styles.newsletterForm} 
-            inputClassName={styles.emailInput} 
-            buttonClassName={styles.sendBtn} 
+          <NewsletterForm
+            className={styles.newsletterForm}
+            inputClassName={styles.emailInput}
+            buttonClassName={styles.sendBtn}
           />
         </div>
       </div>
@@ -202,6 +203,22 @@ export function Footer({ columns, contact = {} }: Props) {
         </p>
 
       </div>
+
+      {/* ── Chatbot Script ── */}
+      <Script 
+        id="chatbot-script" 
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function(w,d,s,o,f,js,fjs){
+              w['AiAgent'] = o; w[o]=w[o]||function(){(w[o].q = w[o].q || []).push(arguments)};
+              js=d.createElement(s); fjs=d.getElementsByTagName(s)[0];
+              js.id=o; js.src=f; js.async=1; fjs.parentNode.insertBefore(js,fjs);
+            }(window,document,'script','wai','https://tagname.in/widget.js'));
+            wai('init', 'ANasRPKRvpOWhwQSe7Pv7SsYB6VjSo9GIcp4uoMarpHF4e3W53ZkQUlJV3ZVNteE');
+          `
+        }}
+      />
     </section>
   )
 }

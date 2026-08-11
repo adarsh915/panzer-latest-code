@@ -57,8 +57,8 @@ export function ScrollToTop() {
 
   const buttonStyle: React.CSSProperties = {
     position: 'fixed',
-    right: '30px',
-    bottom: '30px',
+    right: '12px',
+    bottom: '185px',
     width: '60px',
     height: '60px',
     background: 'rgba(0, 0, 0, 0.8)',

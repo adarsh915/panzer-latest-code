@@ -8,12 +8,12 @@
     flex-wrap: wrap;
     justify-content: flex-start;
     align-content: flex-start;
-    align-items: flex-start;
+    align-items: stretch;
 }
 
 .simplebar-wrapper {
     overflow: hidden;
-    width: inherit;
+    width: 100% !important;
     height: inherit;
     max-width: inherit;
     max-height: inherit;
@@ -54,8 +54,8 @@
     position: relative;
     display: block;
     height: 100%;
-    /* Required for horizontal native scrollbar to not appear if parent is taller than natural height */
-    width: auto;
+    /* Changed from auto to 100% to fix dropdown width */
+    width: 100%;
     overflow: auto;
     /* Scroll on this element otherwise element can't have a padding applied properly */
     max-width: 100%;

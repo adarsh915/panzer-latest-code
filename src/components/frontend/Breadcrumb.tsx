@@ -44,29 +44,31 @@ export function Breadcrumb({ title, paths, image, imageAlt, imageTitle, imageCap
             </ol>
           </nav>
         </div>
-        <div className="container-fluid panzer-resource-breadcrumb-shell breadcrumb-grid">
-          <div className="panzer-resource-breadcrumb-copy">
-            <h1 className="panzer-resource-breadcrumb-title">{title}</h1>
-            {!hideDescription && (
-              <p className="panzer-resource-breadcrumb-text">
-                Explore Panzer IT resources, solutions and security insights designed to help your business stay informed and protected.
-              </p>
-            )}
-          </div>
-          <div className="panzer-resource-breadcrumb-visual">
-            <figure style={{ margin: 0, width: '100%', height: '100%' }}>
-              <Image
-                src={imageSrc}  // ← dynamic now
-                alt={imageAlt || `${title} page banner`}
-                title={imageTitle || imageCaption || imageAlt}
-                data-caption={imageCaption}
-                data-description={imageDescription}
-                width={1536}
-                height={1024}
-                sizes="(max-width: 991px) 86vw, 52vw"
-                priority
-              />
-            </figure>
+        <div className="container-fluid panzer-resource-breadcrumb-shell ">
+          <div className="container breadcrumb-grid">
+            <div className="panzer-resource-breadcrumb-copy">
+              <h1 className="panzer-resource-breadcrumb-title">{title}</h1>
+              {!hideDescription && (
+                <p className="panzer-resource-breadcrumb-text">
+                  Explore Panzer IT resources, solutions and security insights designed to help your business stay informed and protected.
+                </p>
+              )}
+            </div>
+            <div className="panzer-resource-breadcrumb-visual">
+              <figure style={{ margin: 0, width: '100%', height: '100%' }}>
+                <Image
+                  src={imageSrc}  // ← dynamic now
+                  alt={imageAlt || `${title} page banner`}
+                  title={imageTitle || imageCaption || imageAlt}
+                  data-caption={imageCaption}
+                  data-description={imageDescription}
+                  width={1536}
+                  height={1024}
+                  sizes="(max-width: 991px) 86vw, 52vw"
+                  priority
+                />
+              </figure>
+            </div>
           </div>
         </div>
       </div>

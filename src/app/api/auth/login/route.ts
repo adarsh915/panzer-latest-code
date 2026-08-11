@@ -5,8 +5,22 @@ import pool from '@/lib/db'
 import bcrypt from 'bcryptjs'
 import { signToken } from '@/lib/sessionToken'
 
+// In-memory rate limiting (lazy, no DB or Redis required)
+const globalForRateLimit = global as unknown as {
+  loginAttempts: Map<string, { count: number; lockedUntil: number | null }>
+}
+const loginAttempts = globalForRateLimit.loginAttempts || new Map()
+if (process.env.NODE_ENV !== 'production') globalForRateLimit.loginAttempts = loginAttempts
+
 export async function POST(request: Request) {
   try {
+    const ip = request.headers.get('x-forwarded-for') || 'unknown'
+    const attempt = loginAttempts.get(ip) || { count: 0, lockedUntil: null }
+
+    if (attempt.lockedUntil && attempt.lockedUntil > Date.now()) {
+      return NextResponse.json({ message: 'Too many attempts. Please try again in 15 minutes.' }, { status: 429 })
+    }
+
     const body = await request.json()
     const { email, password } = body ?? {}
 
@@ -21,7 +35,7 @@ export async function POST(request: Request) {
     )
 
     if (!rows || rows.length === 0) {
-      // Same message for wrong email or wrong password — prevents user enumeration
+      recordFailedLogin(ip, attempt)
       return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 })
     }
 
@@ -30,8 +44,12 @@ export async function POST(request: Request) {
     // Verify bcrypt-hashed password
     const isValid = await bcrypt.compare(password, user.password)
     if (!isValid) {
+      recordFailedLogin(ip, attempt)
       return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 })
     }
+
+    // Successful login - clear rate limit for this IP
+    loginAttempts.delete(ip)
 
     // Generate a cryptographically random raw token (64 hex chars)
     const rawToken = randomBytes(32).toString('hex')
@@ -45,17 +63,16 @@ export async function POST(request: Request) {
     )
 
     // Sign the token: cookie value = "rawToken.hmacSignature"
-    // Middleware verifies the HMAC — forged cookies are rejected without a DB call
     const signedCookieValue = await signToken(rawToken)
 
     // Set the HMAC-signed session cookie
     const cookieStore = await cookies()
     cookieStore.set('admin_session', signedCookieValue, {
-      httpOnly: true,                                    // Not accessible from JS
-      secure: process.env.NODE_ENV === 'production',    // HTTPS only in prod
-      sameSite: 'strict',                               // No cross-site sending
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
       path: '/',
-      maxAge: 24 * 60 * 60,                            // 1 day in seconds
+      maxAge: 24 * 60 * 60,
     })
 
     return NextResponse.json({
@@ -68,4 +85,12 @@ export async function POST(request: Request) {
     console.error('Login error:', error)
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
   }
+}
+
+function recordFailedLogin(ip: string, attempt: { count: number; lockedUntil: number | null }) {
+  attempt.count += 1
+  if (attempt.count >= 5) {
+    attempt.lockedUntil = Date.now() + 15 * 60 * 1000 // 15 mins lockout
+  }
+  loginAttempts.set(ip, attempt)
 }

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Card, CardBody, CardTitle, Col, Row } from 'react-bootstrap'
 import { faqData } from '../data'
+import { sanitizeHtml } from '@/utils/sanitize'
 
 const GeneralFaq = () => {
   return (
@@ -16,7 +17,7 @@ const GeneralFaq = () => {
                 </AccordionHeader>
                 <div id="collapseOne" className="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                   <AccordionBody>
-                    <div dangerouslySetInnerHTML={{ __html: item.answer }} />
+                    <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.answer) }} />
                   </AccordionBody>
                 </div>
               </AccordionItem>
@@ -42,7 +43,7 @@ const IntegrationFaq = () => {
                 </AccordionHeader>
                 <div id="collapseOne" className="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                   <AccordionBody>
-                    <div dangerouslySetInnerHTML={{ __html: item.answer }} />
+                    <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.answer) }} />
                   </AccordionBody>
                 </div>
               </AccordionItem>
@@ -68,7 +69,7 @@ const PaymentFaq = () => {
                 </AccordionHeader>
                 <div id="collapseOne" className="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                   <AccordionBody>
-                    <div dangerouslySetInnerHTML={{ __html: item.answer }} />
+                    <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.answer) }} />
                   </AccordionBody>
                 </div>
               </AccordionItem>
@@ -94,7 +95,7 @@ const ShippingFaq = () => {
                 </AccordionHeader>
                 <div id="collapseOne" className="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                   <AccordionBody>
-                    <div dangerouslySetInnerHTML={{ __html: item.answer }} />
+                    <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.answer) }} />
                   </AccordionBody>
                 </div>
               </AccordionItem>
@@ -120,7 +121,7 @@ const ReturnFaq = () => {
                 </AccordionHeader>
                 <div id="collapseOne" className="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                   <AccordionBody>
-                    <div dangerouslySetInnerHTML={{ __html: item.answer }} />
+                    <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.answer) }} />
                   </AccordionBody>
                 </div>
               </AccordionItem>

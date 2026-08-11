@@ -58,7 +58,7 @@ const Notifications = () => {
   ].sort((a, b) => b.date.getTime() - a.date.getTime()).slice(0, 5); // Keep top 5
 
   const markReadMutation = useMutation({
-    mutationFn: (data: { id: string, type: 'lead' | 'submission' }) => 
+    mutationFn: (data: { id: string, type: 'lead' | 'submission' }) =>
       data.type === 'lead' ? markLeadRead(data.id) : markSubmissionRead(data.id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['unreadLeads'] });
@@ -100,11 +100,29 @@ const Notifications = () => {
               </Col>
             </Row>
           </div>
-          <SimplebarReactClient className="position-relative z-2 card shadow-none rounded-0" style={{ maxHeight: 300 }}>
+          <style dangerouslySetInnerHTML={{
+            __html: `
+            .notification-scroll-container { 
+                overflow-y: auto !important;
+                scrollbar-width: thin;
+                scrollbar-color: #a2adb7 transparent;
+            }
+            .notification-scroll-container::-webkit-scrollbar { 
+                width: 5px; 
+            }
+            .notification-scroll-container::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .notification-scroll-container::-webkit-scrollbar-thumb {
+                background: #a2adb7;
+                border-radius: 7px;
+            }
+          `}} />
+          <div className="notification-scroll-container position-relative z-2 card shadow-none rounded-0 w-100" style={{ maxHeight: 300, minWidth: '320px' }}>
             {
               allNotifications.map((item) => (
-                <div className="notification-item dropdown-item py-2 text-wrap" key={`${item.type}-${item.id}`}>
-                  <span className="d-flex align-items-center">
+                <div className="notification-item dropdown-item py-2 text-wrap w-100" key={`${item.type}-${item.id}`}>
+                  <span className="d-flex align-items-center w-100">
                     <div className="avatar-md flex-shrink-0 me-3">
                       <span className={`avatar-title bg-primary-subtle text-primary rounded-circle fs-22`}>
                         <IconifyIcon icon={item.type === 'lead' ? 'tabler:mail' : 'tabler:file-invoice'} />
@@ -130,16 +148,17 @@ const Notifications = () => {
               ))
             }
 
-          </SimplebarReactClient>
+          </div>
           {allNotifications.length === 0 && (
-            <div style={{ height: 300 }} className="d-flex align-items-center justify-content-center text-center position-absolute top-0 bottom-0 start-0 end-0 z-1 pointer-events-none">
-              <div>
+            <div style={{ height: 300 }} className="d-flex align-items-center justify-content-center text-center position-absolute top-0 bottom-0 start-0 end-0 z-1 pointer-events-none ">
+              <div style={{ marginTop: '97px' }}>
                 <IconifyIcon icon="line-md:bell-twotone-alert-loop" className="fs-80 text-secondary mt-2" />
                 <h4 className="fw-semibold mb-0 fst-italic lh-base mt-3">Hey! 👋 <br />You have no unread notifications</h4>
               </div>
             </div>
+
           )}
-          <div className="border-top border-light py-2 text-center bg-white" style={{ position: 'sticky', bottom: 0, zIndex: 10, marginTop: '166px' }}>
+          <div className="border-top border-light py-2 text-center bg-white" style={{ position: 'sticky', bottom: 0, zIndex: 10 }}>
             <Link href="/admin/notifications" className="text-reset text-decoration-underline link-offset-2 fw-bold">
               View All
             </Link>

@@ -1,7 +1,7 @@
 'use client'
 import ComponentContainerCard from '@/components/ComponentContainerCard'
 import { Col, Row } from 'react-bootstrap'
-import logoImage from '@/assets/images/logo-sm.png';
+import logoImage from '@/assets/images/logo-sm.jpeg';
 import { withSwal } from 'react-sweetalert2'
 
 

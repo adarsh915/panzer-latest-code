@@ -50,7 +50,7 @@ const ResourceFormPage = ({ mode, resourceId }: Props) => {
 
   const editorConfig = useMemo(() => ({
     readonly: false,
-    placeholder: 'Write resource description here',
+    placeholder: '',
     height: 300,
     enableDragAndDropFileToEditor: true,
     uploader: {
@@ -208,6 +208,9 @@ const ResourceFormPage = ({ mode, resourceId }: Props) => {
           return
         }
         toast.success('Resource updated successfully')
+        queryClient.invalidateQueries({ queryKey: ['resources'] })
+        router.refresh()
+        // Stay on edit page instead of redirecting
       } else {
         const res = await createResource(payload)
         if (res && 'success' in res && res.success === false) {
@@ -215,10 +218,10 @@ const ResourceFormPage = ({ mode, resourceId }: Props) => {
           return
         }
         toast.success('Resource created successfully')
+        queryClient.invalidateQueries({ queryKey: ['resources'] })
+        router.refresh()
+        router.push('/admin/resources')
       }
-      queryClient.invalidateQueries({ queryKey: ['resources'] })
-      router.refresh()
-      router.push('/admin/resources')
     } catch (err: any) {
       toast.error(err.message || 'An error occurred while saving to the database.')
     } finally {

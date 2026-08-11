@@ -3,7 +3,7 @@ import { BrandDetailSticky } from "@/components/frontend/SolutionDetailSticky";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { readBrands } from "@/app/admin/brands/brandStore";
+import { readBrands, readCategories as readBrandCategories } from "@/app/admin/brands/brandStore";
 import { readActiveFaqs } from "@/app/admin/faqs/faqStore";
 import { sanitizeHtml } from "@/utils/sanitize";
 import { generateToc, generateSlug } from "@/utils/toc";
@@ -51,9 +51,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function Page({ params }: PageProps) {
   const resolvedParams = await params;
 
-  const [allBrands, allFaqs] = await Promise.all([
+  const [allBrands, allFaqs, categories] = await Promise.all([
     readBrands(),
-    readActiveFaqs()
+    readActiveFaqs(),
+    readBrandCategories()
   ]);
   const activeBrands = allBrands.filter((b) => b.status === "active");
   const brand = activeBrands.find(b => b.slug === resolvedParams.slug);
@@ -141,21 +142,87 @@ export default async function Page({ params }: PageProps) {
       <style>{`
         /* Fix iPad and tablet layout */
         @media (max-width: 1024px) {
-          .panzer-page-brand-details .panzer-brand-detail-layout {
-            grid-template-columns: 1fr !important;
+          .panzer-brand-detail-layout {
+            display: flex !important;
+            flex-direction: column;
             gap: 20px;
           }
-          .panzer-page-brand-details .panzer-brand-detail-sidebar {
+          .panzer-brand-detail-sidebar {
+            order: 2;
             position: static !important;
             top: auto !important;
           }
-          .panzer-page-brand-details .panzer-brand-detail-sidebar-inner {
+          .panzer-brand-detail-content {
+            order: 1;
+          }
+          .panzer-brand-detail-sidebar-inner {
             position: static !important;
             top: auto !important;
             display: flex;
             flex-direction: column;
             gap: 18px;
           }
+        }
+        .panzer-mobile-category-dropdown {
+          background: var(--cardmention);
+          border: 1px solid var(--cardmention);
+          border-radius: 8px;
+          margin-bottom: 25px;
+          width: 100%;
+        }
+        .panzer-mobile-category-dropdown summary {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 16px 20px;
+          color: var(--theme-navy-dark);
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          list-style: none;
+        }
+        .panzer-mobile-category-dropdown summary::-webkit-details-marker {
+          display: none;
+        }
+        .panzer-mobile-category-dropdown summary .summary-left {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .panzer-mobile-category-dropdown summary .summary-left i {
+          font-size: 18px;
+        }
+        .panzer-mobile-category-dropdown[open] summary .summary-chevron {
+          transform: rotate(180deg);
+        }
+        .panzer-mobile-category-dropdown summary .summary-chevron {
+          transition: transform 0.3s ease;
+        }
+        .panzer-mobile-category-dropdown-content {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          padding: 0 20px 20px 20px;
+        }
+        .panzer-mobile-category-pill {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 14px;
+          padding: 12px 18px;
+          border-radius: 12px;
+          color: var(--theme-navy-darker);
+          background: #f3f7ff;
+          font-size: 14px;
+          line-height: 1.3;
+          font-weight: 800;
+          text-decoration: none !important;
+          white-space: normal;
+        }
+        .panzer-mobile-category-pill:hover,
+        .panzer-mobile-category-pill.active {
+          color: var(--text-light);
+          background: var(--theme-color) !important;
         }
         .faq-question-title * {
           margin-bottom: 0 !important;
@@ -180,7 +247,7 @@ export default async function Page({ params }: PageProps) {
           <div className="panzer-brand-detail-layout">
             <aside className="panzer-brand-detail-sidebar" aria-label="Brand navigation">
               <div className="panzer-brand-detail-sidebar-inner">
-                <div className="panzer-brand-detail-side-card">
+                <div className="panzer-brand-detail-side-card d-none d-lg-block">
                   <h2>Brands</h2>
                   <nav>
                     {activeBrands.map((b) => (
@@ -191,6 +258,23 @@ export default async function Page({ params }: PageProps) {
                     ))}
                   </nav>
                 </div>
+
+                {categories.length > 0 && (
+                  <div className="panzer-brand-detail-side-card d-none d-lg-block" style={{ marginTop: '20px' }}>
+                    <h2>Categories</h2>
+                    <nav>
+                      {categories.filter(c => c.status === "active").map((category) => (
+                        <Link
+                          href={`/brand/category/${category.slug}`}
+                          key={category.id}
+                        >
+                          <span>{category.name}</span>
+                          <i className="fa-solid fa-arrow-right"></i>
+                        </Link>
+                      ))}
+                    </nav>
+                  </div>
+                )}
 
                 {/* <TableOfContents toc={fullToc} /> */}
 
@@ -209,6 +293,56 @@ export default async function Page({ params }: PageProps) {
             </aside>
 
             <div className="panzer-brand-detail-content">
+              {/* Mobile Brands Dropdown */}
+              {activeBrands.length > 0 && (
+                <details className="panzer-mobile-category-dropdown d-block d-lg-none">
+                  <summary>
+                    <div className="summary-left">
+                      <i className="fa-solid fa-list"></i>
+                      <span>Brands</span>
+                    </div>
+                    <i className="fa-solid fa-chevron-down summary-chevron"></i>
+                  </summary>
+                  <div className="panzer-mobile-category-dropdown-content">
+                    {activeBrands.map((b) => (
+                      <Link
+                        href={`/brand/${b.slug}`}
+                        key={b.id}
+                        className={`panzer-mobile-category-pill ${b.id === brand.id ? 'active' : ''}`}
+                      >
+                        <span>{b.name}</span>
+                        <i className="fa-solid fa-arrow-right"></i>
+                      </Link>
+                    ))}
+                  </div>
+                </details>
+              )}
+
+              {/* Mobile Categories Dropdown */}
+              {categories.length > 0 && (
+                <details className="panzer-mobile-category-dropdown d-block d-lg-none">
+                  <summary>
+                    <div className="summary-left">
+                      <i className="fa-solid fa-table-cells-large"></i>
+                      <span>Categories</span>
+                    </div>
+                    <i className="fa-solid fa-chevron-down summary-chevron"></i>
+                  </summary>
+                  <div className="panzer-mobile-category-dropdown-content">
+                    {categories.filter(c => c.status === "active").map((category) => (
+                      <Link
+                        href={`/brand/category/${category.slug}`}
+                        key={category.id}
+                        className="panzer-mobile-category-pill"
+                      >
+                        <span>{category.name}</span>
+                        <i className="fa-solid fa-arrow-right"></i>
+                      </Link>
+                    ))}
+                  </div>
+                </details>
+              )}
+
               <div className="panzer-brand-detail-hero" style={{ display: "block", marginBottom: "28px" }}>
                 {/* Text Content (Category, Title, Description) - Image removed, now in breadcrumb */}
                 <div style={{ display: "block", clear: "none" }}>
@@ -228,7 +362,7 @@ export default async function Page({ params }: PageProps) {
                 <div className="panzer-brand-detail-capabilities">
                   <h3 id={capabilitiesId} className="editor-content-heading" dangerouslySetInnerHTML={{ __html: capabilitiesTitleHtml }} />
                   {brand.capabilitiesHeading && (
-                    <div className="editor-content" dangerouslySetInnerHTML={{ __html: brand.capabilitiesHeading }} />
+                    <div className="editor-content" dangerouslySetInnerHTML={{ __html: sanitizeHtml(brand.capabilitiesHeading) }} />
                   )}
                   {pointsHtml && (() => {
                     // Extract text from each <li> and render as pill badges
@@ -270,7 +404,7 @@ export default async function Page({ params }: PageProps) {
                         </span>
                         <i className="fa-solid fa-chevron-down"></i>
                       </summary>
-                      <div className="editor-content" dangerouslySetInnerHTML={{ __html: faq.answer }} />
+                      <div className="editor-content" dangerouslySetInnerHTML={{ __html: sanitizeHtml(faq.answer) }} />
                     </details>
                   ))}
                 </div>

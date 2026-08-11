@@ -45,7 +45,7 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <>
-      <Breadcrumb title={`${category.name} Blogs`} paths={[{ name: "Blogs", url: "/blog" }, { name: category.name }]} image="/assets/images/hero/breadblog.png" />
+      <Breadcrumb title={category.name} paths={[{ name: "Blogs", url: "/blog" }, { name: category.name }]} image="/assets/images/hero/breadblog.png" />
 
       <section className="tv-blog-section space bg-light">
         <div className="container">

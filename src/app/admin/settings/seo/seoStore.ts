@@ -4,6 +4,7 @@ import { readSetting, writeSetting } from '../settingsStore'
 import { revalidatePath } from 'next/cache'
 import { writeFile, mkdir } from 'fs/promises'
 import path from 'path'
+import { stripBase64 } from '@/lib/sanitize'
 
 export type PageSeoData = {
   metaTitle: string
@@ -25,6 +26,9 @@ export const getSeoData = async (pageKey: string): Promise<PageSeoData> => {
 
 export const updateSeoData = async (pageKey: string, data: PageSeoData): Promise<{ success: boolean; error?: string }> => {
   try {
+    if (data.ogImage) {
+      data.ogImage = stripBase64(data.ogImage)
+    }
     await writeSetting(pageKey, data)
     revalidatePath('/', 'layout')
     return { success: true }

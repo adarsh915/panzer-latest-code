@@ -17,8 +17,13 @@ interface SiteChromeProps {
 function getPageClass(pathname: string) {
   if (pathname === "/") return "panzer-page-home";
   if (pathname === "/resources") return "panzer-page-solution-details";
+  if (pathname.startsWith("/solution/category/")) return "panzer-page-solution";
   if (pathname.startsWith("/solution/")) return "panzer-page-solution-details";
+  
+  if (pathname.startsWith("/blog/category/") || pathname.startsWith("/blog/tag/")) return "panzer-page-blog";
   if (pathname.startsWith("/blog/")) return "panzer-page-blog-details";
+  
+  if (pathname.startsWith("/brand/category/")) return "panzer-page-brand";
   if (pathname.startsWith("/brand/")) return "panzer-page-brand-detail";
 
   const pageName = pathname

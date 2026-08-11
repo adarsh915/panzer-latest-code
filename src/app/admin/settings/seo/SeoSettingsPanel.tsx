@@ -156,32 +156,7 @@ export default function SeoSettingsPanel() {
               />
             </label>
 
-            <div className={styles.sectionTitle}>
-              <IconifyIcon icon="tabler:photo" />
-              <h4>OpenGraph Image</h4>
-            </div>
-            <div className={styles.upload}>
-              {imagePreview ? (
-                <div className={styles.imagePreview}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={imagePreview} alt="OG Preview" />
-                  <button type="button" className={styles.iconBtn} onClick={() => { setImagePreview(''); set('ogImage', '') }} aria-label="Remove image">
-                    <IconifyIcon icon="tabler:x" />
-                  </button>
-                </div>
-              ) : (
-                <button type="button" className={styles.uploadPlaceholder} onClick={() => setShowImagePicker(true)}>
-                  <IconifyIcon icon="tabler:photo-plus" />
-                  <strong>Upload or select OG Image</strong>
-                  <small>Suggested size: 1200x630px. PNG, JPG, WEBP — max 5 MB</small>
-                </button>
-              )}
-              {imagePreview && (
-                <button type="button" className={styles.secondaryBtn} onClick={() => setShowImagePicker(true)}>
-                  <IconifyIcon icon="tabler:upload" /> Change Image
-                </button>
-              )}
-            </div>
+
 
             <button type="submit" className={styles.saveBtn} disabled={isPending}>
               <IconifyIcon icon={isPending ? 'tabler:loader-2' : 'tabler:device-floppy'} />

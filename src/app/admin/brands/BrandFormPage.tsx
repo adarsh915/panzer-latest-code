@@ -74,7 +74,7 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
 
   const editorConfig = useMemo(() => ({
     readonly: false,
-    placeholder: 'Write here',
+    placeholder: '',
     height: 300,
     enableDragAndDropFileToEditor: true,
     uploader: joditUploader
@@ -82,7 +82,7 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
 
   const editorConfig500 = useMemo(() => ({
     readonly: false,
-    placeholder: 'Write brand description here',
+    placeholder: '',
     height: 500,
     enableDragAndDropFileToEditor: true,
     uploader: joditUploader
@@ -90,7 +90,7 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
 
   const editorConfig250 = useMemo(() => ({
     readonly: false,
-    placeholder: 'Write extra card description',
+    placeholder: '',
     height: 250,
     enableDragAndDropFileToEditor: true,
     uploader: joditUploader
@@ -98,7 +98,7 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
 
   const editorConfig200 = useMemo(() => ({
     readonly: false,
-    placeholder: 'Write feature description here',
+    placeholder: '',
     height: 200,
     enableDragAndDropFileToEditor: true,
     uploader: joditUploader
@@ -307,6 +307,9 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
           return
         }
         toast.success('Brand updated successfully')
+        queryClient.invalidateQueries({ queryKey: ['brands'] })
+        router.refresh()
+        // Stay on edit page instead of redirecting
       } else {
         const res = await createBrand(payload)
         if (res && 'success' in res && res.success === false) {
@@ -314,10 +317,10 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
           return
         }
         toast.success('Brand created successfully')
+        queryClient.invalidateQueries({ queryKey: ['brands'] })
+        router.refresh()
+        router.push('/admin/brands')
       }
-      queryClient.invalidateQueries({ queryKey: ['brands'] })
-      router.refresh()
-      router.push('/admin/brands')
     } catch (err: any) {
       console.error(err)
       toast.error(err?.message || 'An error occurred while saving the brand.')
@@ -415,13 +418,20 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
               />
             </div>
 
-            <label className={styles.field}>
-              <span>Featured</span>
-              <select value={form.featured ? 'yes' : 'no'} onChange={(event) => set('featured', event.target.value === 'yes')}>
-                <option value="no">No</option>
-                <option value="yes">Yes</option>
-              </select>
-            </label>
+            <div className={styles.field}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 0' }}>
+                <input
+                  type="checkbox"
+                  id="featured"
+                  checked={form.featured || false}
+                  onChange={(e) => set('featured', e.target.checked)}
+                  style={{ width: '18px', height: '18px', cursor: 'pointer', marginTop: 0 }}
+                />
+                <label htmlFor="featured" style={{ margin: 0, cursor: 'pointer', fontWeight: 600, color: '#333' }}>
+                  Feature this brand on the Homepage
+                </label>
+              </div>
+            </div>
 
             <div className={styles.field}>
               <span>Image</span>
@@ -531,6 +541,18 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
                 />
               </label>
             )}
+
+            <label className={styles.field}>
+              <span>Description</span>
+              <div className={styles.editorWrap}>
+                <JoditEditor
+                  value={form.description}
+                  config={editorConfig500}
+                  onBlur={(value: string) => set('description', value)}
+                  onChange={() => {}}
+                />
+              </div>
+            </label>
 
             <div className={styles.seoBox} style={{ marginTop: '20px' }}>
               <div className={styles.sectionTitle}>
@@ -653,18 +675,6 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
                 <input value={form.metaKeywords} onChange={(event) => set('metaKeywords', event.target.value)} placeholder="keyword one, keyword two" />
               </label>
             </div>
-
-            <label className={styles.field}>
-              <span>Description</span>
-              <div className={styles.editorWrap}>
-                <JoditEditor
-                  value={form.description}
-                  config={editorConfig500}
-                  onBlur={(value: string) => set('description', value)}
-                  onChange={() => {}}
-                />
-              </div>
-            </label>
 
             <div className={styles.seoBox} style={{ marginTop: '30px' }}>
               <div className={styles.sectionTitle}>

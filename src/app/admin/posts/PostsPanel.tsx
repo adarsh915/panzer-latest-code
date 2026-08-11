@@ -219,9 +219,12 @@ const PostsPanel = () => {
                     <td>{categoryById.get(post.categoryId ?? '') || '-'}</td>
                     <td>
                       <div className={styles.tags}>
-                        {(post.tags ?? []).length > 0
-                          ? post.tags?.map((tag) => <span key={tag}>{tag}</span>)
-                          : '-'}
+                        {(post.tags ?? []).length > 0 ? (
+                          <>
+                            {post.tags!.slice(0, 5).map((tag) => <span key={tag}>{tag}</span>)}
+                            {post.tags!.length > 5 && <span>+{post.tags!.length - 5} more</span>}
+                          </>
+                        ) : '-'}
                       </div>
                     </td>
                     <td>

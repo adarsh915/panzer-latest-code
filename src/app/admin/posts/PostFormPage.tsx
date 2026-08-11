@@ -55,7 +55,7 @@ const PostFormPage = ({ mode, postId }: Props) => {
 
   const editorConfig = useMemo(() => ({
     readonly: false,
-    placeholder: 'Write blog description here',
+    placeholder: '',
     height: 500,
     enableDragAndDropFileToEditor: true,
     uploader: {
@@ -234,6 +234,9 @@ const PostFormPage = ({ mode, postId }: Props) => {
           return
         }
         toast.success('Blog post updated successfully')
+        queryClient.invalidateQueries({ queryKey: ['posts'] })
+        router.refresh()
+        // Stay on edit page instead of redirecting
       } else {
         const res = await createPost(payload)
         if (res && 'success' in res && res.success === false) {
@@ -241,10 +244,10 @@ const PostFormPage = ({ mode, postId }: Props) => {
           return
         }
         toast.success('Blog post created successfully')
+        queryClient.invalidateQueries({ queryKey: ['posts'] })
+        router.refresh()
+        router.push('/admin/posts')
       }
-      queryClient.invalidateQueries({ queryKey: ['posts'] })
-      router.refresh()
-      router.push('/admin/posts')
     } catch (err: any) {
       console.error(err)
       toast.error(err.message || 'An error occurred while saving.')

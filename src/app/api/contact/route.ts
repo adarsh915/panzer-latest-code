@@ -24,18 +24,17 @@ export async function POST(request: Request) {
     }
 
     // Verify reCAPTCHA
-    // TEMPORARILY DISABLED RECAPTCHA
-    // if (process.env.RECAPTCHA_SECRET_KEY && recaptchaToken) {
-    //   const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`
-    //   const recaptchaRes = await fetch(verifyUrl, { method: 'POST' })
-    //   const recaptchaJson = await recaptchaRes.json()
-    //   
-    //   if (!recaptchaJson.success) {
-    //     return NextResponse.json({ message: 'reCAPTCHA verification failed. Please try again.' }, { status: 400 })
-    //   }
-    // } else if (process.env.RECAPTCHA_SECRET_KEY && !recaptchaToken) {
-    //   return NextResponse.json({ message: 'Please complete the reCAPTCHA verification.' }, { status: 400 })
-    // }
+    if (process.env.RECAPTCHA_SECRET_KEY && recaptchaToken) {
+      const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`
+      const recaptchaRes = await fetch(verifyUrl, { method: 'POST' })
+      const recaptchaJson = await recaptchaRes.json()
+      
+      if (!recaptchaJson.success) {
+        return NextResponse.json({ message: 'reCAPTCHA verification failed. Please try again.' }, { status: 400 })
+      }
+    } else if (process.env.RECAPTCHA_SECRET_KEY && !recaptchaToken) {
+      return NextResponse.json({ message: 'Please complete the reCAPTCHA verification.' }, { status: 400 })
+    }
 
     const id = crypto.randomUUID()
     

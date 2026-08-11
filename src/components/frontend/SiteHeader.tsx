@@ -186,9 +186,11 @@ export function SiteHeader({ headerData }: { headerData?: any }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openMobileSubmenu, setOpenMobileSubmenu] = useState<string | null>(null);
   const [isSticky, setIsSticky] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [isStickySearchExpanded, setIsStickySearchExpanded] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const stickySearchInputRef = useRef<HTMLInputElement>(null);
 
   const logoData = headerData?.logoData;
   const logoSrc = logoData?.logoUrl || "/assets/images/logo/logo.png";
@@ -207,50 +209,24 @@ export function SiteHeader({ headerData }: { headerData?: any }) {
   }, []);
 
   useEffect(() => {
-    document.body.classList.toggle("search-active", isSearchOpen);
     document.body.classList.toggle("open-sidebar", isSidebarOpen);
 
-    if (isSearchOpen && searchInputRef.current) {
-      setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 100);
+    if (isSearchExpanded && searchInputRef.current) {
+      searchInputRef.current.focus();
     }
 
-    // Close search popup on Escape key or click outside
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isSearchOpen) {
-        setIsSearchOpen(false);
-      }
-    };
-
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Element;
-      if (isSearchOpen && target.classList.contains('search-popup')) {
-        setIsSearchOpen(false);
-      }
-    };
-
-    if (isSearchOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.addEventListener('click', handleClickOutside);
+    if (isStickySearchExpanded && stickySearchInputRef.current) {
+      stickySearchInputRef.current.focus();
     }
 
     return () => {
-      document.body.classList.remove("search-active");
       document.body.classList.remove("open-sidebar");
-      document.removeEventListener('keydown', handleEscape);
-      document.removeEventListener('click', handleClickOutside);
     };
-  }, [isSearchOpen, isSidebarOpen]);
+  }, [isSearchExpanded, isStickySearchExpanded, isSidebarOpen]);
 
   useEffect(() => {
     const handleDocumentClick = (event: MouseEvent) => {
       const target = event.target as Element | null;
-
-      if (target?.closest(".search-btn")) {
-        event.preventDefault();
-        setIsSearchOpen(true);
-      }
 
       if (target?.closest(".sidebar-trigger")) {
         event.preventDefault();
@@ -324,9 +300,108 @@ export function SiteHeader({ headerData }: { headerData?: any }) {
                 </div>
                 <div className="col-auto header-right-wrapper">
                   <div className="outer-box d-flex align-items-center gap-3">
-                    <button className="search-btn" type="button" aria-label="Search" style={{ background: 'none', border: 'none', color: 'inherit', fontSize: '18px', padding: '0 10px', cursor: 'pointer' }}>
-                      <i className="fa-solid fa-magnifying-glass" style={{ pointerEvents: 'none' }}></i>
-                    </button>
+                    <div style={{ position: 'relative' }}>
+                      <button 
+                        className="search-btn" 
+                        type="button" 
+                        aria-label={isSearchExpanded ? "Close search" : "Search"}
+                        onClick={() => setIsSearchExpanded(!isSearchExpanded)}
+                        style={{ 
+                          background: 'none', 
+                          border: 'none', 
+                          color: 'inherit', 
+                          fontSize: '18px', 
+                          padding: '0 10px', 
+                          cursor: 'pointer',
+                          width: '38px',
+                          height: '38px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          marginRight: '30px',
+                        }}
+                      >
+                        <i className={`fa-solid ${isSearchExpanded ? 'fa-times' : 'fa-magnifying-glass'}`} style={{ pointerEvents: 'none' }}></i>
+                      </button>
+                      
+                      {/* Small Dropdown Search Box */}
+                      {isSearchExpanded && (
+                        <div 
+                          style={{
+                            position: 'absolute',
+                            top: 'calc(100% + 10px)',
+                            right: 0,
+                            width: '400px',
+                            background: '#fff',
+                            borderRadius: '8px',
+                            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+                            zIndex: 9999,
+                            animation: 'fadeInDown 0.3s ease-out',
+                            padding: '20px'
+                          }}
+                        >
+                          <style>{`
+                            @keyframes fadeInDown {
+                              from {
+                                opacity: 0;
+                                transform: translateY(-10px);
+                              }
+                              to {
+                                opacity: 1;
+                                transform: translateY(0);
+                              }
+                            }
+                          `}</style>
+                          <form method="get" action="/search">
+                            <div style={{ 
+                              display: 'flex', 
+                              alignItems: 'center',
+                              borderBottom: '3px solid var(--theme-color)',
+                              position: 'relative'
+                            }}>
+                              <input
+                                ref={searchInputRef}
+                                type="text"
+                                name="q"
+                                placeholder="What are you searching for?"
+                                autoComplete="off"
+                                style={{
+                                  flex: 1,
+                                  padding: '8px 5px',
+                                  border: 'none',
+                                  background: 'transparent',
+                                  outline: 'none',
+                                  fontSize: '15px',
+                                  color: '#333',
+                                  fontFamily: 'inherit'
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Escape') {
+                                    setIsSearchExpanded(false);
+                                  }
+                                }}
+                              />
+                              <button 
+                                type="submit" 
+                                aria-label="Search" 
+                                style={{ 
+                                  background: 'none',
+                                  border: 'none', 
+                                  color: 'var(--theme-color)', 
+                                  cursor: 'pointer', 
+                                  fontSize: '20px', 
+                                  padding: '5px 10px',
+                                  display: 'flex',
+                                  alignItems: 'center'
+                                }}
+                              >
+                                <i className="fa-solid fa-magnifying-glass" style={{ pointerEvents: 'none' }}></i>
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      )}
+                    </div>
                     <Link href="/contact" className="panzer-header-cta">Get in touch</Link>
                   </div>
                 </div>
@@ -476,9 +551,96 @@ export function SiteHeader({ headerData }: { headerData?: any }) {
                 </div>
                 <div className="col-auto header-right-wrapper">
                   <div className="outer-box d-flex align-items-center gap-3">
-                    <button className="search-btn" type="button" aria-label="Search" style={{ background: 'none', border: 'none', color: 'inherit', fontSize: '18px', padding: '0 10px', cursor: 'pointer' }}>
-                      <i className="fa-solid fa-magnifying-glass" style={{ pointerEvents: 'none' }}></i>
-                    </button>
+                    <div style={{ position: 'relative' }}>
+                      <button 
+                        type="button" 
+                        aria-label={isStickySearchExpanded ? "Close search" : "Search"}
+                        onClick={() => setIsStickySearchExpanded(!isStickySearchExpanded)}
+                        style={{ 
+                          background: 'none', 
+                          border: 'none', 
+                          color: 'inherit', 
+                          fontSize: '18px', 
+                          padding: '0 10px', 
+                          cursor: 'pointer',
+                          width: '38px',
+                          height: '38px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          marginRight: '30px',
+                        }}
+                      >
+                        <i className={`fa-solid ${isStickySearchExpanded ? 'fa-times' : 'fa-magnifying-glass'}`} style={{ pointerEvents: 'none' }}></i>
+                      </button>
+                      
+                      {/* Small Dropdown Search Box for Sticky Header */}
+                      {isStickySearchExpanded && (
+                        <div 
+                          style={{
+                            position: 'absolute',
+                            top: 'calc(100% + 10px)',
+                            right: 0,
+                            width: '400px',
+                            background: '#fff',
+                            borderRadius: '8px',
+                            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+                            zIndex: 9999,
+                            animation: 'fadeInDown 0.3s ease-out',
+                            padding: '20px'
+                          }}
+                        >
+                          <form method="get" action="/search">
+                            <div style={{ 
+                              display: 'flex', 
+                              alignItems: 'center',
+                              borderBottom: '3px solid var(--theme-color)',
+                              paddingBottom: '10px',
+                              position: 'relative'
+                            }}>
+                              <input
+                                ref={stickySearchInputRef}
+                                type="text"
+                                name="q"
+                                placeholder="What are you searching for?"
+                                autoComplete="off"
+                                style={{
+                                  flex: 1,
+                                  padding: '8px 5px',
+                                  border: 'none',
+                                  background: 'transparent',
+                                  outline: 'none',
+                                  fontSize: '15px',
+                                  color: '#333',
+                                  fontFamily: 'inherit'
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Escape') {
+                                    setIsStickySearchExpanded(false);
+                                  }
+                                }}
+                              />
+                              <button 
+                                type="submit" 
+                                aria-label="Search" 
+                                style={{ 
+                                  background: 'none',
+                                  border: 'none', 
+                                  color: 'var(--theme-color)', 
+                                  cursor: 'pointer', 
+                                  fontSize: '20px', 
+                                  padding: '5px 10px',
+                                  display: 'flex',
+                                  alignItems: 'center'
+                                }}
+                              >
+                                <i className="fa-solid fa-magnifying-glass" style={{ pointerEvents: 'none' }}></i>
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      )}
+                    </div>
                     <Link href="/contact" className="panzer-header-cta">Get in touch</Link>
                   </div>
                 </div>
@@ -486,16 +648,6 @@ export function SiteHeader({ headerData }: { headerData?: any }) {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="search-popup">
-        <button className="close-search style-1" type="button" aria-label="Close search" onClick={() => setIsSearchOpen(false)}><i className="fa fa-times"></i></button>
-        <form method="get" action="/search">
-          <div className="form-group">
-            <input id="search1" ref={searchInputRef} type="search" name="q" defaultValue="" placeholder="Search..." required={true} />
-            <button type="submit" aria-label="Search"><i className="fa fa-search"></i></button>
-          </div>
-        </form>
       </div>
 
       <div id="sidebar-area" className="sidebar">
