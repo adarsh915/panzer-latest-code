@@ -55,6 +55,7 @@ export type SolutionService = {
   metaDescription?: string
   metaKeywords?: string
   isFeatured?: boolean
+  breadcrumbDescription?: string
 }
 
 export type SolutionFormData = Omit<SolutionService, 'id' | 'createdAt'>

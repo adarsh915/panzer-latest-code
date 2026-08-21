@@ -39,24 +39,24 @@ export default async function Page() {
         chunkedSolutions.push(activeSolutions.slice(i, i + 3));
     }
     const lockAboutFeatures = [
-        { icon: "fa-shield-check", text: "360 Degree Comprehensive Security Solutions" },
-        { icon: "fa-user-group", text: "Experienced IT Security Consultants" },
+        
+        { icon: "fa-user-group", text: "28+ Years of Cybersecurity Expertise Enterprise Security • Data Protection • Backup & DR • Compliance" },
     ];
 
     const lockAboutFlow = [
-        { icon: "fa-magnifying-glass", title: "Assess", text: "We identify risks before they impact you." },
-        { icon: "fa-shield-halved", title: "Protect", text: "We build strong defenses that scale." },
-        { icon: "fa-eye", title: "Detect", text: "We monitor threats in real-time." },
-        { icon: "fa-bolt", title: "Respond", text: "We act fast to minimize damage." },
-        { icon: "fa-rotate-right", title: "Recover", text: "We help you bounce back stronger." },
+        { icon: "fa-magnifying-glass", title: "Assess", text: "Identify vulnerabilities and security gaps." },
+        { icon: "fa-shield-halved", title: "Protect", text: "Secure identities, systems and data." },
+        { icon: "fa-eye", title: "Detect", text: "Spot threats and suspicious activity." },
+        { icon: "fa-bolt", title: "Respond", text: "Contain incidents and reduce impact." },
+        { icon: "fa-rotate-right", title: "Recover", text: "Restore operations and maintain continuity." },
     ];
 
     const achievementProtections = [
-        { icon: "fa-desktop", title: "Endpoint", text: "Security" },
-        { icon: "fa-cloud", title: "Cloud", text: "Security" },
-        { icon: "fa-server", title: "Server", text: "Protection" },
-        { icon: "fa-envelope", title: "Email", text: "Security" },
-        { icon: "fa-globe", title: "Network", text: "Protection" },
+       { icon: "fa-id-card", title: "Identity &", text: "Access" },
+       { icon: "fa-shield-halved", title: "Data", text: "Protection" },
+       { icon: "fa-laptop", title: "Endpoint", text: "Security" },
+       { icon: "fa-database", title: "Backup &", text: "DR" },
+       { icon: "fa-clipboard-check", title: "Risk &", text: "Compliance" },
     ];
 
     const achievementCards = [
@@ -64,7 +64,7 @@ export default async function Page() {
             badge: "Partner Network",
             icon: "fa-buildings",
             value: "11+",
-            title: "Associate Brands",
+            title: "Technology Brands",
             text: "Trusted partnerships with leading technology innovators.",
             footer: [
                 { icon: "fa-handshake", label: "Trusted Partnerships" },
@@ -79,8 +79,8 @@ export default async function Page() {
             title: "Security Solutions",
             text: "Comprehensive solutions designed to protect what matters most.",
             footer: [
-                { icon: "fa-crosshairs", label: "24/7 Monitoring" },
-                { icon: "fa-shield-check", label: "99.9% Threat Detection" },
+                { icon: "fa-crosshairs", label: "Priority Support" },
+                { icon: "fa-shield-check", label: "Advanced Threat Detection" },
                 { icon: "fa-clock", label: "Rapid Incident Response" },
             ],
         },
@@ -127,7 +127,7 @@ export default async function Page() {
         { id: 'partner-somansa', name: 'Somansa', logo: '/assets/images/brands/03.webp', logoAlt: 'Somansa logo' },
         { id: 'partner-vembu', name: 'Vembu', logo: '/assets/images/brands/01.png', logoAlt: 'Vembu logo' },
     ];
-    
+
     const marqueeItems = homepageSettings?.marqueeItems?.length > 0 ? homepageSettings.marqueeItems : [
         { id: 'marquee-1', text: 'ENTERPRISE CYBERSECURITY' },
         { id: 'marquee-2', text: 'DATA PROTECTION' },
@@ -198,13 +198,13 @@ export default async function Page() {
                 }
             `}</style>
             <NewHeroSlider
-              dynamicSlides={homepageSettings?.newHeroSlides}
-              cta={homepageSettings?.newHeroCta}
-              ctaUrl={homepageSettings?.newHeroCtaUrl}
-              secondaryText={homepageSettings?.newHeroSecondaryText}
-              secondaryUrl={homepageSettings?.newHeroSecondaryUrl}
-              colors={homepageSettings?.newHeroColors}
-              marqueeItems={marqueeItems}
+                dynamicSlides={homepageSettings?.newHeroSlides}
+                cta={homepageSettings?.newHeroCta}
+                ctaUrl={homepageSettings?.newHeroCtaUrl}
+                secondaryText={homepageSettings?.newHeroSecondaryText}
+                secondaryUrl={homepageSettings?.newHeroSecondaryUrl}
+                colors={homepageSettings?.newHeroColors}
+                marqueeItems={marqueeItems}
             />
             {/* 
             <section className="tv-hero-section style-4 panzer-cyber-hero">
@@ -331,7 +331,8 @@ export default async function Page() {
                                 <div className="service-slider swiper panzer-scroll-service">
                                     <div className="swiper-wrapper panzer-service-rows-ready">
                                         {chunkedSolutions.map((chunk, chunkIndex) => (
-                                            <div key={chunkIndex} className={`panzer-service-row service-item-wrap ${chunkIndex < chunkedSolutions.length - 1 ? 'service-item-pin' : ''}`}>
+                                            // To re-enable animation: add class `${chunkIndex < chunkedSolutions.length - 1 ? 'service-item-pin' : ''}` below
+                                            <div key={chunkIndex} className="panzer-service-row service-item-wrap">
                                                 {chunk.map((solution, index) => (
                                                     <div className="swiper-slide" key={solution.id}>
                                                         <div className={`service-box-four ${index === 1 ? 'current' : ''}`}>
@@ -396,13 +397,13 @@ export default async function Page() {
                                                                     <img
                                                                         src={partner.logo}
                                                                         alt={partner.logoAlt || partner.name}
-                                                                        style={{ width: "auto", height: "auto", maxWidth: "100%", maxHeight: "80px", objectFit: "contain" }}
+                                                                        style={{ width: "auto", height: "auto", maxWidth: "100%", maxHeight: "40px", objectFit: "contain" }}
                                                                     />
                                                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                                                     <img
                                                                         src={partner.logo}
                                                                         alt={partner.logoAlt || partner.name}
-                                                                        style={{ width: "auto", height: "auto", maxWidth: "100%", maxHeight: "80px", objectFit: "contain" }}
+                                                                        style={{ width: "auto", height: "auto", maxWidth: "100%", maxHeight: "40px", objectFit: "contain" }}
                                                                     />
                                                                 </div>
                                                             </div>
@@ -436,8 +437,9 @@ export default async function Page() {
                     <div className="panzer-lock-about-grid">
                         <div className="panzer-lock-about-copy">
                             <div className="panzer-lock-about-pill">Who We Are</div>
-                            <h2 className="panzer-lock-about-title no-title-animation">Best IT Security <span>Solution Provider</span></h2>
-                            <p className="panzer-lock-about-text">Panzer IT helps organizations protect data across endpoints, servers, cloud, storage and networks with advanced security, backup and recovery solutions.</p>
+                            <h2 className="panzer-lock-about-title no-title-animation">Secure Data. Ensure Availability. Enable Business.</h2>
+                            <p className="panzer-lock-about-text">Panzer IT helps organizations secure identities, infrastructure and critical data through integrated cybersecurity, data protection, backup, disaster recovery and compliance solutions.
+</p>
                             <div className="panzer-lock-about-features">
                                 {lockAboutFeatures.map((item) => (
                                     <div className="panzer-lock-feature" key={item.text}>
@@ -487,8 +489,8 @@ export default async function Page() {
                                        
                                         <span>Panzer IT</span>
                                     </div> */}
-                                <h2 className="panzer-achievement-title no-title-animation">Make IT <span>Secure</span> Across Endpoint, Backup, Cloud And Data Protection</h2>
-                                <p className="panzer-achievement-text">PCs and servers are connected more than ever, and threats are increasingly more advanced. Panzer IT helps secure every entry point including endpoint, server, cloud, network perimeter, web, mail and storage.</p>
+                                <h2 className="panzer-achievement-title no-title-animation">Continuous <span>Secure Data </span> Accessibility & Availability</h2>
+                                <p className="panzer-achievement-text">From Endpoint Security and IAM/PAM to DLP, Backup, Disaster Recovery and Compliance, Panzer IT helps organizations stay secure, resilient and compliant. With decades of cybersecurity expertise, we help protect identities, endpoints, networks, cloud workloads and critical business data while ensuring information remains secure, accessible and available.</p>
                                 <div className="panzer-protection-strip" aria-label="Panzer IT protection areas">
                                     {achievementProtections.map((item) => (
                                         <div className="panzer-protection-item" key={`${item.title}-${item.text}`}>
@@ -571,7 +573,27 @@ export default async function Page() {
                                                             />
                                                         )}
                                                     </div>
-                                                    <div className="text"><h6>{brand.name}</h6></div>
+                                                    <div className="text">
+                                                        <h6>{brand.name}</h6>
+                                                        <p style={{ 
+                                                            fontSize: '13px', 
+                                                            marginTop: '6px', 
+                                                            marginBottom: '4px',
+                                                            color: 'rgba(255, 255, 255, 0.85)',
+                                                            lineHeight: 1.4
+                                                        }}>
+                                                            DLP, SIEM, XDR, Insider Threat Prevention
+                                                        </p>
+                                                        <p style={{ 
+                                                            fontSize: '12px', 
+                                                            marginTop: '4px',
+                                                            marginBottom: 0,
+                                                            color: 'rgba(255, 255, 255, 0.7)',
+                                                            lineHeight: 1.3
+                                                        }}>
+                                                            UEBA • DLP • Employee Monitoring • Productivity Analytics
+                                                        </p>
+                                                    </div>
                                                 </Link>
                                             );
                                         })}
@@ -603,7 +625,27 @@ export default async function Page() {
                                                             />
                                                         )}
                                                     </div>
-                                                    <div className="text"><h6>{brand.name}</h6></div>
+                                                    <div className="text">
+                                                        <h6>{brand.name}</h6>
+                                                        <p style={{ 
+                                                            fontSize: '13px', 
+                                                            marginTop: '6px', 
+                                                            marginBottom: '4px',
+                                                            color: 'rgba(255, 255, 255, 0.85)',
+                                                            lineHeight: 1.4
+                                                        }}>
+                                                            DLP, SIEM, XDR, Insider Threat Prevention
+                                                        </p>
+                                                        <p style={{ 
+                                                            fontSize: '12px', 
+                                                            marginTop: '4px',
+                                                            marginBottom: 0,
+                                                            color: 'rgba(255, 255, 255, 0.7)',
+                                                            lineHeight: 1.3
+                                                        }}>
+                                                            UEBA • DLP • Employee Monitoring • Productivity Analytics
+                                                        </p>
+                                                    </div>
                                                 </Link>
                                             );
                                         })}

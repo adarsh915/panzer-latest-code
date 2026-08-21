@@ -15,9 +15,10 @@ interface BreadcrumbProps {
   imageCaption?: string;
   imageDescription?: string;
   hideDescription?: boolean;
+  description?: string;
 }
 
-export function Breadcrumb({ title, paths, image, imageAlt, imageTitle, imageCaption, imageDescription, hideDescription }: BreadcrumbProps) {
+export function Breadcrumb({ title, paths, image, imageAlt, imageTitle, imageCaption, imageDescription, hideDescription, description }: BreadcrumbProps) {
   const imageSrc = image ?? "/assets/images/hero/breadcumb.png";
   return (
     <section className="panzer-resource-breadcrumb-section" aria-label={`${title} breadcrumb`}>
@@ -48,11 +49,15 @@ export function Breadcrumb({ title, paths, image, imageAlt, imageTitle, imageCap
           <div className="container breadcrumb-grid">
             <div className="panzer-resource-breadcrumb-copy">
               <h1 className="panzer-resource-breadcrumb-title">{title}</h1>
-              {!hideDescription && (
+              {description ? (
+                <p className="panzer-resource-breadcrumb-text">
+                  {description}
+                </p>
+              ) : !hideDescription ? (
                 <p className="panzer-resource-breadcrumb-text">
                   Explore Panzer IT resources, solutions and security insights designed to help your business stay informed and protected.
                 </p>
-              )}
+              ) : null}
             </div>
             <div className="panzer-resource-breadcrumb-visual">
               <figure style={{ margin: 0, width: '100%', height: '100%' }}>

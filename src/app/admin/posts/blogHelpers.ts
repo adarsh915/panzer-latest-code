@@ -16,6 +16,7 @@ export const emptyBlogPost: BlogPostFormData = {
   title: '',
   slug: '',
   status: 'draft',
+  featured: false,
   author: '',
   authorBio: '',
   description: '',
@@ -30,6 +31,7 @@ export const emptyBlogPost: BlogPostFormData = {
   metaDescription: '',
   metaKeywords: '',
   publishedAt: '',
+  breadcrumbDescription: '',
 }
 
 export const emptyBlogCategory: BlogCategoryFormData = {
@@ -48,6 +50,7 @@ export const toFormData = (post: BlogPost): BlogPostFormData => ({
   title: post.title,
   slug: post.slug,
   status: post.status,
+  featured: post.featured ?? false,
   author: post.author ?? '',
   authorBio: post.authorBio ?? '',
   description: post.description ?? '',
@@ -62,4 +65,5 @@ export const toFormData = (post: BlogPost): BlogPostFormData => ({
   metaDescription: post.metaDescription ?? '',
   metaKeywords: post.metaKeywords ?? '',
   publishedAt: post.publishedAt ?? '',
+  breadcrumbDescription: post.breadcrumbDescription ?? '',
 })

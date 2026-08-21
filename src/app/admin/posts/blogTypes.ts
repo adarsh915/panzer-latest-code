@@ -5,6 +5,7 @@ export type BlogPost = {
   title: string
   slug: string
   status: PostStatus
+  featured?: boolean
   createdAt: string
   publishedAt?: string
   author?: string
@@ -20,12 +21,14 @@ export type BlogPost = {
   metaTitle?: string
   metaDescription?: string
   metaKeywords?: string
+  breadcrumbDescription?: string
 }
 
 export type BlogPostFormData = {
   title: string
   slug: string
   status: PostStatus
+  featured?: boolean
   author: string
   authorBio: string
   description: string
@@ -40,6 +43,7 @@ export type BlogPostFormData = {
   metaDescription: string
   metaKeywords: string
   publishedAt?: string
+  breadcrumbDescription?: string
 }
 
 export type BlogCategory = {

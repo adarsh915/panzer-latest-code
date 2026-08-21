@@ -33,7 +33,7 @@ export function BrandSlider() {
       // Destroy existing instance
       if ((brandSliderElement as any).swiper && !(brandSliderElement as any).swiper.destroyed) {
         console.log('[BrandSlider] Destroying existing instance')
-        ;(brandSliderElement as any).swiper.destroy(true, true)
+          ; (brandSliderElement as any).swiper.destroy(true, true)
       }
 
       const brandWrapper = brandSliderElement.querySelector('.swiper-wrapper')
@@ -110,11 +110,11 @@ export function BrandSlider() {
           0: { slidesPerView: 1, slidesPerGroup: 1 },
           576: { slidesPerView: 2, slidesPerGroup: 2 },
           767: { slidesPerView: 3, slidesPerGroup: 2 },
-          854: { slidesPerView: 4, slidesPerGroup: 2 },
-          1199: { slidesPerView: 4, slidesPerGroup: 2 },
+          854: { slidesPerView: 5, slidesPerGroup: 2 },
+          1199: { slidesPerView: 5, slidesPerGroup: 2 },
         },
         on: {
-          init: function() {
+          init: function () {
             console.log('[BrandSlider] ✅✅✅ Swiper initialized successfully!')
           }
         }
@@ -134,7 +134,7 @@ export function BrandSlider() {
             if (checkInterval) clearInterval(checkInterval)
           }
         }, 100)
-        
+
         timeoutId = setTimeout(() => {
           if (checkInterval) clearInterval(checkInterval)
         }, 5000)

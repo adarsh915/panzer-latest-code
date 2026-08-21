@@ -264,7 +264,7 @@
   animation: fillProgress 5.2s linear forwards;
 }
 
-.heroInner:hover .timelineItem.active .timelineProgress,
+.sliderControls:hover .timelineItem.active .timelineProgress,
 .timeline.paused .timelineProgress {
   animation-play-state: paused;
 }
@@ -338,7 +338,7 @@
 .orbitWrap {
   position: absolute;
   inset: 0;
-  animation: spin 34s linear infinite;
+  animation: spin 150s linear infinite;
 }
 
 .iconSlot {
@@ -353,7 +353,7 @@
 .iconUpright {
   position: absolute;
   transform: translate(-50%, -50%);
-  animation: spin-rev 34s linear infinite;
+  animation: spin-rev 150s linear infinite;
 }
 
 .iconContent {
@@ -471,15 +471,7 @@
 
 /* ---------- BOTTOM MARQUEE ---------- */
 .marquee {
-  position: relative;
-  width: 100%;
-  padding: 12px 0;
-  background: var(--nh-marquee-bg);
-  border-bottom: 1px solid rgba(11, 27, 58, 0.1);
-  overflow: hidden;
-  z-index: 10;
-  display: flex;
-  gap: 24px;
+  display: none;
 }
 
 .marqueeGroup {

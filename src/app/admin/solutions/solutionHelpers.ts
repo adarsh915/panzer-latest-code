@@ -90,6 +90,7 @@ export const emptySolution: SolutionFormData = {
   metaDescription: '',
   metaKeywords: '',
   isFeatured: false,
+  breadcrumbDescription: '',
 }
 
 export const emptySolutionCategory: SolutionCategoryFormData = {
@@ -126,4 +127,5 @@ export const toFormData = (solution: SolutionService): SolutionFormData => ({
   metaDescription: solution.metaDescription ?? '',
   metaKeywords: solution.metaKeywords ?? '',
   isFeatured: solution.isFeatured ?? false,
+  breadcrumbDescription: solution.breadcrumbDescription ?? '',
 })

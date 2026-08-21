@@ -65,6 +65,7 @@ export const readBrandsPaginated = async (page: number = 1, limit: number = 10):
     capabilitiesTitle: row.capabilities_title ?? '',
     capabilitiesHeading: row.capabilities_heading ?? '',
     capabilitiesPoints: row.capabilities_points ?? '',
+    breadcrumbDescription: row.breadcrumb_description ?? '',
   }))
 
   const brandIds = brands.map(b => b.id)
@@ -115,6 +116,7 @@ export const findBrand = async (id: string): Promise<BrandPartner | undefined> =
     capabilitiesTitle: row.capabilities_title ?? '',
     capabilitiesHeading: row.capabilities_heading ?? '',
     capabilitiesPoints: row.capabilities_points ?? '',
+    breadcrumbDescription: row.breadcrumb_description ?? '',
     extraCards: [],
   }
 
@@ -142,8 +144,8 @@ export const createBrand = async (data: BrandFormData): Promise<BrandPartner | {
     `INSERT INTO brands (
       id, name, slug, website, category, description, image, image_title, image_caption, image_description, image_alt,
       logo, logo_alt, sort_order, featured, status, meta_title,
-      meta_description, meta_keywords, capabilities_title, capabilities_heading, capabilities_points, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      meta_description, meta_keywords, capabilities_title, capabilities_heading, capabilities_points, breadcrumb_description, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       id,
       data.name,
@@ -167,6 +169,7 @@ export const createBrand = async (data: BrandFormData): Promise<BrandPartner | {
       data.capabilitiesTitle || '',
       data.capabilitiesHeading || '',
       data.capabilitiesPoints || '',
+      data.breadcrumbDescription || '',
       createdAt,
     ],
   )
@@ -221,6 +224,7 @@ export const updateBrand = async (id: string, data: Partial<BrandFormData>): Pro
     capabilitiesTitle: 'capabilities_title',
     capabilitiesHeading: 'capabilities_heading',
     capabilitiesPoints: 'capabilities_points',
+    breadcrumbDescription: 'breadcrumb_description',
   }
 
   for (const [key, dbField] of Object.entries(fields)) {

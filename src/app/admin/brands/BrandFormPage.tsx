@@ -296,6 +296,7 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
       capabilitiesTitle: form.capabilitiesTitle?.trim() || '',
       capabilitiesHeading: form.capabilitiesHeading?.trim() || '',
       capabilitiesPoints: form.capabilitiesPoints?.trim() || '',
+      breadcrumbDescription: form.breadcrumbDescription?.trim() || '',
     }
 
     try {
@@ -552,6 +553,16 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
                   onChange={() => {}}
                 />
               </div>
+            </label>
+
+            <label className={styles.field}>
+              <span>Breadcrumb Description</span>
+              <textarea
+                rows={3}
+                value={form.breadcrumbDescription || ''}
+                onChange={(event) => set('breadcrumbDescription', event.target.value)}
+                placeholder="Enter breadcrumb description (appears on the frontend page below the title)"
+              />
             </label>
 
             <div className={styles.seoBox} style={{ marginTop: '20px' }}>

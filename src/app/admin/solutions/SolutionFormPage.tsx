@@ -441,6 +441,7 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
       metaTitle: form.metaTitle?.trim() || title,
       metaDescription: form.metaDescription?.trim() || stripHtml(description).slice(0, 160),
       metaKeywords: form.metaKeywords?.trim() || '',
+      breadcrumbDescription: form.breadcrumbDescription?.trim() || '',
     }
 
     try {
@@ -710,6 +711,16 @@ const SolutionFormPage = ({ mode, solutionId }: Props) => {
                   onChange={() => { }}
                 />
               </div>
+            </label>
+
+            <label className={styles.field}>
+              <span>Breadcrumb Description</span>
+              <textarea
+                rows={3}
+                value={form.breadcrumbDescription || ''}
+                onChange={(event) => set('breadcrumbDescription', event.target.value)}
+                placeholder="Enter breadcrumb description (appears on the frontend page below the title)"
+              />
             </label>
 
             <div className={styles.tabBox}>

@@ -54,7 +54,7 @@ export function HeroSlider() {
         autoplay: {
           delay: 5000,
           disableOnInteraction: false,
-          pauseOnMouseEnter: false,
+          pauseOnMouseEnter: false, // Don't pause on slider hover
           stopOnLastSlide: false,
         },
         navigation: {
@@ -84,6 +84,21 @@ export function HeroSlider() {
             // Explicitly start autoplay in case it didn't trigger
             if (this.autoplay) {
               this.autoplay.start()
+            }
+            
+            // Add pause/resume only on progress bar (pagination) hover
+            const pagination = document.querySelector('.panzer-cyber-pagination')
+            if (pagination && this.autoplay) {
+              pagination.addEventListener('mouseenter', () => {
+                if (this.autoplay && this.autoplay.running) {
+                  this.autoplay.stop()
+                }
+              })
+              pagination.addEventListener('mouseleave', () => {
+                if (this.autoplay && !this.autoplay.running) {
+                  this.autoplay.start()
+                }
+              })
             }
           },
         },

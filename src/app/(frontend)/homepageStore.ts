@@ -27,6 +27,7 @@ type HomepagePost = {
   publishedAt?: string
   createdAt?: string
   categoryId?: number
+  featured?: boolean
 }
 
 type HomepageBrand = {
@@ -61,11 +62,11 @@ async function fetchHomepageData(): Promise<HomepageData> {
     LIMIT 9
   `)
 
-  // Only fetch recent published posts (limit 3) - exclude large description field
+  // Only fetch featured published posts (limit 3) for homepage
   const [postsRows] = await pool.query(`
-    SELECT id, title, slug, image, image_alt, published_at, created_at, category_id
+    SELECT id, title, slug, image, image_alt, published_at, created_at, category_id, featured
     FROM blog_posts 
-    WHERE status = 'published'
+    WHERE status = 'published' AND featured = 1
     ORDER BY published_at DESC
     LIMIT 3
   `)
@@ -124,6 +125,7 @@ async function fetchHomepageData(): Promise<HomepageData> {
       publishedAt: p.published_at instanceof Date ? p.published_at.toISOString() : p.published_at,
       createdAt: p.created_at instanceof Date ? p.created_at.toISOString() : p.created_at,
       categoryId: p.category_id,
+      featured: Boolean(p.featured),
     })),
     brands: (brandsRows as any[]).map(b => ({
       id: b.id,

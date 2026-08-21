@@ -46,6 +46,7 @@ export const readPostsPaginated = async (page: number = 1, limit: number = 10): 
     title: row.title,
     slug: row.slug,
     status: row.status,
+    featured: Boolean(row.featured),
     createdAt: row.created_at instanceof Date ? row.created_at.toISOString() : row.created_at,
     publishedAt: row.published_at instanceof Date ? row.published_at.toISOString() : row.published_at ?? '',
     author: row.author ?? '',
@@ -61,6 +62,7 @@ export const readPostsPaginated = async (page: number = 1, limit: number = 10): 
     metaTitle: row.meta_title ?? '',
     metaDescription: row.meta_description ?? '',
     metaKeywords: row.meta_keywords ?? '',
+    breadcrumbDescription: row.breadcrumb_description ?? '',
   }))
   
   return { posts, total }
@@ -81,13 +83,14 @@ export const createPost = async (data: BlogPostFormData): Promise<BlogPost | { s
     : null
 
   await pool.query(
-    `INSERT INTO blog_posts (id, title, slug, status, author, author_bio, description, image, image_title, image_caption, image_description, image_alt, category_id, tags, meta_title, meta_description, meta_keywords, published_at, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO blog_posts (id, title, slug, status, featured, author, author_bio, description, image, image_title, image_caption, image_description, image_alt, category_id, tags, meta_title, meta_description, meta_keywords, published_at, breadcrumb_description, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       id,
       data.title || '',
       slug,
       data.status || 'draft',
+      data.featured ? 1 : 0,
       data.author || '',
       data.authorBio || '',
       data.description || '',
@@ -102,6 +105,7 @@ export const createPost = async (data: BlogPostFormData): Promise<BlogPost | { s
       data.metaDescription || '',
       data.metaKeywords || '',
       publishedAt,
+      data.breadcrumbDescription || '',
       createdAt,
     ]
   )
@@ -128,11 +132,12 @@ export const updatePost = async (id: string, data: BlogPostFormData): Promise<Bl
     : null
 
   await pool.query(
-    `UPDATE blog_posts SET title = ?, slug = ?, status = ?, author = ?, author_bio = ?, description = ?, image = ?, image_title = ?, image_caption = ?, image_description = ?, image_alt = ?, category_id = ?, tags = ?, meta_title = ?, meta_description = ?, meta_keywords = ?, published_at = ? WHERE id = ?`,
+    `UPDATE blog_posts SET title = ?, slug = ?, status = ?, featured = ?, author = ?, author_bio = ?, description = ?, image = ?, image_title = ?, image_caption = ?, image_description = ?, image_alt = ?, category_id = ?, tags = ?, meta_title = ?, meta_description = ?, meta_keywords = ?, published_at = ?, breadcrumb_description = ? WHERE id = ?`,
     [
       data.title || '',
       slug,
       data.status || 'draft',
+      data.featured ? 1 : 0,
       data.author || '',
       data.authorBio || '',
       data.description || '',
@@ -147,6 +152,7 @@ export const updatePost = async (id: string, data: BlogPostFormData): Promise<Bl
       data.metaDescription || '',
       data.metaKeywords || '',
       publishedAt,
+      data.breadcrumbDescription || '',
       id,
     ]
   )
@@ -174,6 +180,7 @@ export const findPost = async (id: string): Promise<BlogPost | undefined> => {
     title: row.title,
     slug: row.slug,
     status: row.status,
+    featured: Boolean(row.featured),
     createdAt: row.created_at instanceof Date ? row.created_at.toISOString() : row.created_at,
     publishedAt: row.published_at instanceof Date ? row.published_at.toISOString() : row.published_at ?? '',
     author: row.author ?? '',
@@ -189,6 +196,7 @@ export const findPost = async (id: string): Promise<BlogPost | undefined> => {
     metaTitle: row.meta_title ?? '',
     metaDescription: row.meta_description ?? '',
     metaKeywords: row.meta_keywords ?? '',
+    breadcrumbDescription: row.breadcrumb_description ?? '',
   })
 }
 

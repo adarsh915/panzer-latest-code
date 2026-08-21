@@ -31,6 +31,7 @@ const Login = () => {
                 <TextFormInput
                   control={control}
                   name="password"
+                  type="password"
                   placeholder="Enter your password"
                   className="bg-light bg-opacity-50 border-light py-2"
                   label="Password"

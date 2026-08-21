@@ -295,6 +295,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         imageTitle={solution.imageTitle}
         imageCaption={solution.imageCaption}
         imageDescription={solution.imageDescription}
+        description={solution.breadcrumbDescription}
         hideDescription={true}
       />
 

@@ -12817,7 +12817,7 @@ a.text-theme:hover,
 }
 
 .panzer-resource-breadcrumb-text {
-  max-width: 420px;
+
   margin: 0;
   color: var(--theme-navy-slate-light);
   font-size: clamp(14px, 1vw, 16px);
@@ -87105,13 +87105,13 @@ body {
 }
 
 .panzer-page-home .panzer-lock-about-grid {
-  grid-template-columns: minmax(320px, 0.92fr) minmax(260px, 0.72fr) minmax(300px, 0.82fr) !important;
+  grid-template-columns: minmax(320px, 0.99fr) minmax(260px, 0.72fr) minmax(300px, 0.82fr) !important;
   gap: clamp(22px, 2.3vw, 38px) !important;
   align-items: center !important;
 }
 
 .panzer-page-home .panzer-lock-about-title {
-  max-width: 440px !important;
+  max-width: 470px !important;
   margin: 20px 0 16px !important;
   font-size: clamp(28px, 3.25vw, 50px) !important;
   line-height: 1.12 !important;
@@ -87164,20 +87164,20 @@ body {
 }
 
 .panzer-page-home .panzer-lock-about-visual {
-  min-height: clamp(360px, 32vw, 460px) !important;
+  min-height: clamp(260px, 32vw, 260px) !important;
 }
 
 .panzer-page-home .panzer-lock-about-visual::before {
-  width: min(94%, 390px) !important;
-  height: min(94%, 390px) !important;
+  width: min(85%, 390px) !important;
+  height: min(85%, 390px) !important;
 }
 
 .panzer-page-home .panzer-lock-network {
-  inset: 28px 16px 54px !important;
+  inset: 42px 53px 42px !important;
 }
 
 .panzer-page-home .panzer-lock-image {
-  width: min(78%, 318px) !important;
+  width: min(70%, 252px) !important;
 }
 
 .panzer-page-home .panzer-lock-about-flow {
@@ -90040,7 +90040,7 @@ body {
 
 .panzer-page-home .panzer-brand-partners-section .panzer-cyber-brand-panel {
   position: relative;
-  padding: clamp(28px, 3vw, 44px) clamp(18px, 2vw, 24px) !important;
+  padding: clamp(28px, 3vw, 20px) clamp(18px, 2vw, 24px) !important;
   border: 1px solid rgba(6, 18, 56, 0.08) !important;
   border-radius: 28px !important;
   background: var(--cardmention) !important;
@@ -90102,7 +90102,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 94px !important;
+  height: 60px !important;
   max-width: none !important;
   padding: 18px 18px !important;
   border: 1px solid rgba(9, 21, 40, 0.08) !important;
@@ -90402,11 +90402,10 @@ body {
   font-size: 12px;
   line-height: 1;
   font-weight: 900;
-  text-transform: uppercase;
+
 }
 
 .panzer-page-brand-detail .panzer-brand-detail-hero h2 {
-  max-width: 620px;
   margin: 20px 0 14px;
   color: var(--theme-navy-darker);
   font-size: clamp(34px, 3.6vw, 52px);
@@ -90496,7 +90495,7 @@ body {
   align-items: center;
   gap: 9px;
   min-height: 28px;
-  padding: 8px 3px;
+  padding: 8px 15px;
   border-radius: 999px;
   color: var(--theme-navy-darker);
   background: var(--bs-bg-color23);

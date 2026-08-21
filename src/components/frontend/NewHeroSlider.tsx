@@ -264,11 +264,7 @@ export function NewHeroSlider({ dynamicSlides, cta, ctaUrl, secondaryText, secon
         <div className={styles.heroInner}>
 
           {/* LEFT SLIDER */}
-          <div
-            className={styles.textCol}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
+          <div className={styles.textCol}>
             <div
               className={styles.slideTrack}
               style={{ transform: `translateX(-${index * 100}%)` }}
@@ -302,7 +298,11 @@ export function NewHeroSlider({ dynamicSlides, cta, ctaUrl, secondaryText, secon
               ))}
             </div>
 
-            <div className={styles.sliderControls}>
+            <div 
+              className={styles.sliderControls}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
               <div className={`${styles.timeline} ${isHovered ? styles.paused : ''}`}>
                 {finalSlides.map((_, i) => (
                   <button

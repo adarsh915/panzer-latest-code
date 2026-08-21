@@ -224,6 +224,7 @@ const PostFormPage = ({ mode, postId }: Props) => {
       metaDescription: form.metaDescription.trim(),
       metaKeywords: form.metaKeywords.trim(),
       publishedAt: form.status === 'published' ? form.publishedAt || new Date().toISOString() : '',
+      breadcrumbDescription: form.breadcrumbDescription?.trim() || '',
     }
 
     try {
@@ -307,6 +308,7 @@ const PostFormPage = ({ mode, postId }: Props) => {
                   <option value="published">Published</option>
                 </select>
               </label>
+
               <label className={styles.field}>
                 <span>Publish Date</span>
                 <input
@@ -411,6 +413,65 @@ const PostFormPage = ({ mode, postId }: Props) => {
               </div>
             </div>
 
+            {/* Featured Post Section - Full Width Row */}
+            <div style={{ 
+              marginTop: '20px',
+              marginBottom: '20px'
+            }}>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '12px', 
+                padding: '14px 18px',
+                background: 'var(--surface-color)',
+                border: '1px solid var(--border-color)',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              onClick={() => set('featured', !form.featured)}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--primary-color)'
+                e.currentTarget.style.boxShadow = '0 0 0 3px rgba(var(--primary-rgb), 0.1)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-color)'
+                e.currentTarget.style.boxShadow = 'none'
+              }}
+              >
+                <input
+                  type="checkbox"
+                  id="featured"
+                  checked={form.featured || false}
+                  onChange={(e) => set('featured', e.target.checked)}
+                  onClick={(e) => e.stopPropagation()}
+                  style={{ 
+                    width: '18px', 
+                    height: '18px', 
+                    cursor: 'pointer',
+                    accentColor: 'var(--primary-color)',
+                    flexShrink: 0
+                  }}
+                />
+                <label htmlFor="featured" style={{ 
+                  margin: 0, 
+                  cursor: 'pointer', 
+                  fontWeight: 600, 
+                  color: 'var(--text-primary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '14px'
+                }}>
+                  <i className="fas fa-star" style={{ 
+                    color: form.featured ? '#FFB648' : '#cbd5e1',
+                    fontSize: '16px'
+                  }}></i>
+                  Feature this blog post on the Homepage
+                </label>
+              </div>
+            </div>
+
             {form.image && (
               <div className={styles.seoBox} style={{ marginTop: '10px' }}>
                 <div className={styles.sectionTitle}>
@@ -500,6 +561,16 @@ const PostFormPage = ({ mode, postId }: Props) => {
                   onChange={() => {}}
                 />
               </div>
+            </label>
+
+            <label className={styles.field}>
+              <span>Breadcrumb Description</span>
+              <textarea
+                rows={3}
+                value={form.breadcrumbDescription || ''}
+                onChange={(event) => set('breadcrumbDescription', event.target.value)}
+                placeholder="Enter breadcrumb description (appears on the frontend page below the title)"
+              />
             </label>
 
             <div className={styles.seoBox} style={{ marginTop: '30px' }}>

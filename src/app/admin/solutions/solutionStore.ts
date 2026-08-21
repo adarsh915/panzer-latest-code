@@ -84,6 +84,7 @@ export const readSolutionsPaginated = async (page: number = 1, limit: number = 1
     metaDescription: sol.meta_description || '',
     metaKeywords: sol.meta_keywords || '',
     isFeatured: !!sol.is_featured,
+    breadcrumbDescription: sol.breadcrumb_description || '',
     featureCards: featureCards.filter(fc => fc.solution_id === sol.id).map(fc => ({
       id: fc.id,
       icon: fc.icon || '',
@@ -139,8 +140,8 @@ export const createSolution = async (data: SolutionFormData): Promise<SolutionSe
     }
 
     await connection.query(
-      `INSERT INTO solutions (id, title, subtitle, description, category, image, image_title, image_caption, image_description, image_alt, logo, logo_alt, slug, sort_order, status, meta_title, meta_description, meta_keywords, is_featured, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO solutions (id, title, subtitle, description, category, image, image_title, image_caption, image_description, image_alt, logo, logo_alt, slug, sort_order, status, meta_title, meta_description, meta_keywords, is_featured, breadcrumb_description, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         id,
         data.title || '',
@@ -161,6 +162,7 @@ export const createSolution = async (data: SolutionFormData): Promise<SolutionSe
         data.metaDescription || '',
         data.metaKeywords || '',
         data.isFeatured ? 1 : 0,
+        data.breadcrumbDescription || '',
         createdAt
       ]
     )
@@ -231,7 +233,7 @@ export const updateSolution = async (id: string, data: SolutionFormData): Promis
     }
 
     await connection.query(
-      `UPDATE solutions SET title = ?, subtitle = ?, description = ?, category = ?, image = ?, image_title = ?, image_caption = ?, image_description = ?, image_alt = ?, logo = ?, logo_alt = ?, slug = ?, sort_order = ?, status = ?, meta_title = ?, meta_description = ?, meta_keywords = ?, is_featured = ? WHERE id = ?`,
+      `UPDATE solutions SET title = ?, subtitle = ?, description = ?, category = ?, image = ?, image_title = ?, image_caption = ?, image_description = ?, image_alt = ?, logo = ?, logo_alt = ?, slug = ?, sort_order = ?, status = ?, meta_title = ?, meta_description = ?, meta_keywords = ?, is_featured = ?, breadcrumb_description = ? WHERE id = ?`,
       [
         data.title || '',
         data.subtitle || '',
@@ -251,6 +253,7 @@ export const updateSolution = async (id: string, data: SolutionFormData): Promis
         data.metaDescription || '',
         data.metaKeywords || '',
         data.isFeatured ? 1 : 0,
+        data.breadcrumbDescription || '',
         id
       ]
     )

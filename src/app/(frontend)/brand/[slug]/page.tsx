@@ -239,6 +239,7 @@ export default async function Page({ params }: PageProps) {
         imageTitle={brand.imageTitle}
         imageCaption={brand.imageCaption}
         imageDescription={brand.imageDescription}
+        description={brand.breadcrumbDescription}
         hideDescription={true}
       />
 

@@ -31,6 +31,7 @@ export type BrandPartner = {
   capabilitiesHeading?: string
   capabilitiesPoints?: string
   extraCards?: BrandExtraCard[]
+  breadcrumbDescription?: string
 }
 
 export type BrandFormData = Omit<BrandPartner, 'id' | 'createdAt'>
