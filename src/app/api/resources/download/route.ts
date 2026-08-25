@@ -48,5 +48,12 @@ export async function GET(request: NextRequest) {
     console.error('Failed to increment download count:', error)
   }
 
-  return NextResponse.redirect(new URL(url, request.url))
+  let redirectUrl = url
+  if (url.startsWith('/')) {
+    const host = request.headers.get('host') || 'localhost:3000'
+    const proto = request.headers.get('x-forwarded-proto') || 'http'
+    redirectUrl = `${proto}://${host}${url}`
+  }
+
+  return NextResponse.redirect(new URL(redirectUrl))
 }

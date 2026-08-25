@@ -34,7 +34,7 @@ export default async function Page() {
             image: r.image || '/assets/images/service/hm5-icon01.webp',
             imageWidth: 46,
             imageHeight: 46,
-            link: r.fileUrl,
+            link: r.fileUrl || '',
             category: r.category || 'General',
         }));
 

@@ -567,6 +567,34 @@ const BrandFormPage = ({ mode, brandId }: Props) => {
 
             <div className={styles.seoBox} style={{ marginTop: '20px' }}>
               <div className={styles.sectionTitle}>
+                <IconifyIcon icon="tabler:home" />
+                <h4>Homepage Product Card Text</h4>
+              </div>
+              <p style={{ marginBottom: '15px', color: '#666', fontSize: '14px' }}>
+                These two lines appear in the Products section on the homepage (only for featured brands).
+              </p>
+              <label className={styles.field}>
+                <span>Line 1 — Tagline</span>
+                <input
+                  type="text"
+                  value={form.homepageTagline || ''}
+                  onChange={(e) => set('homepageTagline', e.target.value)}
+                  placeholder="e.g. DLP, SIEM, XDR, Insider Threat Prevention"
+                />
+              </label>
+              <label className={styles.field}>
+                <span>Line 2 — Sub Tagline</span>
+                <input
+                  type="text"
+                  value={form.homepageSubTagline || ''}
+                  onChange={(e) => set('homepageSubTagline', e.target.value)}
+                  placeholder="e.g. UEBA • DLP • Employee Monitoring • Productivity Analytics"
+                />
+              </label>
+            </div>
+
+            <div className={styles.seoBox} style={{ marginTop: '20px' }}>
+              <div className={styles.sectionTitle}>
                 <IconifyIcon icon="tabler:list-check" />
                 <h4>Brand Capabilities</h4>
               </div>

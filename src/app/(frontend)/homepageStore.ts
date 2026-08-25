@@ -64,7 +64,7 @@ async function fetchHomepageData(): Promise<HomepageData> {
 
   // Only fetch featured published posts (limit 3) for homepage
   const [postsRows] = await pool.query(`
-    SELECT id, title, slug, image, image_alt, published_at, created_at, category_id, featured
+    SELECT id, title, slug, image, image_alt, published_at, created_at, featured
     FROM blog_posts 
     WHERE status = 'published' AND featured = 1
     ORDER BY published_at DESC
@@ -73,7 +73,7 @@ async function fetchHomepageData(): Promise<HomepageData> {
 
   // Only fetch featured brands for homepage products section (limit 6)
   const [brandsRows] = await pool.query(`
-    SELECT id, name, slug, logo, logo_alt, image, image_alt, status, featured
+    SELECT id, name, slug, logo, logo_alt, image, image_alt, status, featured, homepage_tagline, homepage_sub_tagline
     FROM brands 
     WHERE status = 'active' AND featured = 1
     ORDER BY sort_order ASC
@@ -124,7 +124,6 @@ async function fetchHomepageData(): Promise<HomepageData> {
       featuredImage: sanitizeImage(p.image),
       publishedAt: p.published_at instanceof Date ? p.published_at.toISOString() : p.published_at,
       createdAt: p.created_at instanceof Date ? p.created_at.toISOString() : p.created_at,
-      categoryId: p.category_id,
       featured: Boolean(p.featured),
     })),
     brands: (brandsRows as any[]).map(b => ({
@@ -137,6 +136,8 @@ async function fetchHomepageData(): Promise<HomepageData> {
       imageAlt: b.image_alt,
       status: b.status,
       featured: Boolean(b.featured),
+      homepageTagline: b.homepage_tagline ?? '',
+      homepageSubTagline: b.homepage_sub_tagline ?? '',
     })),
     homepageSettings
   }

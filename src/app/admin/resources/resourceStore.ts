@@ -3,6 +3,14 @@
 import pool from '@/lib/db'
 import { toSlug } from '../solutions/solutionHelpers'
 import { sanitizeDeep, stripBase64 } from '@/lib/sanitize'
+import { getSessionUser } from '@/lib/session'
+
+async function checkAuth() {
+  const sessionUser = await getSessionUser()
+  if (!sessionUser) {
+    throw new Error('Unauthorized')
+  }
+}
 import type {
   ResourceCategory,
   ResourceCategoryFormData,
@@ -70,6 +78,7 @@ export const readAllResources = async (): Promise<ResourceItem[]> => {
 }
 
 export const createResource = async (data: ResourceFormData): Promise<ResourceItem | { success: false, message: string }> => {
+  await checkAuth()
   const connection = await pool.getConnection()
   try {
     const slug = toSlug(data.slug || data.title)
@@ -110,6 +119,7 @@ export const createResource = async (data: ResourceFormData): Promise<ResourceIt
 }
 
 export const updateResource = async (id: string, data: ResourceFormData): Promise<ResourceItem | { success: false, message: string }> => {
+  await checkAuth()
   const connection = await pool.getConnection()
   try {
     const slug = toSlug(data.slug || data.title)
@@ -145,6 +155,7 @@ export const updateResource = async (id: string, data: ResourceFormData): Promis
 }
 
 export const deleteResource = async (id: string): Promise<void> => {
+  await checkAuth()
   await pool.query('DELETE FROM resources WHERE id = ?', [id])
 }
 
@@ -219,6 +230,7 @@ export const readResourceCategories = async (): Promise<ResourceCategory[]> => {
 }
 
 export const createResourceCategory = async (data: ResourceCategoryFormData): Promise<ResourceCategory | { success: false, message: string }> => {
+  await checkAuth()
   const id = `rc${Date.now()}`
   const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ')
   const slug = toSlug(data.slug || data.name)
@@ -237,6 +249,7 @@ export const createResourceCategory = async (data: ResourceCategoryFormData): Pr
 }
 
 export const updateResourceCategory = async (id: string, data: ResourceCategoryFormData): Promise<ResourceCategory | { success: false, message: string }> => {
+  await checkAuth()
   const slug = toSlug(data.slug || data.name)
   const connection = await pool.getConnection()
   try {
@@ -275,6 +288,7 @@ export const updateResourceCategory = async (id: string, data: ResourceCategoryF
 }
 
 export const deleteResourceCategory = async (id: string): Promise<void | { success: false, message: string }> => {
+  await checkAuth()
   const connection = await pool.getConnection()
   try {
     await connection.beginTransaction()

@@ -4,6 +4,14 @@ import pool from '@/lib/db'
 import { revalidateTag } from 'next/cache'
 import { toSlug } from './solutionHelpers'
 import { sanitizeDeep, stripBase64 } from '@/lib/sanitize'
+import { getSessionUser } from '@/lib/session'
+
+async function checkAuth() {
+  const sessionUser = await getSessionUser()
+  if (!sessionUser) {
+    throw new Error('Unauthorized')
+  }
+}
 import type {
   SolutionCategory,
   SolutionCategoryFormData,
@@ -125,6 +133,7 @@ export const readSolutionsPaginated = async (page: number = 1, limit: number = 1
 }
 
 export const createSolution = async (data: SolutionFormData): Promise<SolutionService | { success: false, message: string }> => {
+  await checkAuth()
   const connection = await pool.getConnection()
   try {
     await connection.beginTransaction()
@@ -220,6 +229,7 @@ export const createSolution = async (data: SolutionFormData): Promise<SolutionSe
 }
 
 export const updateSolution = async (id: string, data: SolutionFormData): Promise<SolutionService | undefined | { success: false, message: string }> => {
+  await checkAuth()
   const connection = await pool.getConnection()
   try {
     await connection.beginTransaction()
@@ -310,6 +320,7 @@ export const updateSolution = async (id: string, data: SolutionFormData): Promis
 }
 
 export const deleteSolution = async (id: string): Promise<void> => {
+  await checkAuth()
   await pool.query('DELETE FROM solutions WHERE id = ?', [id])
   revalidateTag('header-data')
 }
@@ -403,6 +414,7 @@ export const readCategories = async (): Promise<SolutionCategory[]> => {
 }
 
 export const createCategory = async (data: SolutionCategoryFormData): Promise<SolutionCategory | { success: false, message: string }> => {
+  await checkAuth()
   const id = `sc${Date.now()}`
   const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ')
   const slug = toSlug(data.slug || data.name)
@@ -421,6 +433,7 @@ export const createCategory = async (data: SolutionCategoryFormData): Promise<So
 }
 
 export const updateCategory = async (id: string, data: SolutionCategoryFormData): Promise<SolutionCategory | undefined | { success: false, message: string }> => {
+  await checkAuth()
   const slug = toSlug(data.slug || data.name)
   const connection = await pool.getConnection()
   try {
@@ -459,6 +472,7 @@ export const updateCategory = async (id: string, data: SolutionCategoryFormData)
 }
 
 export const deleteCategory = async (id: string): Promise<void | { success: false, message: string }> => {
+  await checkAuth()
   const connection = await pool.getConnection()
   try {
     await connection.beginTransaction()

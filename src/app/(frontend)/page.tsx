@@ -39,7 +39,7 @@ export default async function Page() {
         chunkedSolutions.push(activeSolutions.slice(i, i + 3));
     }
     const lockAboutFeatures = [
-        
+
         { icon: "fa-user-group", text: "28+ Years of Cybersecurity Expertise Enterprise Security • Data Protection • Backup & DR • Compliance" },
     ];
 
@@ -52,11 +52,11 @@ export default async function Page() {
     ];
 
     const achievementProtections = [
-       { icon: "fa-id-card", title: "Identity &", text: "Access" },
-       { icon: "fa-shield-halved", title: "Data", text: "Protection" },
-       { icon: "fa-laptop", title: "Endpoint", text: "Security" },
-       { icon: "fa-database", title: "Backup &", text: "DR" },
-       { icon: "fa-clipboard-check", title: "Risk &", text: "Compliance" },
+        { icon: "fa-id-card", title: "Identity &", text: "Access" },
+        { icon: "fa-shield-halved", title: "Data", text: "Protection" },
+        { icon: "fa-laptop", title: "Endpoint", text: "Security" },
+        { icon: "fa-database", title: "Backup &", text: "DR" },
+        { icon: "fa-clipboard-check", title: "Risk &", text: "Compliance" },
     ];
 
     const achievementCards = [
@@ -439,7 +439,7 @@ export default async function Page() {
                             <div className="panzer-lock-about-pill">Who We Are</div>
                             <h2 className="panzer-lock-about-title no-title-animation">Secure Data. Ensure Availability. Enable Business.</h2>
                             <p className="panzer-lock-about-text">Panzer IT helps organizations secure identities, infrastructure and critical data through integrated cybersecurity, data protection, backup, disaster recovery and compliance solutions.
-</p>
+                            </p>
                             <div className="panzer-lock-about-features">
                                 {lockAboutFeatures.map((item) => (
                                     <div className="panzer-lock-feature" key={item.text}>
@@ -547,7 +547,8 @@ export default async function Page() {
 
                     <div className="title-wrap text-center three">
                         <div className="sub-title-2 text-white two">Product</div>
-                        <h2 className="sec-title text-white no-title-animation">Explore Panzer IT products <br /> across security and recovery</h2>
+                        <h2 className="sec-title text-white no-title-animation" style={{ margin: '0px' }}>Trusted Technology Partners</h2>
+                        <h4 className="text-white" style={{ opacity: 0.75, lineHeight: 1.6 }}>Best-of-breed cybersecurity and data protection technologies carefully selected to protect what matters most.</h4>
                     </div>
 
                     {(() => {
@@ -562,38 +563,30 @@ export default async function Page() {
                                         {leftBrands.map((brand: any, i: number) => {
                                             const iconSrc = brand.logo || brand.image;
                                             return (
-                                                <Link key={brand.id} href={`/brand/${brand.slug}`} className={`choose-box panzer-choose-link${i < leftBrands.length - 1 ? ' mb-40' : ''}`}>
-                                                    <div className="icon">
-                                                        {iconSrc && (
-                                                            // eslint-disable-next-line @next/next/no-img-element
-                                                            <img
-                                                                src={iconSrc}
-                                                                alt={brand.logoAlt || brand.name}
-                                                                style={{ width: "auto", height: "auto", maxWidth: "45px", maxHeight: "44px", objectFit: "contain" }}
-                                                            />
-                                                        )}
+                                                <Link key={brand.id} href={`/brand/${brand.slug}`} className={`choose-box panzer-choose-link${i < leftBrands.length - 1 ? ' mb-40' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: '8px', textAlign: 'left', alignItems: 'flex-start' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                        <div className="icon" style={{ flexShrink: 0, marginBottom: 0 }}>
+                                                            {iconSrc && (
+                                                                // eslint-disable-next-line @next/next/no-img-element
+                                                                <img
+                                                                    src={iconSrc}
+                                                                    alt={brand.logoAlt || brand.name}
+                                                                    style={{ width: "auto", height: "auto", maxWidth: "45px", maxHeight: "44px", objectFit: "contain" }}
+                                                                />
+                                                            )}
+                                                        </div>
+                                                        <h6 style={{ margin: 0, color: 'white' }}>{brand.name}</h6>
                                                     </div>
-                                                    <div className="text">
-                                                        <h6>{brand.name}</h6>
-                                                        <p style={{ 
-                                                            fontSize: '13px', 
-                                                            marginTop: '6px', 
-                                                            marginBottom: '4px',
-                                                            color: 'rgba(255, 255, 255, 0.85)',
-                                                            lineHeight: 1.4
-                                                        }}>
-                                                            DLP, SIEM, XDR, Insider Threat Prevention
+                                                    {brand.homepageTagline && (
+                                                        <p style={{ fontSize: '13px', margin: 0, color: 'rgba(255,255,255,0.85)', lineHeight: 1.4 }}>
+                                                            {brand.homepageTagline}
                                                         </p>
-                                                        <p style={{ 
-                                                            fontSize: '12px', 
-                                                            marginTop: '4px',
-                                                            marginBottom: 0,
-                                                            color: 'rgba(255, 255, 255, 0.7)',
-                                                            lineHeight: 1.3
-                                                        }}>
-                                                            UEBA • DLP • Employee Monitoring • Productivity Analytics
+                                                    )}
+                                                    {brand.homepageSubTagline && (
+                                                        <p style={{ fontSize: '12px', margin: 0, color: 'rgba(255,255,255,0.7)', lineHeight: 1.3 }}>
+                                                            {brand.homepageSubTagline}
                                                         </p>
-                                                    </div>
+                                                    )}
                                                 </Link>
                                             );
                                         })}
@@ -614,38 +607,30 @@ export default async function Page() {
                                         {rightBrands.map((brand: any, i: number) => {
                                             const iconSrc = brand.logo || brand.image;
                                             return (
-                                                <Link key={brand.id} href={`/brand/${brand.slug}`} className={`choose-box panzer-choose-link${i < rightBrands.length - 1 ? ' mb-40' : ''}`}>
-                                                    <div className="icon">
-                                                        {iconSrc && (
-                                                            // eslint-disable-next-line @next/next/no-img-element
-                                                            <img
-                                                                src={iconSrc}
-                                                                alt={brand.logoAlt || brand.name}
-                                                                style={{ width: "auto", height: "auto", maxWidth: "45px", maxHeight: "44px", objectFit: "contain" }}
-                                                            />
-                                                        )}
+                                                <Link key={brand.id} href={`/brand/${brand.slug}`} className={`choose-box panzer-choose-link${i < rightBrands.length - 1 ? ' mb-40' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: '8px', textAlign: 'left', alignItems: 'flex-start' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                        <div className="icon" style={{ flexShrink: 0, marginBottom: 0 }}>
+                                                            {iconSrc && (
+                                                                // eslint-disable-next-line @next/next/no-img-element
+                                                                <img
+                                                                    src={iconSrc}
+                                                                    alt={brand.logoAlt || brand.name}
+                                                                    style={{ width: "auto", height: "auto", maxWidth: "45px", maxHeight: "44px", objectFit: "contain" }}
+                                                                />
+                                                            )}
+                                                        </div>
+                                                        <h6 style={{ margin: 0, color: 'white' }}>{brand.name}</h6>
                                                     </div>
-                                                    <div className="text">
-                                                        <h6>{brand.name}</h6>
-                                                        <p style={{ 
-                                                            fontSize: '13px', 
-                                                            marginTop: '6px', 
-                                                            marginBottom: '4px',
-                                                            color: 'rgba(255, 255, 255, 0.85)',
-                                                            lineHeight: 1.4
-                                                        }}>
-                                                            DLP, SIEM, XDR, Insider Threat Prevention
+                                                    {brand.homepageTagline && (
+                                                        <p style={{ fontSize: '13px', margin: 0, color: 'rgba(255,255,255,0.85)', lineHeight: 1.4 }}>
+                                                            {brand.homepageTagline}
                                                         </p>
-                                                        <p style={{ 
-                                                            fontSize: '12px', 
-                                                            marginTop: '4px',
-                                                            marginBottom: 0,
-                                                            color: 'rgba(255, 255, 255, 0.7)',
-                                                            lineHeight: 1.3
-                                                        }}>
-                                                            UEBA • DLP • Employee Monitoring • Productivity Analytics
+                                                    )}
+                                                    {brand.homepageSubTagline && (
+                                                        <p style={{ fontSize: '12px', margin: 0, color: 'rgba(255,255,255,0.7)', lineHeight: 1.3 }}>
+                                                            {brand.homepageSubTagline}
                                                         </p>
-                                                    </div>
+                                                    )}
                                                 </Link>
                                             );
                                         })}

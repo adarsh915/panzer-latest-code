@@ -3,6 +3,14 @@
 import pool from '@/lib/db'
 import { revalidatePath } from 'next/cache'
 import { SocialLinkSchema } from './footerValidation'
+import { getSessionUser } from '@/lib/session'
+
+async function checkAuth() {
+  const sessionUser = await getSessionUser()
+  if (!sessionUser) {
+    throw new Error('Unauthorized')
+  }
+}
 
 export type SocialLink = {
   id: string
@@ -28,6 +36,7 @@ export const readSocialLinks = async (): Promise<SocialLink[]> => {
 export const createSocialLink = async (
   data: { platform: string; url: string; icon: string }
 ): Promise<{ success: boolean; link?: SocialLink; error?: string }> => {
+  await checkAuth()
   const parsed = SocialLinkSchema.safeParse(data)
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues?.[0]?.message }
@@ -57,6 +66,7 @@ export const updateSocialLink = async (
   id: string,
   data: { platform: string; url: string; icon: string }
 ): Promise<{ success: boolean; error?: string }> => {
+  await checkAuth()
   const parsed = SocialLinkSchema.safeParse(data)
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues?.[0]?.message }
@@ -72,11 +82,13 @@ export const updateSocialLink = async (
 }
 
 export const deleteSocialLink = async (id: string): Promise<void> => {
+  await checkAuth()
   await pool.query('DELETE FROM footer_social_links WHERE id = ?', [id])
   revalidatePath('/', 'layout')
 }
 
 export const reorderSocialLinks = async (orderedIds: string[]): Promise<void> => {
+  await checkAuth()
   const connection = await pool.getConnection()
   try {
     await connection.beginTransaction()

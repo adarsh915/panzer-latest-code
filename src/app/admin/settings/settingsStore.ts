@@ -1,6 +1,14 @@
 'use server'
 
 import pool from '@/lib/db'
+import { getSessionUser } from '@/lib/session'
+
+async function checkAuth() {
+  const sessionUser = await getSessionUser()
+  if (!sessionUser) {
+    throw new Error('Unauthorized')
+  }
+}
 
 export const readSetting = async <T>(key: string, defaultValue: T): Promise<T> => {
   const [rows] = await pool.query('SELECT value FROM site_settings WHERE `key` = ?', [key])
@@ -19,6 +27,7 @@ export const readSetting = async <T>(key: string, defaultValue: T): Promise<T> =
 }
 
 export const writeSetting = async <T>(key: string, value: T): Promise<void> => {
+  await checkAuth()
   const jsonValue = JSON.stringify(value)
   const updatedAt = new Date().toISOString().slice(0, 19).replace('T', ' ')
   
@@ -51,4 +60,3 @@ export const clearThemePreview = async (): Promise<void> => {
   const cookieStore = await cookies();
   cookieStore.delete('theme_preview_colors')
 }
-

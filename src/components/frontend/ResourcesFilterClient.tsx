@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import ResourceQuestionnaireForm from "./ResourceQuestionnaireForm";
 
+import { sanitizeHtml } from "@/utils/sanitize";
+
 type ResourceItem = {
   id?: string;
   title: string;
@@ -24,6 +26,56 @@ type Category = {
 
 type CategoryNode = Category & {
   children: CategoryNode[];
+}
+
+function ResourceDescription({ text }: { text: string }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  // Check length of plain text to decide if we need the read more/less toggle
+  const plainText = text.replace(/<[^>]*>/g, '').trim();
+  const isLong = plainText.length > 150;
+
+  if (!isLong) {
+    return <div className="resource-desc" dangerouslySetInnerHTML={{ __html: sanitizeHtml(text) }} />;
+  }
+
+  return (
+    <div className="resource-desc-wrapper">
+      <div
+        className="resource-desc"
+        style={isExpanded ? {} : {
+          display: '-webkit-box',
+          WebkitLineClamp: 3,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
+        }}
+        dangerouslySetInnerHTML={{ __html: sanitizeHtml(text) }}
+      />
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsExpanded(!isExpanded);
+        }}
+        style={{
+          background: 'none',
+          border: 'none',
+          color: 'var(--theme-color)',
+          padding: '0',
+          cursor: 'pointer',
+          fontSize: '13px',
+          fontWeight: 600,
+          marginTop: '6px',
+          marginBottom: '15px',
+          display: 'block'
+        }}
+      >
+        {isExpanded ? 'Read Less' : 'Read More'}
+      </button>
+    </div>
+  );
 }
 
 export default function ResourcesFilterClient({
@@ -138,12 +190,12 @@ export default function ResourcesFilterClient({
                     alignItems: 'center',
                     width: '100%',
                     padding: depth === 0 ? '10px 15px' : '8px 10px',
-                    backgroundColor: isActive ? '#0d6efd' : 'transparent',
-                    color: isActive ? '#fff' : 'inherit',
                     borderRadius: '4px',
                     textDecoration: 'none',
-                    fontWeight: isActive ? 600 : 400,
-                    fontSize: depth === 0 ? '16px' : '15px'
+                    fontSize: depth === 0 ? '16px' : '15px',
+                    backgroundColor: isActive ? 'var(--theme-color)' : undefined,
+                    color: isActive ? '#fff' : undefined,
+                    fontWeight: isActive ? 600 : undefined,
                   }}
                   onClick={(e) => {
                     e.preventDefault();
@@ -197,13 +249,15 @@ export default function ResourcesFilterClient({
               style={{
                 display: 'flex',
                 alignItems: 'center',
+                width: '100%',
                 padding: '10px 15px',
-                backgroundColor: activeCategory === "All" ? '#0d6efd' : 'transparent',
-                color: activeCategory === "All" ? 'var(--theme-color)' : 'inherit',
                 borderRadius: '4px',
                 textDecoration: 'none',
-                fontWeight: activeCategory === "All" ? 600 : 400,
-                marginBottom: '10px'
+                fontSize: '16px',
+                marginBottom: '10px',
+                backgroundColor: activeCategory === "All" ? 'var(--theme-color)' : undefined,
+                color: activeCategory === "All" ? '#fff' : undefined,
+                fontWeight: activeCategory === "All" ? 600 : undefined,
               }}
               onClick={(e) => {
                 e.preventDefault();
@@ -275,8 +329,8 @@ export default function ResourcesFilterClient({
                     </div>
                     <h4>{item.title}</h4>
                   </div>
-                  <p>{item.description}</p>
-                  <Link href={`/api/resources/download?id=${item.id}&url=${encodeURIComponent(item.link)}`} className="theme-btn style2 br-30 mt-auto" target="_blank" rel="noopener noreferrer">
+                  <ResourceDescription text={item.description || ''} />
+                  <Link href={`/api/resources/download?id=${item.id}&url=${encodeURIComponent(item.link || '')}`} className="theme-btn style2 br-30 mt-auto" target="_blank" rel="noopener noreferrer">
                     <span className="link-effect">
                       <span className="effect-1">Download now</span>
                       <span className="effect-1">Download now</span>

@@ -3,6 +3,14 @@
 import pool from '@/lib/db'
 import { toSlug } from './blogHelpers'
 import { sanitizeDeep, stripBase64 } from '@/lib/sanitize'
+import { getSessionUser } from '@/lib/session'
+
+async function checkAuth() {
+  const sessionUser = await getSessionUser()
+  if (!sessionUser) {
+    throw new Error('Unauthorized')
+  }
+}
 import type {
   BlogCategory,
   BlogCategoryFormData,
@@ -69,6 +77,7 @@ export const readPostsPaginated = async (page: number = 1, limit: number = 10): 
 }
 
 export const createPost = async (data: BlogPostFormData): Promise<BlogPost | { success: false, message: string }> => {
+  await checkAuth()
   const id = `p${Date.now()}`
   const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ')
   const slug = toSlug(data.slug || data.title)
@@ -120,6 +129,7 @@ export const createPost = async (data: BlogPostFormData): Promise<BlogPost | { s
 }
 
 export const updatePost = async (id: string, data: BlogPostFormData): Promise<BlogPost | undefined | { success: false, message: string }> => {
+  await checkAuth()
   const slug = toSlug(data.slug || data.title)
 
   const [existing] = await pool.query('SELECT id FROM blog_posts WHERE (slug = ? OR title = ?) AND id != ?', [slug, data.title || '', id])
@@ -167,6 +177,7 @@ export const updatePost = async (id: string, data: BlogPostFormData): Promise<Bl
 }
 
 export const deletePost = async (id: string): Promise<void> => {
+  await checkAuth()
   await pool.query('DELETE FROM blog_posts WHERE id = ?', [id])
 }
 
@@ -220,6 +231,7 @@ export const readCategories = async (): Promise<BlogCategory[]> => {
 }
 
 export const createCategory = async (data: BlogCategoryFormData): Promise<BlogCategory | { success: false, message: string }> => {
+  await checkAuth()
   const id = `bc${Date.now()}`
   const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ')
   const slug = toSlug(data.slug || data.name)
@@ -238,6 +250,7 @@ export const createCategory = async (data: BlogCategoryFormData): Promise<BlogCa
 }
 
 export const updateCategory = async (id: string, data: BlogCategoryFormData): Promise<BlogCategory | undefined | { success: false, message: string }> => {
+  await checkAuth()
   const slug = toSlug(data.slug || data.name)
 
   const [existing] = await pool.query('SELECT id FROM blog_categories WHERE (slug = ? OR name = ?) AND id != ?', [slug, data.name || '', id])
@@ -253,6 +266,7 @@ export const updateCategory = async (id: string, data: BlogCategoryFormData): Pr
 }
 
 export const deleteCategory = async (id: string): Promise<void | { success: false, message: string }> => {
+  await checkAuth()
   const connection = await pool.getConnection()
   try {
     await connection.beginTransaction()

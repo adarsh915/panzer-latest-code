@@ -26,10 +26,22 @@ export async function POST(request: NextRequest) {
     let uploadedFilename = ''
 
     if (file && file.size > 0) {
+      // Limit file size to 10MB
+      const maxSizeBytes = 10 * 1024 * 1024
+      if (file.size > maxSizeBytes) {
+        return NextResponse.json({ error: 'File size exceeds the 10MB limit' }, { status: 400 })
+      }
+
+      // Restrict extensions to safe types
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'bin'
+      const allowedExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'csv', 'txt', 'png', 'jpg', 'jpeg', 'zip', 'rar']
+      if (!allowedExtensions.includes(ext)) {
+        return NextResponse.json({ error: 'Unsupported file type. Please upload PDF, Word, Excel, text, zip or images.' }, { status: 400 })
+      }
+
       const bytes = await file.arrayBuffer()
       const buffer = Buffer.from(bytes)
 
-      const ext = file.name.split('.').pop() || 'bin'
       const uniqueName = `submission_${Date.now()}.${ext}`
       const uploadDir = join(process.cwd(), 'public', 'uploads', 'submissions')
       

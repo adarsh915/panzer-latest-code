@@ -3,6 +3,14 @@
 import pool from '@/lib/db'
 import { revalidateTag } from 'next/cache'
 import { sanitizeDeep, stripBase64 } from '@/lib/sanitize'
+import { getSessionUser } from '@/lib/session'
+
+async function checkAuth() {
+  const sessionUser = await getSessionUser()
+  if (!sessionUser) {
+    throw new Error('Unauthorized')
+  }
+}
 import type {
   BrandCategory,
   BrandCategoryFormData,
@@ -66,6 +74,8 @@ export const readBrandsPaginated = async (page: number = 1, limit: number = 10):
     capabilitiesHeading: row.capabilities_heading ?? '',
     capabilitiesPoints: row.capabilities_points ?? '',
     breadcrumbDescription: row.breadcrumb_description ?? '',
+    homepageTagline: row.homepage_tagline ?? '',
+    homepageSubTagline: row.homepage_sub_tagline ?? '',
   }))
 
   const brandIds = brands.map(b => b.id)
@@ -117,6 +127,8 @@ export const findBrand = async (id: string): Promise<BrandPartner | undefined> =
     capabilitiesHeading: row.capabilities_heading ?? '',
     capabilitiesPoints: row.capabilities_points ?? '',
     breadcrumbDescription: row.breadcrumb_description ?? '',
+    homepageTagline: row.homepage_tagline ?? '',
+    homepageSubTagline: row.homepage_sub_tagline ?? '',
     extraCards: [],
   }
 
@@ -131,6 +143,7 @@ export const findBrand = async (id: string): Promise<BrandPartner | undefined> =
 }
 
 export const createBrand = async (data: BrandFormData): Promise<BrandPartner | { success: false, message: string }> => {
+  await checkAuth()
   const id = `b${Date.now()}`
   const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ')
   const finalSlug = data.slug || data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
@@ -144,8 +157,9 @@ export const createBrand = async (data: BrandFormData): Promise<BrandPartner | {
     `INSERT INTO brands (
       id, name, slug, website, category, description, image, image_title, image_caption, image_description, image_alt,
       logo, logo_alt, sort_order, featured, status, meta_title,
-      meta_description, meta_keywords, capabilities_title, capabilities_heading, capabilities_points, breadcrumb_description, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      meta_description, meta_keywords, capabilities_title, capabilities_heading, capabilities_points, breadcrumb_description,
+      homepage_tagline, homepage_sub_tagline, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       id,
       data.name,
@@ -170,6 +184,8 @@ export const createBrand = async (data: BrandFormData): Promise<BrandPartner | {
       data.capabilitiesHeading || '',
       data.capabilitiesPoints || '',
       data.breadcrumbDescription || '',
+      data.homepageTagline || '',
+      data.homepageSubTagline || '',
       createdAt,
     ],
   )
@@ -192,6 +208,7 @@ export const createBrand = async (data: BrandFormData): Promise<BrandPartner | {
 }
 
 export const updateBrand = async (id: string, data: Partial<BrandFormData>): Promise<BrandPartner | undefined | { success: false, message: string }> => {
+  await checkAuth()
   if (data.slug || data.name) {
     const [existing] = await pool.query('SELECT id FROM brands WHERE (slug = ? OR name = ?) AND id != ?', [data.slug || '', data.name || '', id])
     if ((existing as any[]).length > 0) {
@@ -225,6 +242,8 @@ export const updateBrand = async (id: string, data: Partial<BrandFormData>): Pro
     capabilitiesHeading: 'capabilities_heading',
     capabilitiesPoints: 'capabilities_points',
     breadcrumbDescription: 'breadcrumb_description',
+    homepageTagline: 'homepage_tagline',
+    homepageSubTagline: 'homepage_sub_tagline',
   }
 
   for (const [key, dbField] of Object.entries(fields)) {
@@ -262,6 +281,7 @@ export const updateBrand = async (id: string, data: Partial<BrandFormData>): Pro
 }
 
 export const deleteBrand = async (id: string): Promise<void> => {
+  await checkAuth()
   await pool.query('DELETE FROM brands WHERE id = ?', [id])
   revalidateTag('header-data')
 }
@@ -280,6 +300,7 @@ export const readCategories = async (): Promise<BrandCategory[]> => {
 }
 
 export const createCategory = async (data: BrandCategoryFormData): Promise<BrandCategory | { success: false, message: string }> => {
+  await checkAuth()
   const id = `bc${Date.now()}`
   const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ')
   
@@ -308,6 +329,7 @@ export const createCategory = async (data: BrandCategoryFormData): Promise<Brand
 }
 
 export const updateCategory = async (id: string, data: Partial<BrandCategoryFormData>): Promise<BrandCategory | undefined | { success: false, message: string }> => {
+  await checkAuth()
   if (data.slug || data.name) {
     const [existing] = await pool.query('SELECT id FROM brand_categories WHERE (slug = ? OR name = ?) AND id != ?', [data.slug || '', data.name || '', id])
     if ((existing as any[]).length > 0) {
@@ -350,6 +372,7 @@ export const updateCategory = async (id: string, data: Partial<BrandCategoryForm
 }
 
 export const deleteCategory = async (id: string): Promise<void | { success: false, message: string }> => {
+  await checkAuth()
   const connection = await pool.getConnection()
   try {
     await connection.beginTransaction()

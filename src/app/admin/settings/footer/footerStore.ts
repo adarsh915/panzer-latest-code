@@ -2,6 +2,14 @@
 
 import pool from '@/lib/db'
 import { revalidatePath } from 'next/cache'
+import { getSessionUser } from '@/lib/session'
+
+async function checkAuth() {
+  const sessionUser = await getSessionUser()
+  if (!sessionUser) {
+    throw new Error('Unauthorized')
+  }
+}
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -115,6 +123,7 @@ export const readFooterColumns = async (): Promise<FooterColumn[]> => {
 // ── COLUMNS ───────────────────────────────────────────────────────────────────
 
 export const createFooterColumn = async (title: string): Promise<FooterColumn> => {
+  await checkAuth()
   const id = `fc${Date.now()}`
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
   const [maxRow] = await pool.query(
@@ -134,6 +143,7 @@ export const updateFooterColumn = async (
   title: string,
   order: number
 ): Promise<void> => {
+  await checkAuth()
   await pool.query(
     'UPDATE footer_columns SET title = ?, sort_order = ? WHERE id = ?',
     [title.trim(), order, id]
@@ -142,6 +152,7 @@ export const updateFooterColumn = async (
 }
 
 export const deleteFooterColumn = async (id: string): Promise<void> => {
+  await checkAuth()
   await pool.query('DELETE FROM footer_columns WHERE id = ?', [id])
   revalidatePath('/', 'layout')
 }
@@ -156,6 +167,7 @@ export const createFooterLink = async (
   ref_id?: string,
   custom_url?: string
 ): Promise<FooterLink> => {
+  await checkAuth()
   const id = `fl${Date.now()}${Math.floor(Math.random() * 1000)}`
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
   const [maxRow] = await pool.query(
@@ -189,6 +201,7 @@ export const updateFooterLink = async (
   ref_id?: string,
   custom_url?: string
 ): Promise<void> => {
+  await checkAuth()
   const effectiveUrl = link_type === 'custom' ? (custom_url || url) : url
   const effectiveCustomUrl = link_type === 'custom' ? (custom_url || url) : null
   const effectiveRefId = link_type !== 'custom' ? (ref_id ?? null) : null
@@ -203,6 +216,7 @@ export const updateFooterLink = async (
 }
 
 export const deleteFooterLink = async (id: string): Promise<void> => {
+  await checkAuth()
   await pool.query('DELETE FROM footer_links WHERE id = ?', [id])
   revalidatePath('/', 'layout')
 }

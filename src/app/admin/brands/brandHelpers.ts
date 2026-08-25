@@ -30,6 +30,8 @@ export const emptyBrand: BrandFormData = {
   capabilitiesHeading: '',
   capabilitiesPoints: '',
   breadcrumbDescription: '',
+  homepageTagline: '',
+  homepageSubTagline: '',
   extraCards: [],
 }
 
@@ -68,5 +70,7 @@ export const toFormData = (brand: BrandPartner): BrandFormData => ({
   capabilitiesHeading: brand.capabilitiesHeading ?? '',
   capabilitiesPoints: brand.capabilitiesPoints ?? '',
   breadcrumbDescription: brand.breadcrumbDescription ?? '',
+  homepageTagline: brand.homepageTagline ?? '',
+  homepageSubTagline: brand.homepageSubTagline ?? '',
   extraCards: brand.extraCards || [],
 })

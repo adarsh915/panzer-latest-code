@@ -1,6 +1,14 @@
 'use server'
 
 import pool from '@/lib/db'
+import { getSessionUser } from '@/lib/session'
+
+async function checkAuth() {
+  const sessionUser = await getSessionUser()
+  if (!sessionUser) {
+    throw new Error('Unauthorized')
+  }
+}
 
 // ========================
 // TYPES
@@ -62,6 +70,7 @@ export const findQuestionnaire = async (id: string): Promise<Questionnaire | und
 }
 
 export const createQuestionnaire = async (data: QuestionnaireFormData): Promise<Questionnaire> => {
+  await checkAuth()
   const id = `qst${Date.now()}`
   const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ')
   const deptJson = JSON.stringify(data.departmentOptions || [])
@@ -77,6 +86,7 @@ export const createQuestionnaire = async (data: QuestionnaireFormData): Promise<
 }
 
 export const updateQuestionnaire = async (id: string, data: QuestionnaireFormData): Promise<void> => {
+  await checkAuth()
   const deptJson = JSON.stringify(data.departmentOptions || [])
   await pool.query(
     `UPDATE resource_questionnaires 
@@ -87,6 +97,7 @@ export const updateQuestionnaire = async (id: string, data: QuestionnaireFormDat
 }
 
 export const deleteQuestionnaire = async (id: string): Promise<void> => {
+  await checkAuth()
   await pool.query('DELETE FROM resource_questionnaires WHERE id = ?', [id])
 }
 
@@ -121,14 +132,17 @@ export const getUnreadSubmissions = async (limit = 5): Promise<FormSubmission[]>
 }
 
 export const markSubmissionRead = async (id: string): Promise<void> => {
+  await checkAuth()
   await pool.query('UPDATE resource_form_submissions SET is_read = 1 WHERE id = ?', [id])
 }
 
 export const markAllSubmissionsRead = async (): Promise<void> => {
+  await checkAuth()
   await pool.query('UPDATE resource_form_submissions SET is_read = 1')
 }
 
 export const deleteSubmission = async (id: string): Promise<void> => {
+  await checkAuth()
   await pool.query('DELETE FROM resource_form_submissions WHERE id = ?', [id])
 }
 
